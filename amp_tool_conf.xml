@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<toolbox monitor="true">
+  <section id="getext" name="Get Data">
+    <tool file="data_source/upload.xml" />
+  </section>
+
+  <section id="examples" name="Examples">
+    <tool file="extract_audio_stream/extract_audio_stream.xml"/>
+    <tool file="script_example/script_example.xml"/>
+  </section>
+
+  <section id="galaxytools" name="Galaxy Tools">
+    <tool file="cloud/send.xml"/>
+  </section>
+</toolbox>

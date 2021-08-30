@@ -1,0 +1,20 @@
+<tool id="fileinfo" name="File Info" version="1.0.0">
+  <description>Generate file info</description>
+  <command detect_errors="exit_code">
+  	'$__tool_directory__/script_example.py' '$input' '$output'
+  </command>
+  <inputs>
+    <param name="input" type="data"  help="A file to check"/>  	
+  </inputs>
+  <outputs>
+    <data name="output" format="text" label="File Info" />
+  </outputs>
+  <tests>
+  </tests>
+  <help>
+.. class:: infomark
+
+Generate a text file with the file stem and the size
+
+  </help>
+</tool>
