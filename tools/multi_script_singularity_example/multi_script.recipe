@@ -3,6 +3,7 @@ From: fedora:34
 
 %files
 extract_audio_stream.py
+extract_wav.py
 
 %post
 dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
@@ -10,5 +11,15 @@ yum install -y ffmpeg
 yum clean all
 
 %runscript
-/extract_audio_stream.py "$@"
+
+script=`basename ${1:-unspecified}`
+if [ ! -e /$script ]; then
+    echo "Script '$script' doesn't exist in the container"
+    echo "Known scripts:"
+    echo "   extract_audio_stream.py"
+    echo "   extract_wav.py"
+    exit 128
+fi
+shift
+/$script "$@"
 

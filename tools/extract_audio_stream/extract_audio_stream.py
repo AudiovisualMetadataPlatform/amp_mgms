@@ -14,7 +14,7 @@ def main():
     parser = argparse.ArgumentParser(description="Extract the audio stream from a file as-is")
     parser.add_argument('--debug', default=False, action='store_true', help="Turn on debugging")    
     parser.add_argument('avfile', help="Input A/V file")
-    parser.add_argument('audiostream', help="Output filename without extension")
+    parser.add_argument('audiostream', help="Output filename")
     args = parser.parse_args()
     logging.basicConfig(format="%(asctime)s [%(levelname)-8s] (%(filename)s:%(lineno)d)  %(message)s",
                         level=logging.DEBUG if args.debug else logging.INFO)

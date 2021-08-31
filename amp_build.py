@@ -45,6 +45,9 @@ def main():
         logging.info(f"Copying . to {tmpdir}")
         run_cmd(['cp', '-a', '.', tmpdir], "Copy to tempdir failed", workdir=sys.path[0])
         
+        # remove git stuff
+        run_cmd(['rm', '-rf', '.git'], "Remove git directory", workdir=tmpdir)
+
         # create the package
         args.destdir = Path(args.destdir).resolve()
         logging.info(f"Creating package in {args.destdir}")

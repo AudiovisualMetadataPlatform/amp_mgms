@@ -1,0 +1,20 @@
+<tool id="extract_audio_stream_ms" name="Extract audio stream (multiscript)" version="1.0.0">
+  <description>extract the audio stream from an a/v file</description>
+  <command detect_errors="exit_code">
+  	'$__tool_directory__/multi_script.sif' extract_audio_stream.py '$avfile' '$audiostream'
+  </command>
+  <inputs>
+    <param name="avfile" type="data" format="av" label="A/V file" help="A/V file"/>  	
+  </inputs>
+  <outputs>
+    <data name="audiostream" format="av" label="Audio File" />
+  </outputs>
+  <tests>
+  </tests>
+  <help>
+.. class:: infomark
+
+Remux audio streams into a new container, discarding the video stream.
+
+  </help>
+</tool>
