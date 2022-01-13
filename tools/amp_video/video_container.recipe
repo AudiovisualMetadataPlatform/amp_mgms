@@ -1,0 +1,28 @@
+Bootstrap: docker
+From: fedora:34
+
+%files
+azure_video_indexer.py
+contact_sheets_collection.py
+contact_sheets.py
+../amp_util/mgm_utils.py  /mgm_utils.py
+../amp_schema/contact_sheet.py /contact_sheet.py
+
+
+%post
+yum install -y python3 pip
+pip install boto3 pillow ffmpeg
+yum clean all
+
+%runscript
+
+script=`basename ${1:-unspecified}`
+if [ ! -e /$script ]; then
+    echo "Script '$script' doesn't exist in the container"
+    echo "Known scripts:"
+    ls -al /*.py
+    exit 128
+fi
+shift
+/$script "$@"
+

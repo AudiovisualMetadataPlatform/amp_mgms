@@ -1,0 +1,28 @@
+Bootstrap: docker
+From: fedora:34
+
+%files
+azure_video_ocr.py
+tesseract.py
+vocr_to_csv.py
+../amp_schema/video_ocr.py /video_ocr.py
+../amp_util/mgm_utils.py  /mgm_utils.py
+../amp_util/mgm_logger.py /mgm_logger.py
+
+%post
+yum install -y python3 pip
+pip install pytesseract pillow
+yum clean all
+
+%runscript
+
+script=`basename ${1:-unspecified}`
+if [ ! -e /$script ]; then
+    echo "Script '$script' doesn't exist in the container"
+    echo "Known scripts:"
+    ls -al /*.py
+    exit 128
+fi
+shift
+/$script "$@"
+

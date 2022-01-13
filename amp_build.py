@@ -19,7 +19,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--debug', default=False, action='store_true', help="Turn on debugging")
     parser.add_argument('--version', default=None, help="Package Version")  
-    parser.add_argument('destdir', help="Output directory for package")
+    parser.add_argument('--package', default=False, action='store_true', help="build a package instead of installing")
+    parser.add_argument('destdir', help="Output directory for package or tool directory root")
     args = parser.parse_args()
     logging.basicConfig(format="%(asctime)s [%(levelname)-8s] (%(filename)s:%(lineno)d)  %(message)s",
                         level=logging.DEBUG if args.debug else logging.INFO)
@@ -27,32 +28,39 @@ def main():
     # build anything that needs to be built...
     logging.info("Building MGMs")
     here = Path.cwd().resolve()
+    if args.package:
+        destdir = "/some/directory/i'll/figure/out/later"
+    else:
+        destdir = Path(args.destdir).resolve()
+    
     for script_name in ('mgm_build.sh', 'mgm_build.py'):        
         for buildscript in here.glob(f"tools/*/{script_name}"):
             logging.info(f"Running build script {buildscript}")
             os.chdir(buildscript.parent)
-            cmd = [str(buildscript)]
+            cmd = [str(buildscript), str(destdir)]
             if args.debug:
                 cmd.append('--debug')
             logging.debug(f"Running command: {cmd}")
             p = subprocess.run(cmd)
             if p.returncode:
-                logging.error(f"Build command failed with return code {p.returncode}")
+                logging.error(f"Build command failed with return code {p.returncode}")            
             os.chdir(here)
-    
-    with tempfile.TemporaryDirectory(prefix='amp_mgms_build-') as tmpdir:
-        logging.debug(f"Temporary directory is: {tmpdir}")
-        logging.info(f"Copying . to {tmpdir}")
-        run_cmd(['cp', '-a', '.', tmpdir], "Copy to tempdir failed", workdir=sys.path[0])
-        
-        # remove git stuff
-        run_cmd(['rm', '-rf', '.git'], "Remove git directory", workdir=tmpdir)
 
-        # create the package
-        args.destdir = Path(args.destdir).resolve()
-        logging.info(f"Creating package in {args.destdir}")
-        outfile = build_package(tmpdir, args.destdir, 'amp_mgms', version=args.version)
-        print(outfile)
+
+    if args.package:
+        with tempfile.TemporaryDirectory(prefix='amp_mgms_build-') as tmpdir:
+            logging.debug(f"Temporary directory is: {tmpdir}")
+            logging.info(f"Copying . to {tmpdir}")
+            run_cmd(['cp', '-a', '.', tmpdir], "Copy to tempdir failed", workdir=sys.path[0])
+            
+            # remove git stuff
+            run_cmd(['rm', '-rf', '.git'], "Remove git directory", workdir=tmpdir)
+
+            # create the package
+            args.destdir = Path(args.destdir).resolve()
+            logging.info(f"Creating package in {args.destdir}")
+            outfile = build_package(tmpdir, args.destdir, 'amp_mgms', version=args.version)
+            print(outfile)
 
 
         
