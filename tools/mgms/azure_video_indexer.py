@@ -1,4 +1,5 @@
-#!/usr/bin/env python3
+#!/usr/bin/env mgm_python.sif
+import _preamble
 import argparse
 import sys
 import traceback
@@ -9,7 +10,7 @@ import json
 import uuid
 import boto3
 
-import mgm_utils
+import amp.utils
 
 
 def main():
@@ -33,7 +34,7 @@ def main():
         # Python 2
         import httplib as http_client
 
-    config = mgm_utils.get_config(root_dir)
+    config = amp.utils.get_config(root_dir)
     s3_bucket = config['azure']['s3Bucket']
     accountId = config['azure']['accountId']
     apiKey = config['azure']['apiKey']
@@ -78,7 +79,7 @@ def main():
     # Get the simple video index json
     auth_token = get_auth_token(apiUrl, location, accountId, apiKey)
     index_json = get_video_index_json(apiUrl, location, accountId, videoId, auth_token, apiKey)
-    mgm_utils.write_json_file(index_json, index_file)
+    amp.utils.write_json_file(index_json, index_file)
 
     # Get the advanced OCR json via the artifact URL if requested
     if include_ocr.lower() == 'true':
