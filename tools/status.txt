@@ -5,9 +5,9 @@
 ./amp_hmgm/hmgm_ner.xml
 ./amp_hmgm/hmgm_segmentation.xml
 ./amp_hmgm/hmgm_transcript.xml
-./amp_ner/aws_comprehend.xml
-./amp_ner/ner_to_csv.xml
-./amp_ner/spacy.xml
+./amp_ner/aws_comprehend.xml - done
+./amp_ner/ner_to_csv.xml - done
+./amp_ner/spacy.xml - done
 ./amp_segment/adjust_diarization_timestamps.xml
 ./amp_segment/adjust_transcript_timestamps.xml
 ./amp_segment/applause_detection_to_avalon_xml.xml
@@ -15,17 +15,17 @@
 ./amp_segment/remove_silence_speech.xml
 ./amp_segment/applause_detection.xml
 ./amp_segment/ina_speech_segmenter.xml
-./amp_shot/azure_shot_detection.xml
-./amp_shot/pyscenedetect.xml
+./amp_shot/azure_shot_detection.xml - done
+./amp_shot/pyscenedetect.xml - done
 ./amp_stt/aws_transcribe.xml
 ./amp_stt/transcript_to_webvtt.xml
 ./amp_stt/vocabulary_tagging.xml
 ./amp_stt/vtt_generator.xml
 ./amp_stt/gentle_forced_alignment.xml
 ./amp_stt/kaldi.xml
-./amp_video/contact_sheets.xml
-./amp_video/contact_sheets_collection.xml
-./amp_video/azure_video_indexer.xml
+./amp_video/contact_sheets.xml - done (no argparse)
+./amp_video/contact_sheets_collection.xml - done
+./amp_video/azure_video_indexer.xml - done
 ./amp_vocr/azure_video_ocr.xml - done
 ./amp_vocr/tesseract.xml - done
 ./amp_vocr/vocr_to_csv.xml - done
