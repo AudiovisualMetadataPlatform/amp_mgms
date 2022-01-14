@@ -5,6 +5,7 @@ import traceback
 import os
 import json
 import datetime
+import argparse
 
 # Standard PySceneDetect imports:
 from scenedetect.video_manager import VideoManager
@@ -20,7 +21,15 @@ import mgm_utils
 
 
 def main():
-    (input_file, threshold, output_json, output_csv) = sys.argv[1:5]
+    #(input_file, threshold, output_json, output_csv) = sys.argv[1:5]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("input_file")
+    parser.add_argument("threshold")
+    parser.add_argument("output_json")
+    parser.add_argument("output_csv")
+    args = parser.parse_args()
+    (input_file, threshold, output_json, output_csv) = (args.input_file, args.threshold, args.output_json, args.output_csv)
+
     # Get a list of scenes as tuples (start, end) 
     if threshold is None or isinstance(threshold, int) == False:
         threshold = 30

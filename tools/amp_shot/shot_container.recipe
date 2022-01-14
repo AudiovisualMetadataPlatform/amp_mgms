@@ -2,16 +2,15 @@ Bootstrap: docker
 From: fedora:34
 
 %files
-azure_video_indexer.py
-contact_sheets_collection.py
-contact_sheets.py
+azure_shot_detection.py
+pyscenedetect.py
+../amp_schema/shot_detection.py /shot_detection.py
 ../amp_util/mgm_utils.py  /mgm_utils.py
-../amp_schema/contact_sheet.py /contact_sheet.py
-
+../amp_util/mgm_logger.py /mgm_logger.py
 
 %post
 yum install -y python3 pip
-pip install boto3 pillow ffmpeg requests
+pip install scenedetect[opencv-headless]
 yum clean all
 
 %runscript

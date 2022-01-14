@@ -4,7 +4,7 @@
 	<requirement type="package" version="3.8">python</requirement>
   </requirements>
   <command detect_errors="exit_code">
-  	'$__tool_directory__/azure_shot_detection.py' '$input_video' '$azure_video_index' '$amp_shots'
+  	'$__tool_directory__/shot_container.sif azure_shot_detection.py' '$input_video' '$azure_video_index' '$amp_shots'
   </command>
   <inputs>
 	<param name="input_video" type="data" format="video" label="Input Video" help="Input video file used by Azure Video Indexer"/>

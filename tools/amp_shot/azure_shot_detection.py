@@ -4,6 +4,7 @@ import logging
 import json
 import os
 from datetime import datetime
+import argparse
 
 from shot_detection import ShotDetection, ShotDetectionMedia, ShotDetectionShot
 
@@ -11,7 +12,13 @@ import mgm_utils
 
 
 def main():
-	(input_video, azure_video_index, amp_shots) = sys.argv[1:4]
+	#(input_video, azure_video_index, amp_shots) = sys.argv[1:4]
+	parser = argparse.ArgumentParser()
+	parser.add_argument("input_video")
+	parser.add_argument("azure_video_index")
+	parser.add_argument("amp_shots")
+	args = parser.parse_args()
+	(input_video, azure_video_index, amp_shots) = (args.input_video, args.azure_video_index, args.amp_shots)
 
 	# You must initialize logging, otherwise you'll not see debug output.
 	logging.basicConfig()

@@ -3,13 +3,21 @@
 
 import spacy
 import sys
+import argparse
 
 import mgm_utils
 import ner_helper
 
 
 def main():
-    (amp_transcript, spacy_entities, amp_entities, ignore_types) = sys.argv[1:5]
+    #(amp_transcript, spacy_entities, amp_entities, ignore_types) = sys.argv[1:5]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("amp_transcript")
+    parser.add_argument("spacy_entities")
+    parser.add_argument("amp_entities")
+    parser.add_argument("ignore_types")
+    args = parser.parse_args()
+    (amp_transcript, spacy_entities, amp_entities, ignore_types) = (args.amp_transcript, args.spacy_entities, args.amp_entities, args.ignore_types)
 
     # preprocess NER inputs and initialize AMP entities output
     [amp_transcript_obj, amp_entities_obj, ignore_types_list] = ner_helper.initialize_amp_entities(amp_transcript, amp_entities, ignore_types)

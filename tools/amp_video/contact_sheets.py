@@ -8,7 +8,7 @@ from contact_sheet import ContactSheet
 
 def main():
 	#label = "AMP Contact Sheets " + datetime.today().strftime("%b %d %Y %H:%M:%S")
-	# TODO:  use argparse.
+	# TODO:  use argparse.  The parameters are a mess.
 	print(sys.argv)
 	input_file = sys.argv[1]
 	type = sys.argv[2]

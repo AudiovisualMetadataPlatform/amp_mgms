@@ -9,14 +9,24 @@ import socket
 import time
 from datetime import datetime
 import boto3
+import argparse
 
 import mgm_utils
 import ner_helper
 
 
 def main():
-    (amp_transcript, aws_entities, amp_entities, ignore_types, bucket, dataAccessRoleArn) = sys.argv[1:7]
-    
+    #(amp_transcript, aws_entities, amp_entities, ignore_types, bucket, dataAccessRoleArn) = sys.argv[1:7]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("amp_transcript")
+    parser.add_argument("aws_entities")
+    parser.add_argument("amp_entities")
+    parser.add_argument("ignore_types")
+    parser.add_argument("bucket")
+    parser.add_argument("dataAccessRoleArn")
+    args = parser.parse_args()
+    (amp_transcript, aws_entities, amp_entities, ignore_types, bucket, dataAccessRoleArn) = (args.amp_transcript, args.aws_entities, args.amp_entities, args.ignore_types, args.bucket, args.dataAccessRoleArn)
+
     # preprocess NER inputs and initialize AMP entities output
     [amp_transcript_obj, amp_entities_obj, ignore_types_list] = ner_helper.initialize_amp_entities(amp_transcript, amp_entities, ignore_types)
 
