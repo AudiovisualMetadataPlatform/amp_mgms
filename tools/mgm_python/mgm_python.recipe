@@ -1,0 +1,23 @@
+Bootstrap: docker
+From: fedora:35
+
+%files
+
+
+%post
+yum install -y python3 pip ffmpeg
+pip install boto3 face-recognition ffmpeg jira opencv pillow pytesseract requests scenedetect spacy trello
+yum clean all
+
+%runscript
+
+script=`basename ${1:-unspecified}`
+if [ ! -e /$script ]; then
+    echo "Script '$script' doesn't exist in the container"
+    echo "Known scripts:"
+    ls -al /*.py
+    exit 128
+fi
+shift
+/$script "$@"
+
