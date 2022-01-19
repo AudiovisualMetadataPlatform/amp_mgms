@@ -3,9 +3,29 @@ AMP MGMs
 
 Build all of the MGMs in one go.
 
-## Build requirements
+## Building
+
+This repo has several submodules, so check this out with:
+````
+git clone --recursive <this_repo>
+````
+
+### requirements
 * singularity
 * python 3.6+
+* make
+
+### Process
+
+To build the MGMs and install them in a directory:
+````
+./amp_build.py <destination directory>
+````
+
+To build the MGMs as a distributable package:
+````
+./amp_build.py --package <package_directory>
+````
 
 ## Current status
 This is the first pass to clean up the MGMs that were used during the 
@@ -19,11 +39,19 @@ The goal for this first phase is to:
   best practice.
 * move source files and modules around so they use python namespaces rather 
   than implied search paths
+* proper logging, rather than ovewriting sys.stderr and sys.stdout.  Logs are
+  written to the logs directory that is a peer of the script (if the
+  directory exists) and stderr (always)
+* some tools require the galaxy root_dir variable.  Is this really needed?
+  Turns out, that no, it isn't.
+* amp_mgm.ini is a peer of the scripts.  A sample is in the repository
+* tool_conf.xml is a galaxy configuration file that can be used to insert
+  this toolset into galaxy.
 
-## Future cleanup
+## Future cleanup / work
 
 * reduce the size of the .sif files by cleaning up any intermediate build
   files.
 * use the args namespace directly, rather than that hacky tuple assignment
-* proper logging, rather than ovewriting sys.stderr and sys.stdout 
-* some tools require the galaxy root_dir variable.  Is this really needed?
+* equivalent to "make clean"  Right now, you have to remove the .sif files
+  and the kaldi/exp2.tar.gz file manually.
