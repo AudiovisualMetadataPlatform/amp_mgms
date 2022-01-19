@@ -1,0 +1,12 @@
+[submodule "tools/applause_detection/applause-detection"]
+	path = tools/applause_detection/applause-detection
+	url = https://github.com/AudiovisualMetadataPlatform/applause-detection.git
+[submodule "tools/ina_speech_segmenter/ina-speech-tools-singularity"]
+	path = tools/ina_speech_segmenter/ina-speech-tools-singularity
+	url = https://github.com/AudiovisualMetadataPlatform/ina-speech-tools-singularity.git
+[submodule "tools/gentle/gentle-singularity"]
+	path = tools/gentle/gentle-singularity
+	url = https://github.com/AudiovisualMetadataPlatform/gentle-singularity.git
+[submodule "tools/kaldi/kaldi-pua-singularity"]
+	path = tools/kaldi/kaldi-pua-singularity
+	url = https://github.com/AudiovisualMetadataPlatform/kaldi-pua-singularity.git
