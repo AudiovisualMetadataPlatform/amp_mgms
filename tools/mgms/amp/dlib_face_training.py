@@ -19,9 +19,9 @@ FR_TRAINED_MODEL_SUFFIX = ".frt"
 # save the results in a FRT model file with the same file path as training_photos, replacing extension .zip with .frt, 
 # and return the trained results as a list of known_names and a list of known_faces encodings. 
 # If training fails for any reason, exit in error, as face recognition won't work without training.
-def train_faces(training_photos, root_dir):
+def train_faces(training_photos):
     # unzip training_photos
-    facial_dir = get_facial_dir(root_dir)
+    facial_dir = get_facial_dir()
     photos_dir = unzip_training_photos(training_photos, facial_dir)
     
     # get all persons photo directories
@@ -114,8 +114,8 @@ def get_model_file(training_photos):
                 
 
 # Get the facial recognition working directory path for training and matching.
-def get_facial_dir(root_dir):
-    return amp.utils.get_work_dir(root_dir, "facial_io")
+def get_facial_dir():
+    return amp.utils.get_work_dir("facial_io")
 
     
 # Unzip training_photos zip file to a directory with the same name as training_photos under facial_dir.

@@ -5,9 +5,9 @@
 	<requirement type="package" version="2.0">jira</requirement>
   </requirements>
   <command detect_errors="exit_code">
-	'$__tool_directory__/ner_to_iiif.py' '$__root_dir__' '$amp_entities_uncorrected' '$iiif_uncorrected' '$context_json';
-	'$__tool_directory__/mgm_python.sif' '$__tool_directory__/hmgm_main.py' 'NER' '$__root_dir__' '$iiif_uncorrected' '$iiif_corrected' '$task_info' '$context_json';
-	'$__tool_directory__/iiif_to_ner.py' '$__root_dir__' '$iiif_corrected' '$amp_entities_uncorrected' '$amp_entities_corrected'
+	'$__tool_directory__/ner_to_iiif.py' '$amp_entities_uncorrected' '$iiif_uncorrected' '$context_json';
+	'$__tool_directory__/mgm_python.sif' '$__tool_directory__/hmgm_main.py' 'NER' '$iiif_uncorrected' '$iiif_corrected' '$task_info' '$context_json';
+	'$__tool_directory__/iiif_to_ner.py' '$iiif_corrected' '$amp_entities_uncorrected' '$amp_entities_corrected'
   </command>                                    
   <inputs>
     <param name="amp_entities_uncorrected" type="data" format="ner" label="AMP Named Entities Uncorrected" help="Original AMP NER file to be corrected" />

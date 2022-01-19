@@ -9,7 +9,6 @@ import sys
 import traceback
 import argparse
 
-from amp.logger import MgmLogger
 import amp.utils
 import logging
 import amp.logger
@@ -22,19 +21,14 @@ def main():
     #(root_dir, from_draftjs, original_transcript, to_transcript) = sys.argv[1:5]
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
-    parser.add_argument("root_dir")
     parser.add_argument("from_draftjs")
     parser.add_argument("original_transcript")
     parser.add_argument("to_transcript")
     args = parser.parse_args()
     logging.info(f"Starting with args {args}")
-    (root_dir, from_draftjs, original_transcript, to_transcript) = (args.root_dir, args.from_draftjs, args.original_transcript, args.to_transcript)
+    (from_draftjs, original_transcript, to_transcript) = (args.from_draftjs, args.original_transcript, args.to_transcript)
 
     # using output instead of input filename as the latter is unique while the former could be used by multiple jobs     
-    #logger = MgmLogger(root_dir, "hmgm_transcript", to_transcript)
-    #sys.stdout = logger
-    #sys.stderr = logger
-
     try:
         # if from_draftjs is in error raise exception to notify HMGM job runner to fail the job
         # otherwise if from_draftjs doesn't exist yet, exit 1 to keep waiting

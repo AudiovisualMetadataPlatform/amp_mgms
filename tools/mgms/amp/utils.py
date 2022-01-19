@@ -95,25 +95,29 @@ def write_text_file(string, output_file):
         
         
 # Get the configuration file
-def get_config(root_dir):
+def get_config():
 	config = configparser.ConfigParser()
-	config.read(root_dir + "/config/amp_mgm.ini")    
+	config.read(sys.path[0] + "/amp_mgm.ini")    
 	return config
     
 
 # Get the absolute path of the specified module/mgm working directory
-def get_work_dir(root_dir, work_dir):
-    config = get_config(root_dir)
+def get_work_dir(work_dir):
+    config = get_config()
     dir = config["workdir"].get(work_dir)
     return dir    
 
 # Get the absolute path of the mgm logs directory
 def get_log_dir(root_dir):
-    return get_work_dir(root_dir, "mgm_log")
+    #return get_work_dir(root_dir, "mgm_log")
+    logging.error("get_log_dir Deprecated")
+    return None
 
 
 # Get the absolute path of the mgm singularities directory
 def get_sif_dir(root_dir):
-    return get_work_dir(root_dir, "mgm_sif") 
+    #return get_work_dir(root_dir, "mgm_sif") 
+    logging.error("get_sif_dir Deprecated")
+    return None
 
 

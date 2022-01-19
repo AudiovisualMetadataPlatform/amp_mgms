@@ -5,7 +5,6 @@ import sys
 import traceback
 import argparse
 
-from amp.logger import MgmLogger
 import amp.utils
 import logging
 import amp.logger
@@ -17,19 +16,14 @@ def main():
 	#(root_dir, from_transcript, diarization_json, to_draftjs) = sys.argv[1:5]
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
-	parser.add_argument("root_dir")
 	parser.add_argument("from_transcript")
 	parser.add_argument("diarization_json")
 	parser.add_argument("to_draftjs")
 	args = parser.parse_args()
 	logging.info(f"Starting with args {args}")
-	(root_dir, from_transcript, diarization_json, to_draftjs) = (args.root_dir, args.from_transcript, args.diarization_json, args.to_draftjs)
+	(from_transcript, diarization_json, to_draftjs) = (args.from_transcript, args.diarization_json, args.to_draftjs)
 
 	# using output instead of input filename as the latter is unique while the former could be used by multiple jobs 
-	#logger = MgmLogger(root_dir, "hmgm_transcript", to_draftjs)
-	#sys.stdout = logger
-	#sys.stderr = logger
-
 	try:
 		# exit 1 here if Transcript->DraftJs conversion already done
 		amp.utils.exit_if_file_generated(to_draftjs)

@@ -14,11 +14,10 @@ import amp.utils
 def main():
 	#(root_dir, input_file, json_file) = sys.argv[1:4]
 	parser = argparse.ArgumentParser()
-	parser.add_argument("root_dir")
 	parser.add_argument("input_file")
 	parser.add_argument("json_file")
 	args = parser.parse_args()
-	(root_dir, input_file, json_file) = (args.root_dir, args.input_file, args.json_file)
+	(input_file, json_file) = (args.input_file, args.json_file)
 
 	tmpName = str(uuid.uuid4())
 	tmpdir = "/tmp"

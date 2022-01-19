@@ -18,7 +18,6 @@ MODE = "cpu"
 def main():
     #(root_dir, input_file, json_file, text_file) = sys.argv[1:5]
     parser = argparse.ArgumentParser()
-    parser.add_argument("root_dir")
     parser.add_argument("input_file")
     parser.add_argument("json_file")
     parser.add_argument("text_file")

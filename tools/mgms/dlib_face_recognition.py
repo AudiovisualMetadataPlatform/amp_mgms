@@ -24,7 +24,6 @@ FR_DEFAULT_TOLERANCE = 0.6
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
-    parser.add_argument("root_dir", help="Root Directory")
     parser.add_argument("input_video", help="Input Video")
     parser.add_argument("training_photos", help="Training photos")
     parser.add_argument("reused_trained", help="Reuse Training data")
@@ -32,7 +31,7 @@ def main():
     parser.add_argument("amp_faces", help="Faces output file")
     args = parser.parse_args()
     logging.info(f"Starting with args {args}")
-    (root_dir, input_video, training_photos, reuse_trained, tolerance, amp_faces) = (args.root_dir, args.input_video, args.training_photos, args.reuse_trained, args.tolerance, args.amp_faces)
+    (input_video, training_photos, reuse_trained, tolerance, amp_faces) = (args.input_video, args.training_photos, args.reuse_trained, args.tolerance, args.amp_faces)
     # if tolerance is not specified in command, use the default value
     if tolerance == '':
         tolerance = FR_DEFAULT_TOLERANCE
@@ -41,9 +40,6 @@ def main():
 
 
     # using output instead of input filename as the latter is unique while the former could be used by multiple jobs 
-    #logger = MgmLogger(root_dir, "face_recognition", amp_faces)
-    #sys.stdout = logger
-    #sys.stderr = logger
 
     
     # initialize training results
@@ -56,7 +52,7 @@ def main():
               
     # if no valid previous trained results is available, do the training
     if (known_names == [] or known_faces == []):
-        known_names, known_faces = train.train_faces(training_photos, root_dir)
+        known_names, known_faces = train.train_faces(training_photos)
               
     # run face recognition on the given video using the trained results at the given tolerance level
     fr_result = recognize_faces(input_video, known_names, known_faces, tolerance)

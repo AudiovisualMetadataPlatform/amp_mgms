@@ -14,12 +14,11 @@ import amp.utils
 def main():
     #(root_dir, input_audio, min_segment_duration, amp_segments) = sys.argv[1:5]
     parser = argparse.ArgumentParser()
-    parser.add_argument("root_dir")
     parser.add_argument("input_audio")
     parser.add_argument("min_segment_duration")
     parser.add_argument("amp_segments")
     args = parser.parse_args()
-    (root_dir, input_audio, min_segment_duration, amp_segments) = (args.root_dir, args.input_audio, args.min_segment_duration, args.amp_segments)
+    (input_audio, min_segment_duration, amp_segments) = (args.input_audio, args.min_segment_duration, args.amp_segments)
     
     
     print("Current directory: " + os.getcwd())

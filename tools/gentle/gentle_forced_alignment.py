@@ -15,13 +15,12 @@ import amp.utils
 def main():
 	#(root_dir, speech_audio, amp_transcript_unaligned, gentle_transcript, amp_transcript_aligned) = sys.argv[1:6]
 	parser = argparse.ArgumentParser()
-	parser.add_argument("root_dir")
 	parser.add_argument("speech_audio")
 	parser.add_argument("amp_transcript_unaligned")
 	parser.add_argument("gentle_transcript")
 	parser.add_argument("amp_transcript_aligned")
 	args = parser.parse_args()
-	(root_dir, speech_audio, amp_transcript_unaligned, gentle_transcript, amp_transcript_aligned) = (args.root_dir, args.speech_audio, args.amp_transcript_unaligned, args.gentle_transcript, args.amp_transcript_aligned)
+	(speech_audio, amp_transcript_unaligned, gentle_transcript, amp_transcript_aligned) = (args.speech_audio, args.amp_transcript_unaligned, args.gentle_transcript, args.amp_transcript_aligned)
 
 
 

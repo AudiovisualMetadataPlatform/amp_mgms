@@ -19,7 +19,6 @@ def main():
     #(root_dir, input_file, include_ocr, location, index_file, ocr_file) = sys.argv[1:7]
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
-    parser.add_argument("root_dir", help="Root Direcctory")
     parser.add_argument("input_file", help="Input file")
     parser.add_argument("include_ocr", help="Include OCR")
     parser.add_argument("location", help="Location")
@@ -27,7 +26,7 @@ def main():
     parser.add_argument("ocr_file", help="OCR File")
     args = parser.parse_args()
     logging.info(f"Starting with args {args}")
-    (root_dir, input_file, include_ocr, location, index_file, ocr_file) = (args.root_dir, args.input_file, args.include_ocr, args.location, args.index_file, args.ocr_file)
+    (input_file, include_ocr, location, index_file, ocr_file) = (args.input_file, args.include_ocr, args.location, args.index_file, args.ocr_file)
 
 
     try:
@@ -36,7 +35,7 @@ def main():
         # Python 2
         import httplib as http_client
 
-    config = amp.utils.get_config(root_dir)
+    config = amp.utils.get_config()
     s3_bucket = config['azure']['s3Bucket']
     accountId = config['azure']['accountId']
     apiKey = config['azure']['apiKey']

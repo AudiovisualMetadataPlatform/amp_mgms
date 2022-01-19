@@ -8,7 +8,6 @@ import traceback
 import shutil
 import argparse
 
-from amp.logger import MgmLogger
 import amp.utils
 
 from amp.task.jira import TaskJira
@@ -40,20 +39,16 @@ def main():
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 	parser.add_argument("task_type", help="type of HMGM task: (Transcript, NER, Segmentation, OCR), there is one HMGM wrapper per type")
-	parser.add_argument("root_dir", help="path for Galaxy root directory; HMGM property files, logs and tmp files are relative to the root_dir")
 	parser.add_argument("input_json", help="input file for HMGM task in json format")
 	parser.add_argument("output_json", help="output file for HMGM task in json format")
 	parser.add_argument("task_json", help="json file storing information about the HMGM task, such as ticket # etc")
 	parser.add_argument("context_json", help="context info as json string needed for creating HMGM tasks")
 	args = parser.parse_args()
 	logging.info(f"Starting with args {args}")
-	(task_type, root_dir, input_json, output_json, task_json, context_json) = (args.task_type, args.root_dir, args.input_json, args.output_json, args.task_json, args.context_json)
+	(task_type, input_json, output_json, task_json, context_json) = (args.task_type, args.input_json, args.output_json, args.task_json, args.context_json)
 
 
 	# using output instead of input filename as the latter is unique while the former could be used by multiple jobs 
-	#logger = MgmLogger(root_dir, "hmgm_" + task_type, output_json)
-	#sys.stdout = logger
-	#sys.stderr = logger
 
 	try:
 		# clean up previous error file as needed in case this is a rerun of a failed job
@@ -65,7 +60,7 @@ def main():
 		
 		logging.debug("Handling HMGM task: uncorrected JSON: " + input_json + ", corrected JSON: " + output_json + ", task JSON: " + task_json)				
         # Load basic HMGM configuration based from the property file under the given root directory
-		config = amp.utils.get_config(root_dir)
+		config = amp.utils.get_config()
 		context = json.loads(context_json)
 		context = desanitize_context(context)
 		
