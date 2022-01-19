@@ -9,7 +9,7 @@ import cv2
 import pickle
 # from tqdm.notebook import tqdm
 from zipfile import ZipFile
-
+import logging
 import amp.utils
 
 FR_TRAINED_MODEL_SUFFIX = ".frt"
@@ -48,7 +48,7 @@ def train_faces(training_photos, root_dir):
 #             continue
 
         # initialize total number of usable photos for the current person
-        count = 0;
+        count = 0
         
         # train each photo in the sub-directory
         for photo in photos:
@@ -64,13 +64,13 @@ def train_faces(training_photos, root_dir):
                 known_faces.append(face_encoding)
                 model.append({"name": name, "encoding": face_encoding})
                 count = count + 1
-                print("Added face encoding from " + photo + " for " + name + " to training model")
+                logging.debug("Added face encoding from " + photo + " for " + name + " to training model")
             # otherwise skip this photo
             else:
-                print("Warning: Skipped " + photo + " for " + name + " as it contains no or more than one faces")
+                logging.warning("Warning: Skipped " + photo + " for " + name + " as it contains no or more than one faces")
         
         if count == 0: 
-            print("Warning: Did not find any usable training photo for " + name)
+            logging.warning("Warning: Did not find any usable training photo for " + name)
     
     # done with training, clean up unzipped photos, so no conflict when unzipping if the same photos are trained again 
     cleanup_training_photos(photos_dir)
@@ -79,11 +79,11 @@ def train_faces(training_photos, root_dir):
     # return the training results as known_names and known_faces
     if (len(model) > 0):       
         save_trained_model(model, training_photos)
-        print(f"Successfully trained a total of {len(known_faces)} faces for a total of {len(person_dir_names)} people")
+        logging.debug(f"Successfully trained a total of {len(known_faces)} faces for a total of {len(person_dir_names)} people")
         return known_names, known_faces
     # otherwise report error and exit in error as FR can't continue without any trained results
     else:
-        print("Error: Failed training as there is no valid face detected in the given training photos " + training_photos)
+        logging.error("Error: Failed training as there is no valid face detected in the given training photos " + training_photos)
         exit(-1)
 
 
@@ -96,11 +96,11 @@ def retrieve_trained_results(training_photos):
             trained_model = pickle.load(open(model_file, "rb"))
             known_names = [face["name"] for face in trained_model]
             known_faces = [face["encoding"] for face in trained_model]
-            print(f"Successfully retrieved a total of {len(known_faces)} previously trained faces from {model_file} for training photos {training_photos}")
+            logging.info(f"Successfully retrieved a total of {len(known_faces)} previously trained faces from {model_file} for training photos {training_photos}")
         else:
-            print("Warning: Could not find previously trained model " + model_file + " for training photos " + training_photos + ", will retrain")
+            logging.warn("Warning: Could not find previously trained model " + model_file + " for training photos " + training_photos + ", will retrain")
     except Exception as e:
-        print("Failed to read previously trained model from " + model_file + " for training photos " + training_photos + ", will retrain", e)
+        logging.error("Failed to read previously trained model from " + model_file + " for training photos " + training_photos + ", will retrain", e)
         traceback.print_exc()
     return known_names, known_faces
     
@@ -129,10 +129,10 @@ def unzip_training_photos(training_photos, facial_dir):
     try:
         with ZipFile(training_photos, 'r') as zipobj:
             zipobj.extractall(dirpath)
-        print("Successfully unziped training photos " + training_photos + " into directory " + dirpath)
+        logging.info("Successfully unziped training photos " + training_photos + " into directory " + dirpath)
         return dirpath
     except Exception as e:
-        print("Failed to unzip training photos " + training_photos + "into directory " + dirpath, e)
+        logging.error("Failed to unzip training photos " + training_photos + "into directory " + dirpath, e)
         traceback.print_exc()
         exit(-1)
         # if training photos can't be unzipped, FR process can't continue, exit in error 
@@ -143,9 +143,9 @@ def save_trained_model(model, training_photos):
     try:
         model_file = get_model_file(training_photos)
         pickle.dump(model, open(model_file, "wb"))        
-        print("Successfully saved model trained from training photos " + training_photos + " to file " + model_file)
+        logging.debug("Successfully saved model trained from training photos " + training_photos + " to file " + model_file)
     except Exception as e:
-        print("Failed to save model trained from training photos " + training_photos + " to file " + model_file, e)
+        logging.error("Failed to save model trained from training photos " + training_photos + " to file " + model_file, e)
         traceback.print_exc()
         # do not exit since FR process can still continue even if trained model fails to be saved
             
@@ -154,9 +154,9 @@ def save_trained_model(model, training_photos):
 def cleanup_training_photos(photos_dir):    
     try:
         shutil.rmtree(photos_dir)
-        print("Successfully cleaned up training photos directory " + photos_dir)
+        logging.debug("Successfully cleaned up training photos directory " + photos_dir)
     except Exception as e:
-        print("Failed to clean up training photos directory " + photos_dir, e)  
+        logging.error("Failed to clean up training photos directory " + photos_dir, e)  
         traceback.print_exc()
         # do not exit since FR process can still continue even if unzipped training photos fails to be cleaned up   
         

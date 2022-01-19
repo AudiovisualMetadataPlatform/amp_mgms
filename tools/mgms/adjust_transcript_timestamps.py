@@ -10,16 +10,21 @@ from amp.adjustment import Adjustment
 
 from amp.logger import MgmLogger
 import amp.utils
+import logging
+import amp.logger
+
 
 
 def main():
 
     #(stt_json, adj_json, output_json) = sys.argv[1:4]
     parser = argparse.ArgumentParser()
+    parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("stt_json")
     parser.add_argument("adj_json")
     parser.add_argument("output_json")
     args = parser.parse_args()
+    logging.info(f"Starting with args {args}")
     (stt_json, adj_json, output_json) = (amp.stt_json, amp.adj_json, amp.output_json)
 
 
@@ -40,7 +45,7 @@ def main():
 
     # For each segment that was kept, keep track of the gaps to know how much to adjust
     for kept_segment in adj_data:
-        print(kept_segment + ":" + str(adj_data[kept_segment]))
+        logging.debug(kept_segment + ":" + str(adj_data[kept_segment]))
         start = float(kept_segment)
         end = adj_data[kept_segment]
         # If the start of this segment is after the last end, we have a gap
@@ -58,17 +63,18 @@ def main():
         
     # Write the resulting json
     amp.utils.write_json_file(stt, output_json)
+    logging.info("Finished.")
 
 def adjust_word(word, offset_adj):
-    print(f"WORD: {word.start} : {word.end}")
+    logging.debug(f"WORD: {word.start} : {word.end}")
     # Get the adjustment for which the word falls within it's start and end
     for adj in offset_adj:
         if word.start is not None and word.start >= adj.start and word.start <= adj.end:
-            print("STT Offset:" + str(word.start) + " Adjusted Offset:" + str(word.start + adj.adjustment))
+            logging.debug("STT Offset:" + str(word.start) + " Adjusted Offset:" + str(word.start + adj.adjustment))
             word.start = word.start + adj.adjustment
             word.end = word.end + adj.adjustment
             return
-    print("No adjustment found")
+    logging.debug("No adjustment found")
     
     
 if __name__ == "__main__":

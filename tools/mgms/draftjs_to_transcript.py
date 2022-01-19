@@ -11,6 +11,8 @@ import argparse
 
 from amp.logger import MgmLogger
 import amp.utils
+import logging
+import amp.logger
 
 from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult, SpeechToTextScore, SpeechToTextWord
 # import aws_transcribe_to_schema
@@ -19,23 +21,25 @@ from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToT
 def main():
     #(root_dir, from_draftjs, original_transcript, to_transcript) = sys.argv[1:5]
     parser = argparse.ArgumentParser()
+    parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("root_dir")
     parser.add_argument("from_draftjs")
     parser.add_argument("original_transcript")
     parser.add_argument("to_transcript")
     args = parser.parse_args()
+    logging.info(f"Starting with args {args}")
     (root_dir, from_draftjs, original_transcript, to_transcript) = (args.root_dir, args.from_draftjs, args.original_transcript, args.to_transcript)
 
     # using output instead of input filename as the latter is unique while the former could be used by multiple jobs     
-    logger = MgmLogger(root_dir, "hmgm_transcript", to_transcript)
-    sys.stdout = logger
-    sys.stderr = logger
+    #logger = MgmLogger(root_dir, "hmgm_transcript", to_transcript)
+    #sys.stdout = logger
+    #sys.stderr = logger
 
     try:
         # if from_draftjs is in error raise exception to notify HMGM job runner to fail the job
         # otherwise if from_draftjs doesn't exist yet, exit 1 to keep waiting
         amp.utils.exit_if_file_not_ready(from_draftjs)
-        print("Converting DraftJs " + from_draftjs + " to Transcript " + to_transcript)
+        logging.debug("Converting DraftJs " + from_draftjs + " to Transcript " + to_transcript)
 
         with open(from_draftjs) as json_file:
             d = json.load(json_file)
@@ -106,8 +110,8 @@ def main():
         i = j = 0
         word_count = len(words)
         original_item_count = len(original_items)
-        print("original item count: " + str(original_item_count))
-        print("word count: " + str(word_count))
+        logging.debug("original item count: " + str(original_item_count))
+        logging.debug("word count: " + str(word_count))
         for ele in res:
             if j >= word_count or i >= original_item_count:
                 break
@@ -123,7 +127,7 @@ def main():
                     words[j].score.scoreValue = 1.0 # default score to 1.0 if not existing originally    
                 i += 1
                 j += 1
-            print("i: " + str(i) + " j:" + str(j))
+            logging.debug("i: " + str(i) + " j:" + str(j))
             
         # Create the media object
         media = SpeechToTextMedia(duration, original_transcript)
@@ -133,11 +137,12 @@ def main():
     
         # Write the output
         amp.utils.write_json_file(stt, to_transcript)
-        print("Successfully converted from DraftJs " + from_draftjs + " to Transcript " + to_transcript)
+        logging.debug("Successfully converted from DraftJs " + from_draftjs + " to Transcript " + to_transcript)
+        logging.info("Finished.")
         # as the last command in HMGM, implicitly exit 0 here to let the whole job complete in success
     except Exception as e:
         # as the last command in HMGM, exit -1 to let the whole job fail
-        print ("Failed to convert from DraftJs " + from_draftjs + " to Transcript " + to_transcript, e)
+        logging.error("Failed to convert from DraftJs " + from_draftjs + " to Transcript " + to_transcript, e)
         traceback.print_exc()
         sys.stdout.flush()
         exit(-1)            

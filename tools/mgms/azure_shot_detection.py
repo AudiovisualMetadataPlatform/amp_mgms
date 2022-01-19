@@ -9,19 +9,20 @@ import argparse
 from amp.schema.shot_detection import ShotDetection, ShotDetectionMedia, ShotDetectionShot
 
 import amp.utils
-
+import logging
+import amp.logger
 
 def main():
 	#(input_video, azure_video_index, amp_shots) = sys.argv[1:4]
 	parser = argparse.ArgumentParser()
+	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 	parser.add_argument("input_video")
 	parser.add_argument("azure_video_index")
 	parser.add_argument("amp_shots")
 	args = parser.parse_args()
+	logging.info(f"Starting with args {args}")
 	(input_video, azure_video_index, amp_shots) = (args.input_video, args.azure_video_index, args.amp_shots)
 
-	# You must initialize logging, otherwise you'll not see debug output.
-	logging.basicConfig()
 
 	# Get Azure video index json
 	with open(azure_video_index, 'r') as azure_index_file:
@@ -32,6 +33,7 @@ def main():
 	
 	# write AMP Video OCR JSON file
 	amp.utils.write_json_file(amp_shots_obj, amp_shots)
+	logging.info("Finished.")
 
 
 # Parse the results

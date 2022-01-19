@@ -7,6 +7,8 @@ import argparse
 
 from amp.logger import MgmLogger
 import amp.utils
+import logging
+import amp.logger
 
 segments = list()
 
@@ -14,22 +16,24 @@ segments = list()
 def main():
 	#(root_dir, from_transcript, diarization_json, to_draftjs) = sys.argv[1:5]
 	parser = argparse.ArgumentParser()
+	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 	parser.add_argument("root_dir")
 	parser.add_argument("from_transcript")
 	parser.add_argument("diarization_json")
 	parser.add_argument("to_draftjs")
 	args = parser.parse_args()
+	logging.info(f"Starting with args {args}")
 	(root_dir, from_transcript, diarization_json, to_draftjs) = (args.root_dir, args.from_transcript, args.diarization_json, args.to_draftjs)
 
 	# using output instead of input filename as the latter is unique while the former could be used by multiple jobs 
-	logger = MgmLogger(root_dir, "hmgm_transcript", to_draftjs)
-	sys.stdout = logger
-	sys.stderr = logger
+	#logger = MgmLogger(root_dir, "hmgm_transcript", to_draftjs)
+	#sys.stdout = logger
+	#sys.stderr = logger
 
 	try:
 		# exit 1 here if Transcript->DraftJs conversion already done
 		amp.utils.exit_if_file_generated(to_draftjs)
-		print("Converting from Transcript " + from_transcript + " to DraftJs: " + to_draftjs)	   	
+		logging.info("Converting from Transcript " + from_transcript + " to DraftJs: " + to_draftjs)	   	
 		
 		if diarization_json is not None and diarization_json!='None':
 			fill_speakers(diarization_json)
@@ -167,16 +171,17 @@ def main():
 			# Write the json
 			write_to_draftjs(out_json, to_draftjs)
 				
-		print("Successfully converted from Transcript " + from_transcript + " to DraftJs: " + to_draftjs)
+		logging.info("Successfully converted from Transcript " + from_transcript + " to DraftJs: " + to_draftjs)
 		# implicitly exit 0 as the current command completes
 	except Exception as e:
 		# empty out to_draftjs to tell the following HMGM task command to fail
 		amp.utils.empty_file(to_draftjs)
-		print ("Error: Failed to convert from Transcript " + from_transcript + " to DraftJs: " + to_draftjs, e)
+		logging.error("Error: Failed to convert from Transcript " + from_transcript + " to DraftJs: " + to_draftjs, e)
 		traceback.print_exc()
-		sys.stdout.flush()
+		sys.stdout.flush()		
 		exit(-1)
-
+	logging.info("Finished.")
+	
 def createBlock(depth, data, entityRanges, transcript):
 	return {
 				'depth': depth,

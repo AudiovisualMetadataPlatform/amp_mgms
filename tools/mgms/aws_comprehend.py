@@ -13,11 +13,13 @@ import argparse
 
 import amp.utils
 import amp.ner_helper
-
+import logging
+import amp.logger
 
 def main():
     #(amp_transcript, aws_entities, amp_entities, ignore_types, bucket, dataAccessRoleArn) = sys.argv[1:7]
     parser = argparse.ArgumentParser()
+    parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("amp_transcript")
     parser.add_argument("aws_entities")
     parser.add_argument("amp_entities")
@@ -25,6 +27,7 @@ def main():
     parser.add_argument("bucket")
     parser.add_argument("dataAccessRoleArn")
     args = parser.parse_args()
+    logging.info(f"Starting with args {args}")
     (amp_transcript, aws_entities, amp_entities, ignore_types, bucket, dataAccessRoleArn) = (args.amp_transcript, args.aws_entities, args.amp_entities, args.ignore_types, args.bucket, args.dataAccessRoleArn)
 
     # preprocess NER inputs and initialize AMP entities output
@@ -57,7 +60,7 @@ def main():
 
     # write the output AMP entities to JSON file
     amp.utils.write_json_file(amp_entities_obj, amp_entities)
-    
+    logging.info("Finished.")
     
 # Upload the transcript file created from amp_transcript_obj in tmpdir to the S3 bucket for the given job. 
 def upload_input_to_s3(amp_transcript_obj, tmpdir, bucket, jobname):
@@ -67,18 +70,18 @@ def upload_input_to_s3(amp_transcript_obj, tmpdir, bucket, jobname):
         input = tmpdir + "/" + jobname
         with open(input, 'w') as infile:
             infile.write(amp_transcript_obj.results.transcript)
-            print(f"Successfully created input file {input} containing transcript for AWS Comprehend job.")
+            logging.debug(f"Successfully created input file {input} containing transcript for AWS Comprehend job.")
     except Exception as e:
-        print(f"Error: Exception while creating input file {input} containing transcript for AWS Comprehend job.")
+        logging.error(f"Error: Exception while creating input file {input} containing transcript for AWS Comprehend job.")
         raise
     
     # upload the tmp file to s3
     try:
         s3_client = boto3.client('s3')
         response = s3_client.upload_file(input, bucket, jobname)
-        print(f"Successfully uploaded input file {input} to S3 bucket {bucket} for AWS Comprehend job.")
+        logging.info(f"Successfully uploaded input file {input} to S3 bucket {bucket} for AWS Comprehend job.")
     except Exception as e:
-        print(f"Error: Exception while uploading input file {input} to S3 bucket {bucket} for AWS Comprehend job.")
+        logging.error(f"Error: Exception while uploading input file {input} to S3 bucket {bucket} for AWS Comprehend job.")
         raise
 
 # Download AWS Comprehend output from the given URL in the given S3 bucket to the tmpdir and extract it to aws_entities.
@@ -90,9 +93,9 @@ def download_output_from_s3(outputuri, s3uri, bucket, tmpdir, aws_entities):
         output = tmpdir + outname
         s3_client = boto3.client('s3')    
         s3_client.download_file(bucket, outkey, output)
-        print(f"Successfully downloaded AWS Comprehend output {outputuri} to compressed output file {output}.")
+        logging.debug(f"Successfully downloaded AWS Comprehend output {outputuri} to compressed output file {output}.")
     except Exception as e:
-        print(f"Error: Exception while downloading AWS Comprehend output {outputuri} to compressed output file {output}.")
+        logging.error(f"Error: Exception while downloading AWS Comprehend output {outputuri} to compressed output file {output}.")
         raise
     
     # extract the contents of the output.tar.gz file and move the uncompressed file to galaxy output
@@ -105,11 +108,11 @@ def download_output_from_s3(outputuri, s3uri, bucket, tmpdir, aws_entities):
         if len(outputs) > 0:
             source = outputs[0].name
             shutil.move(source, aws_entities) 
-            print(f"Successfully uncompressed {output} to {source} and moved it to {aws_entities}.")
+            logging.debug(f"Successfully uncompressed {output} to {source} and moved it to {aws_entities}.")
         else:
             raise Exception(f"Error: Compressed output file {output} does not contain any member.")
     except Exception as e:
-        print(f"Error: Exception while uncompressing/moving {output} to {aws_entities}.")
+        logging.error(f"Error: Exception while uncompressing/moving {output} to {aws_entities}.")
         raise     
 
 # Run AWS Comprehend job with the given jobname, using the input at the given S3 URL with the given dataAccessRoleArn.
@@ -132,9 +135,9 @@ def run_comprehend_job(jobname, s3uri, dataAccessRoleArn):
             JobName=jobname,
             LanguageCode='en'
         )
-        print(f"Successfully submitted AWS Comprehend job with input {inputs3uri}.")
+        logging.debug(f"Successfully submitted AWS Comprehend job with input {inputs3uri}.")
     except Exception as e:
-        print(f"Error: Exception while submitting AWS Comprehend job with input {inputs3uri}")
+        logging.error(f"Error: Exception while submitting AWS Comprehend job with input {inputs3uri}")
         raise
 
     # wait for AWS Comprehend job to end
@@ -146,16 +149,16 @@ def run_comprehend_job(jobname, s3uri, dataAccessRoleArn):
             jobStatusResponse = comprehend.describe_entities_detection_job(JobId=response['JobId'])
             status = jobStatusResponse['EntitiesDetectionJobProperties']['JobStatus']
             outputuri = jobStatusResponse['EntitiesDetectionJobProperties']['OutputDataConfig']['S3Uri']
-            print(f"Waiting for AWS Comprehend job {jobname} to complete: status = {status}.")              
+            logging.debug(f"Waiting for AWS Comprehend job {jobname} to complete: status = {status}.")              
             time.sleep(60)        
     except Exception as e:
-        print(f"Error: Exception while running AWS Comprehend job {jobname}")
+        logging.error(f"Error: Exception while running AWS Comprehend job {jobname}")
         raise
     
     # check status of job upon ending
-    print(jobStatusResponse)     
+    logging.debug(jobStatusResponse)     
     if status == 'COMPLETED':
-        print(f"AWS Comprehend job {jobname} completed in success with output {outputuri}.")  
+        logging.debug(f"AWS Comprehend job {jobname} completed in success with output {outputuri}.")  
         return outputuri
     else:
         raise Exception(f"Error: AWS Comprehend job {jobname} ended with status {status}.")

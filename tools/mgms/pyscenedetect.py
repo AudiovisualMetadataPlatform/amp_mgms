@@ -18,34 +18,38 @@ from scenedetect.detectors.content_detector import ContentDetector
 
 from amp.logger import MgmLogger
 import amp.utils
-
+import logging
+import amp.logger
 
 def main():
     #(input_file, threshold, output_json, output_csv) = sys.argv[1:5]
     parser = argparse.ArgumentParser()
+    parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("input_file")
     parser.add_argument("threshold")
     parser.add_argument("output_json")
     parser.add_argument("output_csv")
     args = parser.parse_args()
+    logging.info(f"Starting with args {args}")
     (input_file, threshold, output_json, output_csv) = (args.input_file, args.threshold, args.output_json, args.output_csv)
 
     # Get a list of scenes as tuples (start, end) 
     if threshold is None or isinstance(threshold, int) == False:
         threshold = 30
-        print("Setting threshold to default because it wasn't a valid integer")
+        logging.debug("Setting threshold to default because it wasn't a valid integer")
 
     shots = find_shots(input_file, output_csv, threshold)
 
     # Print for debugging purposes
     for shot in shots:
-        print("start: " + str(shot[0]) + "  end: " + str(shot[1]))
+        logging.debug("start: " + str(shot[0]) + "  end: " + str(shot[1]))
     
     # Convert the result to json,
     shots_dict = convert_to_json(shots, input_file)
     
     # save the output json file    
     amp.utils.write_json_file(shots_dict, output_json)
+    logging.info("Finished.")
 
 # Get the duration based on the last output
 def get_duration(shots):
@@ -80,9 +84,9 @@ def find_shots(video_path, stats_file, threshold):
         scene_list = scene_manager.get_scene_list(base_timecode)
 
         # Each scene is a tuple of (start, end) FrameTimecodes.
-        print('List of shots obtained:')
+        logging.debug('List of shots obtained:')
         for i, scene in enumerate(scene_list):
-            print(
+            logging.debug(
                 'Scene %2d: Start %s / Frame %d, End %s / Frame %d' % (
                 i+1,
                 scene[0].get_timecode(), scene[0].get_frames(),
@@ -93,7 +97,7 @@ def find_shots(video_path, stats_file, threshold):
             with open(stats_file, 'w') as stats_file:
                 stats_manager.save_to_csv(stats_file, base_timecode)
     except Exception as err:
-        print("Failed to find shots for: video: " + video_path + ", stats: " + stats_file + ", threshold: " + threshold, err)
+        logging.debug("Failed to find shots for: video: " + video_path + ", stats: " + stats_file + ", threshold: " + threshold, err)
         traceback.print_exc()        
     finally:
         video_manager.release()

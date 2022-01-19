@@ -4,6 +4,8 @@ import sys
 import os
 import time
 import argparse
+import logging
+import amp.logger
 
 MIN_WORD_COUNT = 6	# minimum number of words per line
 MAX_WORD_COUNT = 10	# maximum number of words per line
@@ -13,10 +15,12 @@ MIN_SEGMENT_GAP = 5.00	# minimum gap in seconds between segment for speaker swit
 def main():
 	#(seg_file, stt_file, vtt_file) =  sys.argv[1:4] 
 	parser = argparse.ArgumentParser()
+	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 	parser.add_argument("seg_file")
 	parser.add_argument("stt_file")
 	parser.add_argument("vtt_file")
 	args = parser.parse_args()
+	logging.info(f"Starting with args {args}")
 	(seg_file, stt_file, vtt_file) = (args.seg_file, args.stt_file, args.vtt_file)
 
 	# read words and segments from input files
@@ -96,6 +100,8 @@ def main():
 		out_file.write(writeLine(getSegmentSpeaker(segments, curseg), line))
 	out_file.close()
 		
+	logging.info("Finished.")
+
 # Find the index of the next segment among the given segments to which the given word belongs to, starting at the given (current) 
 # segment index (always >= 0). A word belongs to a segment if its timestamp is within the segment's time range,  
 def findWordSegment(word, segments, curseg):

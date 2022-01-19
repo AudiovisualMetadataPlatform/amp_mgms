@@ -3,6 +3,7 @@ import sys
 import os
 import json
 import stat
+import logging
 
 ERR_SUFFIX = ".err"
 
@@ -17,7 +18,7 @@ def exit_if_file_generated(file):
     # if the file has already been generated, for ex, by the HMGM converter, exit calling command with error code 1 
     # to avoid redundant process, and inform HMGM job runner to reschedule the job till all commands complete.     
     if os.path.exists(file) and os.stat(file).st_size > 0:
-        print("File " + file + " has already been generated, exit 1")
+        logging.error("File " + file + " has already been generated, exit 1")
         exit(1)
  
  
@@ -42,7 +43,7 @@ def exit_if_file_not_ready(file):
     # otherwise, if the given file hasn't been generated, for ex, by the HMGM editor, exit with error code 1, 
     # so the HMGM job runner can requeue the job, and process will continue to wait for HMGM task to be completed
     if not os.path.exists(file) or os.stat(file).st_size == 0:
-        print("File " + file + " has not been generated, exit 1")
+        logging.error("File " + file + " has not been generated, exit 1")
         exit(1)
          
 
@@ -53,7 +54,7 @@ def empty_file(file):
     if os.path.exists(file) and os.stat(file).st_size > 0:
         with open(file, 'w') as fp: 
             pass    
-        print("File " + file + " has been emptied out")
+        logging.debug("File " + file + " has been emptied out")
     
  
 # Create an empty error file for the given (output) file to indicate it's in error.
@@ -63,7 +64,7 @@ def create_err_file(file):
     err_file = file + ERR_SUFFIX
     with open(err_file, 'w') as fp: 
         pass
-    print("Error file for " + file + " has been created")
+    logging.debug("Error file for " + file + " has been created")
     
  
 # Clean up error file if existing for the given (output) file. 
@@ -72,7 +73,7 @@ def cleanup_err_file(file):
     err_file = file + ERR_SUFFIX
     if os.path.exists(err_file):
         os.remove(err_file)
-        print("Error file for " + file + " has been cleaned up")
+        logging.debug("Error file for " + file + " has been cleaned up")
         
      
 # Read/parse the given JSON input_file and return the validated JSON dictionary.

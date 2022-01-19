@@ -1,6 +1,5 @@
 #!/usr/bin/env mgm_python.sif
 
-import _preamble
 import argparse
 import json
 import os
@@ -13,6 +12,8 @@ from amp.schema.facial_recognition import FaceRecognition, FaceRecognitionMedia,
 
 from amp.logger import MgmLogger
 import amp.utils
+import logging
+import amp.logger
 
 
 FR_SCORE_TYPE = "confidence"
@@ -22,6 +23,7 @@ FR_DEFAULT_TOLERANCE = 0.6
 # Usage: dlib_face_recognition.py root_dir input_video training_photos reuse_trained tolerance amp_faces 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("root_dir", help="Root Directory")
     parser.add_argument("input_video", help="Input Video")
     parser.add_argument("training_photos", help="Training photos")
@@ -29,7 +31,8 @@ def main():
     parser.add_argument("tolerance", help="Recognition tolerance")
     parser.add_argument("amp_faces", help="Faces output file")
     args = parser.parse_args()
-    (root_dir, input_video, training_photos, reuse_trained, tolerance, amp_faces) = (amp.root_dir, amp.input_video, amp.training_photos, amp.reuse_trained, amp.tolerance, amp.amp_faces)
+    logging.info(f"Starting with args {args}")
+    (root_dir, input_video, training_photos, reuse_trained, tolerance, amp_faces) = (args.root_dir, args.input_video, args.training_photos, args.reuse_trained, args.tolerance, args.amp_faces)
     # if tolerance is not specified in command, use the default value
     if tolerance == '':
         tolerance = FR_DEFAULT_TOLERANCE
@@ -38,9 +41,9 @@ def main():
 
 
     # using output instead of input filename as the latter is unique while the former could be used by multiple jobs 
-    logger = MgmLogger(root_dir, "face_recognition", amp_faces)
-    sys.stdout = logger
-    sys.stderr = logger
+    #logger = MgmLogger(root_dir, "face_recognition", amp_faces)
+    #sys.stdout = logger
+    #sys.stderr = logger
 
     
     # initialize training results
@@ -60,12 +63,12 @@ def main():
     
     # save the recognized_faces in the standard AMP Face JSON file
     amp.utils.write_json_file(fr_result, amp_faces)
-    
+    logging.info("Finished.")
     
 # Recognize faces in the input_video at the tolerance level, given the known_names and known_faces from trained FR model;
 # return the result as an AMP Face Recognition schema object. 
 def recognize_faces(input_video, known_names, known_faces, tolerance):
-    print (f"Starting face recognition on video {input_video} with tolerance {tolerance}")
+    logging.debug(f"Starting face recognition on video {input_video} with tolerance {tolerance}")
     
     # load the input video file with cv2, note: all cv2 property values are float instead of int 
     cv2_video = cv2.VideoCapture(input_video)
@@ -84,7 +87,7 @@ def recognize_faces(input_video, known_names, known_faces, tolerance):
     fr_result.media.resolution.height = cv2_video.get(cv2.CAP_PROP_FRAME_HEIGHT)
     fr_result.frames = []
     
-    print (f"Successfully loaded video {input_video}, total number of frames: {frame_count}")
+    logging.debug(f"Successfully loaded video {input_video}, total number of frames: {frame_count}")
 
     # process frames in the video
     for frame_number in range(0, int(frame_count)):
@@ -116,7 +119,7 @@ def recognize_faces(input_video, known_names, known_faces, tolerance):
         # initialize index of the current face_location / face_encoding among all faces found in the frame 
         location_index = 0
 
-        print (f"Found {len(face_encodings)} faces in frame # {frame_number}, matching them with known faces")
+        logging.debug(f"Found {len(face_encodings)} faces in frame # {frame_number}, matching them with known faces")
 
         # for each face in the frame, see if it's a match for any known faces, if so use the first match
         for face_encoding in face_encodings:  
@@ -137,7 +140,7 @@ def recognize_faces(input_video, known_names, known_faces, tolerance):
                 # add face object to the list
                 objects.append(object)
             
-                print (f"Recognized face of {object.name} in frame # {frame_number}")
+                logging.debug(f"Recognized face of {object.name} in frame # {frame_number}")
 
             # move on to the next face in the frame
             location_index += 1          
@@ -153,7 +156,7 @@ def recognize_faces(input_video, known_names, known_faces, tolerance):
     # done with all frames, release resource and return the result
     cv2_video.release()
     cv2.destroyAllWindows()
-    print (f"Completed face recognition on video {input_video}, total number of frames with recognized faces: {len(fr_result.frames)}")
+    logging.debug(f"Completed face recognition on video {input_video}, total number of frames with recognized faces: {len(fr_result.frames)}")
     return fr_result                        
     
 

@@ -1,7 +1,7 @@
 import urllib.parse
 import uuid
 import hashlib
-
+import logging
 
 class TaskManager:
 	"""Abstract base class defining the API for all HMGM task management implementations, which are based on task management platforms."""
@@ -42,7 +42,7 @@ class TaskManager:
 		m.update(editor_input.encode('utf-8'))
 		m.update(key.encode('utf-8'))
 		auth_string = m.hexdigest()
-		print("Created auth string " + auth_string + " with key " + user_token)
+		logging.debug("Created auth string " + auth_string + " with key " + user_token)
 		return auth_string, user_token
 
 	 # Return description of an HMGM task based on the given task_type, context, input file etc.

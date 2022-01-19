@@ -16,6 +16,8 @@ from amp.task.openproject import TaskOpenproject
 from amp.task.redmine import TaskRedmine
 from amp.task.manager import TaskManager
 
+import logging
+import amp.logger
 
 # It's assumed that all HMGMs generate the output file in the same directory as the input file with ".completed" suffix added to the original filename
 HMGM_OUTPUT_SUFFIX = ".complete"
@@ -36,6 +38,7 @@ def main():
 #     context_json = '{ "submittedBy": "yingfeng", "unitId": "1", "unitName": "Test%27s Unit", "collectionId": "2", "collectionName": "Test%22s Collection", "taskManager": "Jira", "itemId": "3", "itemName": "Test%27s Item", "primaryfileId": "4", "primaryfileName": "Test%22s primaryfile", "primaryfileUrl": "http://techslides.com/demos/sample-videos/small.mp4", "primaryfileMediaInfo": "/tmp/hmgm/mediaInfo.json", "workflowId": "123456789", "workflowName": "Test%27%22 Workflow" }'
 
 	parser = argparse.ArgumentParser()
+	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 	parser.add_argument("task_type", help="type of HMGM task: (Transcript, NER, Segmentation, OCR), there is one HMGM wrapper per type")
 	parser.add_argument("root_dir", help="path for Galaxy root directory; HMGM property files, logs and tmp files are relative to the root_dir")
 	parser.add_argument("input_json", help="input file for HMGM task in json format")
@@ -43,13 +46,14 @@ def main():
 	parser.add_argument("task_json", help="json file storing information about the HMGM task, such as ticket # etc")
 	parser.add_argument("context_json", help="context info as json string needed for creating HMGM tasks")
 	args = parser.parse_args()
+	logging.info(f"Starting with args {args}")
 	(task_type, root_dir, input_json, output_json, task_json, context_json) = (args.task_type, args.root_dir, args.input_json, args.output_json, args.task_json, args.context_json)
 
 
 	# using output instead of input filename as the latter is unique while the former could be used by multiple jobs 
-	logger = MgmLogger(root_dir, "hmgm_" + task_type, output_json)
-	sys.stdout = logger
-	sys.stderr = logger
+	#logger = MgmLogger(root_dir, "hmgm_" + task_type, output_json)
+	#sys.stdout = logger
+	#sys.stderr = logger
 
 	try:
 		# clean up previous error file as needed in case this is a rerun of a failed job
@@ -59,7 +63,7 @@ def main():
 		# (this means the conversion command failed before hmgm task command)
 		amp.utils.exception_if_file_not_exist(input_json)
 		
-		print ("Handling HMGM task: uncorrected JSON: " + input_json + ", corrected JSON: " + output_json + ", task JSON: " + task_json)				
+		logging.debug("Handling HMGM task: uncorrected JSON: " + input_json + ", corrected JSON: " + output_json + ", task JSON: " + task_json)				
         # Load basic HMGM configuration based from the property file under the given root directory
 		config = amp.utils.get_config(root_dir)
 		context = json.loads(context_json)
@@ -67,13 +71,13 @@ def main():
 		
 		# if input_json has empty data (not empty file), no need to go through HMGM task, just copy it to the output file, and done
 		if empty_input(input_json, task_type):
-			print ("Input file " + input_json + " for HMGM " + task_type + " editor contains empty data, skipping HMGM task and copy the input to the output")
+			logging.debug("Input file " + input_json + " for HMGM " + task_type + " editor contains empty data, skipping HMGM task and copy the input to the output")
 			shutil.copy(input_json, output_json)
             # implicitly exit 0 as the current command completes
 		# otherwise, if HMGM task hasn't been created, create one, exit 1 to get re-queued	
 		elif not task_created(task_json):
 			task = create_task(config, task_type, context, input_json, output_json, task_json)
-			print ("Successfully created HMGM task " + task.key + ", exit 1")
+			logging.error("Successfully created HMGM task " + task.key + ", exit 1")
 			sys.stdout.flush()
 			exit(1) 
 		# otherwise, check if HMGM task is completed
@@ -82,18 +86,19 @@ def main():
 			# if HMGM task is completed, close the task and move editor output to output file, and done
 			if (editor_output):
 				task = close_task(config, context, editor_output, output_json, task_json)
-				print ("Successfully closed HMGM task " + task.key)
+				logging.info("Successfully closed HMGM task " + task.key)
+				logging.info("Finished.")
 				sys.stdout.flush()
 				# implicitly exit 0 as the current command completes
 			# otherwise exit 1 to get re-queued
 			else:
-				print ("Waiting for HMGM task to complete ... exit 1")
+				logging.error("Waiting for HMGM task to complete ... exit 1")
 				sys.stdout.flush()
 				exit(1)        
 	# upon exception, create error file to notify the following conversion command to fail, and exit -1 (error) to avoid re-quene
 	except Exception as e:
 		amp.utils.create_err_file(output_json)
-		print ("Failed to handle HMGM task: uncorrected JSON: " + input_json + ", corrected JSON: " + output_json, e)
+		logging.error("Failed to handle HMGM task: uncorrected JSON: " + input_json + ", corrected JSON: " + output_json, e)
 		traceback.print_exc()
 		sys.stdout.flush()
 		exit(-1)

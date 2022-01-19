@@ -33,6 +33,19 @@ def main():
     else:
         destdir = Path(args.destdir).resolve()
     
+    # Singularity builds need a lot of disk space. If 
+    # SINGULARITY_TMPDIR isn't set, we'll use the temp
+    # directory next to this script.  Same for the
+    # singularity cache.
+    if 'SINGULARITY_TMPDIR' not in os.environ:
+        os.environ['SINGULARITY_TMPDIR'] = sys.path[0] + "/temp"
+        Path(os.environ['SINGULARITY_TMPDIR']).mkdir(exist_ok=True)
+        logging.info(f"Setting SINGULARITY_TMPDIR = {os.environ['SINGULARITY_TMPDIR']}")
+    if 'SINGULARITY_CACHEDIR' not in os.environ:
+        os.environ['SINGULARITY_CACHEDIR'] = sys.path[0] + "/temp/singularity_cache"
+        Path(os.environ['SINGULARITY_CACHEDIR']).mkdir(exist_ok=True, parents=True)
+        logging.info(f"Setting SINGULARITY_CACHEDIR = {os.environ['SINGULARITY_CACHEDIR']}")
+
     for script_name in ('mgm_build.sh', 'mgm_build.py'):        
         for buildscript in here.glob(f"tools/*/{script_name}"):
             logging.info(f"Running build script {buildscript}")

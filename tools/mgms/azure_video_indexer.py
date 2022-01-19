@@ -1,5 +1,4 @@
 #!/usr/bin/env mgm_python.sif
-import _preamble
 import argparse
 import sys
 import traceback
@@ -11,13 +10,15 @@ import uuid
 import boto3
 
 import amp.utils
-
+import logging
+import amp.logger
 
 def main():
     apiUrl = "https://api.videoindexer.ai"
 
     #(root_dir, input_file, include_ocr, location, index_file, ocr_file) = sys.argv[1:7]
     parser = argparse.ArgumentParser()
+    parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("root_dir", help="Root Direcctory")
     parser.add_argument("input_file", help="Input file")
     parser.add_argument("include_ocr", help="Include OCR")
@@ -25,6 +26,7 @@ def main():
     parser.add_argument("index_file", help="Index file")
     parser.add_argument("ocr_file", help="OCR File")
     args = parser.parse_args()
+    logging.info(f"Starting with args {args}")
     (root_dir, input_file, include_ocr, location, index_file, ocr_file) = (args.root_dir, args.input_file, args.include_ocr, args.location, args.index_file, args.ocr_file)
 
 
@@ -39,14 +41,12 @@ def main():
     accountId = config['azure']['accountId']
     apiKey = config['azure']['apiKey']
 
-    # You must initialize logging, otherwise you'll not see debug output.
-    logging.basicConfig()
 
     # Turn on HTTP debugging here
     http_client.HTTPConnection.debuglevel = 1
 
     s3_path = upload_to_s3(input_file, s3_bucket)
-    print("S3 path " + s3_path)
+    logging.debug("S3 path " + s3_path)
     
     # Get an authorization token for subsequent requests
     auth_token = get_auth_token(apiUrl, location, accountId, apiKey)
@@ -88,6 +88,8 @@ def main():
     # TODO otherwise do we need to generate a dummy file so the output is not empty and cause error?
     
     delete_from_s3(s3_path, s3_bucket)
+    logging.info("Finished.")
+
 
 # Retrieve the "artifacts" (ocr json) from the specified url
 def download_artifacts(artifacts_url, output_name):
@@ -134,8 +136,8 @@ def request_auth_token(url, apiKey):
     if r.status_code == 200:
         return r.text.replace("\"", "")
     else:
-        print("Auth failure")
-        print(r)
+        logging.error("Auth failure")
+        logging.error(r)
         exit(1)
 
 # Get general auth token
@@ -167,14 +169,14 @@ def upload_video(apiUrl, location, accountId, auth_token, input_file, video_url)
         r = requests.post(upload_url, params = params)
         
         if r.status_code != 200:
-            print("Upload failure")
-            print(r)
+            logging.error("Upload failure:" + r)            
             exit(1)
         else:
             data = json.loads(r.text)
             if 'id' in data.keys():
                 return data['id']
             else:
+                logging.error("no id in data")
                 exit(1)
 
 def upload_to_s3(input_file, bucket):
@@ -182,9 +184,9 @@ def upload_to_s3(input_file, bucket):
     jobname = str(uuid.uuid1())
     try:
         response = s3_client.upload_file(input_file, bucket, jobname, ExtraArgs={'ACL': 'public-read'})
-        print("Uploaded file " + input_file + " to s3 bucket " + bucket)
+        logging.debug("Uploaded file " + input_file + " to s3 bucket " + bucket)
     except Exception as e:
-        print("Failed to upload file " + input_file + " to s3 bucket " + bucket, e)
+        logging.error("Failed to upload file " + input_file + " to s3 bucket " + bucket, e)
         traceback.print_exc()
         return None
     return jobname
@@ -194,9 +196,9 @@ def delete_from_s3(s3_path, bucket):
     try:
         obj = s3_client.Object(bucket, s3_path)
         obj.delete()
-        print("Deleted file " + s3_path + " from s3 bucket " + bucket)
+        logging.debug("Deleted file " + s3_path + " from s3 bucket " + bucket)
     except Exception as e:
-        print("Failed to delete file " + s3_path + " from s3 bucket " + bucket, e)
+        logging.error("Failed to delete file " + s3_path + " from s3 bucket " + bucket, e)
         traceback.print_exc()
 
 

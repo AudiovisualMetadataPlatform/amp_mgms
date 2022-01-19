@@ -2,7 +2,7 @@ import json
 from jira import JIRA
 
 from amp.task.manager import TaskManager
-
+import logging
  
 class TaskJira (TaskManager):
      """Subclass of TaskManager implementing HMGM task management with Jira platforms."""
@@ -63,10 +63,10 @@ class TaskJira (TaskManager):
              
          # if transition is None, that means issue is already in Done status
          if transition is None:
-             print("Issue  " + issue.id + " is already Done, probably closed manually by someone")
+             logging.warn("Issue  " + issue.id + " is already Done, probably closed manually by someone")
          # otherwise update the jira status to Done via transition
          else:
-             print("Transition issue " + issue.id + " to status " + transition)
+             logging.info("Transition issue " + issue.id + " to status " + transition)
              self.jira.transition_issue(issue, transition)
                   
          return issue

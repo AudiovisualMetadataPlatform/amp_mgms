@@ -58,3 +58,53 @@ class MgmLogger(object):
 
     def flush(self):
         pass    
+
+
+# A better implementation of logging which will standardize the format and whatnot.
+# * logs go to stderr 
+# * if a 'logs' directory exists next to the executable, messages will also be appended to mgms.log
+# * the mgms.log will be rotated automatically
+# * if --debug appears in the argv, then the level will be set to DEBUG, else INFO
+import logging    
+import logging.handlers
+from pathlib import Path
+import fcntl
+
+class TimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
+    "Multi-process-safe locking file handler"
+    def __init__(self, *args, **kwargs):
+        logging.handlers.TimedRotatingFileHandler.__init__(self, *args, **kwargs)
+    
+    def emit(self, record):        
+        x = self.stream # copy the stream in case we rolled
+        fcntl.lockf(x, fcntl.LOCK_EX)
+        super().emit(record)
+        if not x.closed:
+            fcntl.lockf(x, fcntl.LOCK_UN)
+
+
+def setup_logging():
+    # IF --debug appears in the arguments, set the level to DEBUG    
+    logging_level = logging.DEBUG if '--debug' in sys.argv else logging.INFO    
+
+    formatter = logging.Formatter("%(asctime)s [%(levelname)-8s] (%(filename)s:%(lineno)d:%(process)d)  %(message)s")
+
+    logger = logging.getLogger()
+    logger.setLevel(logging_level)
+
+    # set up the console handler
+    console = logging.StreamHandler()
+    console.setLevel(logging_level)
+    console.setFormatter(formatter)
+    logger.addHandler(console)
+
+    # set up the file logger (if the logs directory exists next to the script)
+    log_path = Path(sys.path[0], "logs")
+    if log_path.exists():
+        file = TimedRotatingFileHandler(log_path / "mgms.log", when='midnight', encoding='utf-8')
+        file.setLevel(logging_level)
+        file.setFormatter(formatter)
+        logger.addHandler(file)
+
+
+setup_logging()

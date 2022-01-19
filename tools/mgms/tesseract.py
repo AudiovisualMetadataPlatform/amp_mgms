@@ -1,7 +1,6 @@
 #!/usr/bin/env mgm_python.sif
 
 # Python imports
-import _preamble
 import argparse
 import pytesseract
 import os
@@ -19,11 +18,14 @@ from pytesseract import Output
 from amp.logger import MgmLogger
 import amp.utils
 
+import logging
+import amp.logger
 
 def main():
 	with tempfile.TemporaryDirectory(dir = "/tmp") as tmpdir:
 		#(input_file, output_name) = sys.argv[1:3]
 		parser = argparse.ArgumentParser()
+		parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 		parser.add_argument("input_file", help="Input file")
 		parser.add_argument("output_name", help="Output filename")
 		args = parser.parse_args()
@@ -90,7 +92,7 @@ def main():
 		
 		# save the output json file
 		amp.utils.write_json_file(output, output_name)
-	
+		logging.info("Finished.")
 
 # UTIL FUNCTIONS
 def findVideoMetada(pathToInputVideo):

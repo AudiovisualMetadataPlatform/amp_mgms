@@ -6,7 +6,7 @@ import traceback
 from amp.schema.entity_extraction import EntityExtraction, EntityExtractionMedia
 from amp.schema.speech_to_text import SpeechToText
 import amp.utils
-
+import logging
 
 # Shared helper methods for NER MGMs
 
@@ -15,13 +15,13 @@ import amp.utils
 def initialize_amp_entities(amp_transcript, amp_entities, ignore_types):
     # get a list of entity types to ignore when outputting entity list
     ignore_types_list = extract_ignore_types(ignore_types)
-    print(f"Ignore types: {ignore_types_list}")    
+    logging.debug(f"Ignore types: {ignore_types_list}")    
 
     # parse input AMP Transcript JSON file into amp_entities object
     try:
         amp_transcript_obj = SpeechToText().from_json(amp.utils.read_json_file(amp_transcript))
     except Exception:
-        print(f"Error: Exception while parsing AMP Transcript {amp_transcript}:")
+        logging.error(f"Error: Exception while parsing AMP Transcript {amp_transcript}:")
         raise
         
     # initialize the amp_entities object with media information
@@ -31,7 +31,7 @@ def initialize_amp_entities(amp_transcript, amp_entities, ignore_types):
 
     # If input AMP transcript is empty, don't error, instead, output AMP Entity JSON with empty entity list and complete the whole process
     if mediaLength == 0:
-        print(f"Warning: Input AMP Transcript Json file has empty transcript, will output AMP NER Json with empty entities list.")
+        logging.warn(f"Warning: Input AMP Transcript Json file has empty transcript, will output AMP NER Json with empty entities list.")
         amp.utils.write_json_file(amp_entities_obj, amp_entities)
         exit(0)
 
@@ -105,7 +105,7 @@ def populate_amp_entities(amp_transcript_obj, ner_entities_list, amp_entities_ob
             traceback.print_exc()           
 
     lena = len(amp_entities_obj.entities)
-    print(f"Among all {lene} {mgm} entities, {lena} are successfully populated into AMP Entities, {ignored} are ignored, {lene-lena-ignored} are unmatched.")
+    logging.debug(f"Among all {lene} {mgm} entities, {lena} are successfully populated into AMP Entities, {ignored} are ignored, {lene-lena-ignored} are unmatched.")
     
 
 # Extract a list of cleaned entity types from the given comma separated ignore_types string. 

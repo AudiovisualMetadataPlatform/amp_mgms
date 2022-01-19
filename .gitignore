@@ -1,6 +1,9 @@
 # singularity containers
 *.sif
 
+# ini files
+*.ini
+
 # temporary directory
 temp/
 

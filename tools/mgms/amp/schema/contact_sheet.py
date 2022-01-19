@@ -33,7 +33,7 @@ class ContactSheet:
 
 		times, labels = self.getTimesInterval(self.video_length, frame_seconds)
 		filenames = self.get_thumbs(self.input_file, times, self.temporary_directory.name)
-		print(filenames)
+		logging.debug(filenames)
 		self.create_contact_sheet(filenames, labels)
 
 	def create_quantity(self, frame_quantity):
@@ -43,7 +43,7 @@ class ContactSheet:
 
 		times, labels = self.getTimesQuantity(self.video_length, frame_quantity)
 		filenames = self.get_thumbs(self.input_file, times, self.temporary_directory.name)
-		print(filenames)
+		logging.debug(filenames)
 		self.create_contact_sheet(filenames, labels)
 
 	def create_facial(self, amp_facial_recognition):
@@ -54,7 +54,7 @@ class ContactSheet:
 		times, labels = self.getTimesFacialRecognition(amp_facial_recognition)
 		# Get images
 		filenames = self.get_thumbs(self.input_file, times, self.temporary_directory.name)
-		print(filenames)
+		logging.debug(filenames)
 		self.create_contact_sheet(filenames, labels)
 
 	def create_shots(self, amp_shots):
@@ -65,7 +65,7 @@ class ContactSheet:
 		times, labels = self.getTimesShotDetection(amp_shots)
 		# Get images
 		filenames = self.get_thumbs(self.input_file, times, self.temporary_directory.name)
-		print(filenames)
+		logging.debug(filenames)
 		self.create_contact_sheet(filenames, labels)
 
 	def create_contact_sheet(self, filenames, labels):
@@ -163,9 +163,9 @@ class ContactSheet:
 		labels = []
 		for t in times:
 			labels.append(str(timedelta(seconds=round(t))))
-		print(f"Video length: {videoLength}")
-		print(f"Number of frames: {len(times)}")
-		print(f"Frame interval: {interval}")
+		logging.debug(f"Video length: {videoLength}")
+		logging.debug(f"Number of frames: {len(times)}")
+		logging.debug(f"Frame interval: {interval}")
 		return times, labels
 
 	def getTimesQuantity(self, videoLength, numFrames):
@@ -213,49 +213,49 @@ class ContactSheet:
 	def validate_time(self, frame_seconds, video_length):
 		# frame interval should be not empty and greater than 0
 		if frame_seconds is None or frame_seconds <= 0:
-			print(f"Error: Invalid seconds input for time: {frame_seconds}")
+			logging.error(f"Error: Invalid seconds input for time: {frame_seconds}")
 			return False
 		# give a warning if frame interval is greater than video_length
 		if frame_seconds > video_length:
-			print(f"Warning: the frame interval in seconds {frame_seconds} is greater than the video length {video_length}, so only one frame will be extracted.")
+			logging.warn(f"Warning: the frame interval in seconds {frame_seconds} is greater than the video length {video_length}, so only one frame will be extracted.")
 		return True
 
 	def validate_quantity(self, frame_quantity, video_length):
 		# frame quantity should be not empty and greater than 0
 		if frame_quantity is None or frame_quantity <= 0:
-			print(f"Invalid quantity input for quantity: {frame_quantity}")
+			logging.error(f"Invalid quantity input for quantity: {frame_quantity}")
 			return False
 		# give a warning if frame quantity is greater than video_length
 		if frame_quantity > video_length:
-			print(f"Warning: the frame quantity {frame_quantity} is greater than the video length {video_length}, so only {video_length} frames will be extracted.")
+			logging.warn(f"Warning: the frame quantity {frame_quantity} is greater than the video length {video_length}, so only {video_length} frames will be extracted.")
 		return True
 
 	def validate_shots(self, amp_shots):
 		if amp_shots is None or 'shots' not in amp_shots.keys():
-			print("Invalid shots json for shots")
+			logging.error("Invalid shots json for shots")
 			return False
 		return True
 
 	def validate_facial(self, amp_facial_recognition):
 		if amp_facial_recognition is None or 'frames' not in amp_facial_recognition.keys():
-			print("Invalid frames json for facial recognition")
+			logging.error("Invalid frames json for facial recognition")
 			return False
 		return True
 
 	def get_thumbs(self, video, times, temporary_directory):
 		fnames = []
-		print(times)
+		logging.debug(times)
 		# For every shot...
 		for i,t in enumerate(times):
 			# Set the name for the temp image file, and add that to the list of filenames
 			outname = os.path.join(temporary_directory, str(i) + ".jpg")
 			fnames.append(outname)
-			print(t)
+			logging.debug(t)
 			(
 				ffmpeg
 				.input(video, ss=t)
 				.output(outname, vframes=1)
 				.run()
 			)
-			print("  Saved thumbnail: %d/%d" % (i+1, len(times)))
+			logging.debug("  Saved thumbnail: %d/%d" % (i+1, len(times)))
 		return fnames

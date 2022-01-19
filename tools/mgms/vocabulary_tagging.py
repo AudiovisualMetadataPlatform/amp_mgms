@@ -5,24 +5,28 @@ import json
 import sys
 from datetime import datetime
 import argparse
+import logging
+import amp.logger
 
 def main():
     #amp_transcript =  sys.argv[1] 
     #words_to_flag_file =  sys.argv[2] 
     #output_csv =  sys.argv[3] 
     parser = argparse.ArgumentParser()
+    parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("amp_transcript")
     parser.add_argument("words_to_flag_file")
     parser.add_argument("output_csv")
     args = parser.parse_args()
+    logging.info(f"Starting with args {args}")
     (amp_transcript, words_to_flag_file, output_csv) = (args.amp_transcript, args.words_to_flag_file, args.output_csv)
 
     # Get a list of words to flag
     words_to_flag = get_words(words_to_flag_file) 
-    print("Words to Flag:")
+    logging.debug("Words to Flag:")
     for w in words_to_flag:
-        print(w)
-    print("")
+        logging.debug(w)
+    logging.debug("")
 
     # Search for matching words/phrases
     matching_words = list()
@@ -33,12 +37,13 @@ def main():
             transcript_words = transcript_dict["results"]["words"]
             matching_words = match_words(words_to_flag.values(), transcript_words)
         else:
-            print("Warning: Results or words missing from AMP Json")
+            logging.warn("Warning: Results or words missing from AMP Json")
 
     # Print the output
-    print("Matching Words:")
-    print(matching_words)
+    logging.debug("Matching Words:")
+    logging.debug(matching_words)
     write_csv(output_csv, matching_words)
+    logging.info("Finished.")
     exit(0)
 
 def match_words(words_to_flag, transcript_words):
@@ -62,7 +67,7 @@ def match_words(words_to_flag, transcript_words):
                 # Iterate through the word list
                 for i in range(index + 1, index + len(flag_word["parts"])):
                     next_word = transcript_words[i]
-                    print("Phrase: "  + next_word["text"] + " : " + flag_word["parts"][index_part])
+                    logging.debug("Phrase: "  + next_word["text"] + " : " + flag_word["parts"][index_part])
                     # If the word doesn't match, neither does the phrase.  Break here
                     if clean_word(next_word["text"]) != flag_word["parts"][index_part]:
                         found_match = False

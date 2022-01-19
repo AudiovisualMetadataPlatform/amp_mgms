@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import _preamble
 import sys
 import logging
 import json
@@ -11,23 +10,21 @@ import argparse
 from amp.schema.video_ocr import VideoOcr, VideoOcrMedia, VideoOcrResolution, VideoOcrFrame, VideoOcrObject, VideoOcrObjectScore, VideoOcrObjectVertices
 
 import amp.utils
-
+import logging
+import amp.logger
 
 def main():
 	#(input_video, azure_video_index, azure_artifact_ocr, amp_vocr) = sys.argv[1:5]
 	parser = argparse.ArgumentParser()
+	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 	parser.add_argument("input_video", help="Input video")
 	parser.add_argument("azure_video_index", help="Azure video index")
 	parser.add_argument("azure_artifact_ocr", help="Azure Artifact OCR")
 	parser.add_argument("amp_vocr", help="AMP Video OCR output")
 	args = parser.parse_args()
+	logging.info(f"Starting with args {args}")
 	(input_video, azure_video_index, azure_artifact_ocr, amp_vocr) = (args.input_video, args.azure_video_index, args.azure_artifact_ocr, args.amp_vocr)
 	
-
-
-
-	# You must initialize logging, otherwise you'll not see debug output.
-	logging.basicConfig()
 
 	# Get Azure video index json
 	with open(azure_video_index, 'r') as azure_index_file:
@@ -42,7 +39,8 @@ def main():
 	
 	# write AMP Video OCR JSON file
 	amp.utils.write_json_file(amp_vocr_obj, amp_vocr)
-
+	logging.info("Finished.")
+	
 # Parse the results
 def create_amp_ocr(input_video, azure_index_json, azure_ocr_json):
 	amp_ocr = VideoOcr()

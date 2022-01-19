@@ -12,6 +12,8 @@ from shutil import copyfile
 import argparse
 
 from amp.schema.segmentation import Segmentation
+import logging
+import amp.logger
 
 # Seconds to buffer beginning and end of audio segments by
 buffer = 5
@@ -19,27 +21,30 @@ buffer = 5
 def main():
 	#(input_file, input_segmentation_json, remove_type, output_file, kept_segments_file) = sys.argv[1:6]
 	parser = argparse.ArgumentParser()
+	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 	parser.add_argument("input_file")
 	parser.add_argument("input_segmentation")
 	parser.add_argument("remove_type")
 	parser.add_argument("output_file")
 	parser.add_argument("keep_segments_file")
 	args = parser.parse_args()
+	logging.info(f"Starting with args {args}")
 	(input_file, input_segmentation_json, remove_type, output_file, kept_segments_file) = (args.input_file, args.input_segmentation_json, args.remove_type, args.output_file, args.kept_segments_file)
 
 
-	print("Reading segmentation file")
+	logging.debug("Reading segmentation file")
 	# Turn segmentation json file into segmentation object
 	with open(input_segmentation_json, 'r') as file:
 		seg_data = Segmentation().from_json(json.load(file))
 	
-	print("Removing silence to get a list of kept segments")
+	logging.debug("Removing silence to get a list of kept segments")
 	# Remove silence and get a list of kept segments
 	kept_segments = remove_silence(remove_type, seg_data, input_file, output_file)
 
-	print("Writing  output json file")
+	logging.debug("Writing  output json file")
 	# Write kept segments to json file
 	write_kept_segments_json(kept_segments, kept_segments_file)
+	logging.info("Finished.")
 	exit(0)
 
 # Given segmentation data, an audio file, and output file, remove silence
@@ -70,7 +75,7 @@ def remove_silence(remove_type, seg_data, filename, output_file):
 		kept_segment = create_audio_part(filename, start_block, previous_end, len(kept_segments), seg_data.media.duration)
 		kept_segments.update(kept_segment)
 
-	print("Concatenating files")
+	logging.debug("Concatenating files")
 	# Concetenate each of the individual parts into one audio file of speech
 	concat_files(len(kept_segments), output_file)
 	
@@ -80,8 +85,8 @@ def create_empty_file(output_file):
 	tmp_filename = "tmp_blank.wav"
 	ffmpeg_out = subprocess.Popen(['ffmpeg', '-f', 'lavfi', '-i', "sine=frequency=1000:duration=5", tmp_filename], universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 	stdout,stderr = ffmpeg_out.communicate()
-	print(stdout)
-	print(stderr)
+	logging.debug(stdout)
+	logging.debug(stderr)
 	copyfile(tmp_filename, output_file)
 
 # Get the start offset after removing the buffer
@@ -114,7 +119,7 @@ def create_audio_part(input_file, start, end, segment, file_duration):
 	duration = (end_offset - start_offset)
 	duration_str = time.strftime('%H:%M:%S', time.gmtime(duration))
 
-	print("Removing segment starting at " + start_str + " for " + duration_str)
+	logging.debug("Removing segment starting at " + start_str + " for " + duration_str)
 
 	# Execute ffmpeg command to split of the segment
 	ffmpeg_out = subprocess.Popen(['ffmpeg', '-i', input_file, '-ss', start_str, '-t', duration_str, '-acodec', 'copy', tmp_filename], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -122,15 +127,15 @@ def create_audio_part(input_file, start, end, segment, file_duration):
 	stdout,stderr = ffmpeg_out.communicate()
 
 	# Print the output
-	print("Creating audio segment " + str(segment))
-	print(stdout)
-	print(stderr)
+	logging.debug("Creating audio segment " + str(segment))
+	logging.debug(stdout)
+	logging.debug(stderr)
 
 	return {start_offset : end_offset}
 
 # Take each of the individual parts, create one larger file and copy it to the destination file
 def concat_files(segments, output_file):
-	print("Number of segments: " + str(segments))
+	logging.debug("Number of segments: " + str(segments))
 	# Create the ffmpeg command, adding an input file for each segment created
 	if segments > 1:
 		ffmpegCmd = ['ffmpeg']
@@ -143,15 +148,15 @@ def concat_files(segments, output_file):
 		streams = streams +  "concat=n=" + str(segments) + ":v=0:a=1[out]"
 		ffmpegCmd.extend(['-filter_complex', streams, "-map", "[out]", "output.wav"])
 
-		print(ffmpegCmd)
+		logging.debug(ffmpegCmd)
 		# Run ffmpeg 
 		ffmpeg_out = subprocess.Popen(ffmpegCmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 		stdout, stderr = ffmpeg_out.communicate()
 
 		# Print the output
-		print("Creating complete audio")
-		print(stdout)
-		print(stderr)
+		logging.debug("Creating complete audio")
+		logging.debug(stdout)
+		logging.debug(stderr)
 
 		# Copy the temporary result to the final destination
 		copyfile("output.wav", output_file)

@@ -7,18 +7,21 @@ import argparse
 from amp.schema.segmentation import Segmentation
 from amp.adjustment import Adjustment
 
-from amp.logger import MgmLogger
+import logging
+import amp.logger
 import amp.utils
 
 
 def main():
     #(segmentation_json, adj_json, output_json) = sys.argv[1:4]
     parser = argparse.ArgumentParser()
+    parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("segmentation_json")
     parser.add_argument("adj_json")
     parser.add_argument("output_json")
     args = parser.parse_args()
     (segmentation_json, adj_json, output_json) = (args.segmentation_json, args.adj_json, args.output_json)
+    logging.info(f"Starting with args {args}")
 
     # Turn adjustment data into list of kept segments
     with open(adj_json, 'r') as file:
@@ -37,7 +40,7 @@ def main():
 
     # For each segment that was kept, keep track of the gaps to know how much to adjust
     for kept_segment in adj_data:
-        print(kept_segment + ":" + str(adj_data[kept_segment]))
+        logging.debug(kept_segment + ":" + str(adj_data[kept_segment]))
         start = float(kept_segment)
         end = adj_data[kept_segment]
         # If the start of this segment is after the last end, we have a gap
@@ -48,18 +51,19 @@ def main():
             offset_adj.append(Adjustment(start - current_adj, end - current_adj, current_adj))
         # Keep track of the last segment end
         last_end = end
-    print("#OFFSET ADJUSTMENTS")
+    logging.debug("#OFFSET ADJUSTMENTS")
     for adj in offset_adj:
-        print(str(adj.start) + ":" + str(adj.end) + ":"  + str(adj.adjustment))
+        logging.debug(str(adj.start) + ":" + str(adj.end) + ":"  + str(adj.adjustment))
     # For each word, find the corresponding adjustment
     for segment in seg.segments:
         adjust_segment(segment, offset_adj)
         
     # Write the resulting json
     amp.utils.write_json_file(seg, output_json)
+    logging.info("Finished.")
 
 def adjust_segment(segment, offset_adj):
-    print(f"Segment: {segment.start} : {segment.end}")
+    logging.debug(f"Segment: {segment.start} : {segment.end}")
     # Get the adjustment for which the word falls within it's start and end
     least_diff = None
     least_adjustment = None
@@ -76,11 +80,11 @@ def adjust_segment(segment, offset_adj):
                 least_adjustment = adj
 
     if least_adjustment is not None:
-        print("Offset:" + str(segment.start) + " Adjusted Offset:" + str(segment.start + least_adjustment.adjustment))
+        logging.debug("Offset:" + str(segment.start) + " Adjusted Offset:" + str(segment.start + least_adjustment.adjustment))
         segment.start = segment.start + least_adjustment.adjustment
         segment.end = segment.end + least_adjustment.adjustment
     else:
-        print("No adjustment found")
+        logging.debug("No adjustment found")
 
     
 if __name__ == "__main__":

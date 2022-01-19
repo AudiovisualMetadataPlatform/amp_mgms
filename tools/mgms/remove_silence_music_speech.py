@@ -10,7 +10,8 @@ import sys
 import time
 from shutil import copyfile
 import argparse
-
+import logging
+import amp.logger
 from amp.schema.segmentation import Segmentation
 
 from amp.logger import MgmLogger
@@ -23,12 +24,14 @@ buffer = 1
 def main():
 	#(input_file, input_segmentation_json, remove_type, output_file, kept_segments_file) = sys.argv[1:6]
 	parser = argparse.ArgumentParser()
+	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 	parser.add_argument("input_file")
 	parser.add_argument("input_segmentation_json")
 	parser.add_argument("remove_type")
 	parser.add_argument("output_file")
 	parser.add_argument("keep_segments_file")
 	args = parser.parse_args()
+	logging.info(f"Starting with args {args}")
 	(input_file, input_segmentation_json, remove_type, output_file, kept_segments_file) = (args.input_file, args.input_segmentation_json, args.remove_type, args.output_file, args.kept_segments_file)
 
 	# Turn segmentation json file into segmentation object
@@ -40,6 +43,7 @@ def main():
 
 	# Write kept segments to json file
 	amp.utils.write_json_file(kept_segments, kept_segments_file)
+	logging.info("Finished.")
 	exit(0)
 
 # Given segmentation data, an audio file, and output file, remove silence
@@ -81,8 +85,8 @@ def create_empty_file(output_file):
 	tmp_filename = "tmp_blank.wav"
 	ffmpeg_out = subprocess.Popen(['ffmpeg', '-f', 'lavfi', '-i', "sine=frequency=1000:duration=5", tmp_filename], universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 	stdout,stderr = ffmpeg_out.communicate()
-	print(stdout)
-	print(stderr)
+	logging.debug(stdout)
+	logging.debug(stderr)
 	copyfile(tmp_filename, output_file)
 
 # Get the start offset after removing the buffer
@@ -115,7 +119,7 @@ def create_audio_part(input_file, start, end, segment, file_duration):
 	duration = (end_offset - start_offset)
 	duration_str = time.strftime('%H:%M:%S', time.gmtime(duration))
 
-	print("Removing segment starting at " + start_str + " for " + duration_str)
+	logging.debug("Removing segment starting at " + start_str + " for " + duration_str)
 
 	# Execute ffmpeg command to split of the segment
 	ffmpeg_out = subprocess.Popen(['ffmpeg', '-i', input_file, '-ss', start_str, '-t', duration_str, '-acodec', 'copy', tmp_filename], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -123,9 +127,9 @@ def create_audio_part(input_file, start, end, segment, file_duration):
 	stdout,stderr = ffmpeg_out.communicate()
 
 	# Print the output
-	print("Creating audio segment " + str(segment))
-	print(stdout)
-	print(stderr)
+	logging.debug("Creating audio segment " + str(segment))
+	logging.debug(stdout)
+	logging.debug(stderr)
 
 	return {start_offset : end_offset}
 
@@ -143,15 +147,15 @@ def concat_files(segments, output_file):
 		streams = streams +  "concat=n=" + str(segments) + ":v=0:a=1[out]"
 		ffmpegCmd.extend(['-filter_complex', streams, "-map", "[out]", "output.wav"])
 
-		print(ffmpegCmd)
+		logging.debug(ffmpegCmd)
 		# Run ffmpeg 
 		ffmpeg_out = subprocess.Popen(ffmpegCmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 		stdout, stderr = ffmpeg_out.communicate()
 
 		# Print the output
-		print("Creating complete audio")
-		print(stdout)
-		print(stderr)
+		logging.debug("Creating complete audio")
+		logging.debug(stdout)
+		logging.debug(stderr)
 
 		# Copy the temporary result to the final destination
 		copyfile("output.wav", output_file)

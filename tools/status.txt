@@ -17,12 +17,12 @@
 ./amp_segment/ina_speech_segmenter.xml -> requries INA speech segmenter SIF - Done
 ./amp_shot/azure_shot_detection.xml - Done
 ./amp_shot/pyscenedetect.xml - Done
-./amp_stt/aws_transcribe.xml -> Requres a shell script
+./amp_stt/aws_transcribe.xml -> Requres a shell script - Kinda done.  Needs rewrite.
 ./amp_stt/transcript_to_webvtt.xml - Done
 ./amp_stt/vocabulary_tagging.xml - Done
 ./amp_stt/vtt_generator.xml - Done
 ./amp_stt/gentle_forced_alignment.xml -> requires gentle_forced_alighment SIF - Done
-./amp_stt/kaldi.xml -> requires kaldi.sif and shell script
+./amp_stt/kaldi.xml -> requires kaldi.sif and shell script - Done
 ./amp_video/contact_sheets.xml - Done (no argparse)
 ./amp_video/contact_sheets_collection.xml - Done
 ./amp_video/azure_video_indexer.xml - Done
