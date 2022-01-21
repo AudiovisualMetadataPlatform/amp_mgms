@@ -1,0 +1,1756 @@
+{
+    "media": {
+        "filename": "/srv/scratch/amp_mgms/tests/fixtures/video.m4v",
+        "frameRate": "24000/1001",
+        "numFrames": "1162",
+        "resolution": {
+            "width": 480,
+            "height": 718
+        }
+    },
+    "frames": [
+        {
+            "start": "3.0",
+            "objects": [
+                {
+                    "text": "\u2014",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 0
+                    },
+                    "vertices": {
+                        "xmin": 0.09791666666666667,
+                        "ymin": 0.04456824512534819,
+                        "xmax": 0.6666666666666666,
+                        "ymax": 0.4233983286908078
+                    }
+                },
+                {
+                    "text": "=",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 38
+                    },
+                    "vertices": {
+                        "xmin": 0.6666666666666666,
+                        "ymin": 0.0,
+                        "xmax": 1.4958333333333333,
+                        "ymax": 0.4233983286908078
+                    }
+                },
+                {
+                    "text": "ae",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 14
+                    },
+                    "vertices": {
+                        "xmin": 0.0,
+                        "ymin": 0.3565459610027855,
+                        "xmax": 1.0666666666666667,
+                        "ymax": 0.6685236768802229
+                    }
+                },
+                {
+                    "text": "i",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 0
+                    },
+                    "vertices": {
+                        "xmin": 1.0666666666666667,
+                        "ymin": 0.26740947075208915,
+                        "xmax": 1.4583333333333333,
+                        "ymax": 0.467966573816156
+                    }
+                },
+                {
+                    "text": "oe",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 23
+                    },
+                    "vertices": {
+                        "xmin": 0.5333333333333333,
+                        "ymin": 0.3565459610027855,
+                        "xmax": 1.4958333333333333,
+                        "ymax": 0.6685236768802229
+                    }
+                }
+            ]
+        },
+        {
+            "start": "7.5",
+            "objects": [
+                {
+                    "text": "A",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 67
+                    },
+                    "vertices": {
+                        "xmin": 0.29375,
+                        "ymin": 0.4805013927576602,
+                        "xmax": 0.32916666666666666,
+                        "ymax": 0.5069637883008357
+                    }
+                },
+                {
+                    "text": "WARNER",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 67
+                    },
+                    "vertices": {
+                        "xmin": 0.32916666666666666,
+                        "ymin": 0.47075208913649025,
+                        "xmax": 0.5291666666666667,
+                        "ymax": 0.520891364902507
+                    }
+                },
+                {
+                    "text": "COMMUNICATIONS",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 69
+                    },
+                    "vertices": {
+                        "xmin": 0.5354166666666667,
+                        "ymin": 0.4763231197771588,
+                        "xmax": 1.20625,
+                        "ymax": 0.5069637883008357
+                    }
+                },
+                {
+                    "text": "COMPANT",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 18
+                    },
+                    "vertices": {
+                        "xmin": 0.9791666666666666,
+                        "ymin": 0.47075208913649025,
+                        "xmax": 1.2104166666666667,
+                        "ymax": 0.520891364902507
+                    }
+                }
+            ]
+        },
+        {
+            "start": "8.0",
+            "objects": [
+                {
+                    "text": "A",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 72
+                    },
+                    "vertices": {
+                        "xmin": 0.29375,
+                        "ymin": 0.479108635097493,
+                        "xmax": 0.32916666666666666,
+                        "ymax": 0.5069637883008357
+                    }
+                },
+                {
+                    "text": "WARNER",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 72
+                    },
+                    "vertices": {
+                        "xmin": 0.32916666666666666,
+                        "ymin": 0.47075208913649025,
+                        "xmax": 0.5291666666666667,
+                        "ymax": 0.520891364902507
+                    }
+                },
+                {
+                    "text": "COMMUNICATIONS",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 49
+                    },
+                    "vertices": {
+                        "xmin": 0.5354166666666667,
+                        "ymin": 0.4763231197771588,
+                        "xmax": 1.20625,
+                        "ymax": 0.5069637883008357
+                    }
+                },
+                {
+                    "text": "COMPANS",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 12
+                    },
+                    "vertices": {
+                        "xmin": 0.9791666666666666,
+                        "ymin": 0.47075208913649025,
+                        "xmax": 1.2104166666666667,
+                        "ymax": 0.520891364902507
+                    }
+                }
+            ]
+        },
+        {
+            "start": "16.5",
+            "objects": [
+                {
+                    "text": "UT",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 37
+                    },
+                    "vertices": {
+                        "xmin": 0.28541666666666665,
+                        "ymin": 0.2841225626740947,
+                        "xmax": 0.6208333333333333,
+                        "ymax": 0.37186629526462395
+                    }
+                },
+                {
+                    "text": "SY",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 22
+                    },
+                    "vertices": {
+                        "xmin": 0.5666666666666667,
+                        "ymin": 0.2757660167130919,
+                        "xmax": 0.7708333333333334,
+                        "ymax": 0.4052924791086351
+                    }
+                },
+                {
+                    "text": "fe",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 12
+                    },
+                    "vertices": {
+                        "xmin": 0.8083333333333333,
+                        "ymin": 0.2827298050139276,
+                        "xmax": 0.9083333333333333,
+                        "ymax": 0.37047353760445684
+                    }
+                },
+                {
+                    "text": "USS",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 12
+                    },
+                    "vertices": {
+                        "xmin": 0.95,
+                        "ymin": 0.28133704735376047,
+                        "xmax": 1.2395833333333333,
+                        "ymax": 0.36908077994428967
+                    }
+                }
+            ]
+        },
+        {
+            "start": "17.0",
+            "objects": [
+                {
+                    "text": "TRUE",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.2875,
+                        "ymin": 0.2841225626740947,
+                        "xmax": 0.6208333333333333,
+                        "ymax": 0.37186629526462395
+                    }
+                },
+                {
+                    "text": "STORIES",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.6979166666666666,
+                        "ymin": 0.28133704735376047,
+                        "xmax": 1.2416666666666667,
+                        "ymax": 0.37047353760445684
+                    }
+                }
+            ]
+        },
+        {
+            "start": "17.5",
+            "objects": [
+                {
+                    "text": "aS",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 19
+                    },
+                    "vertices": {
+                        "xmin": 0.6979166666666666,
+                        "ymin": 0.28133704735376047,
+                        "xmax": 1.2416666666666667,
+                        "ymax": 0.37186629526462395
+                    }
+                }
+            ]
+        },
+        {
+            "start": "18.0",
+            "objects": [
+                {
+                    "text": "UT",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 31
+                    },
+                    "vertices": {
+                        "xmin": 0.28541666666666665,
+                        "ymin": 0.2841225626740947,
+                        "xmax": 0.6208333333333333,
+                        "ymax": 0.37186629526462395
+                    }
+                },
+                {
+                    "text": "ay",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 28
+                    },
+                    "vertices": {
+                        "xmin": 0.5666666666666667,
+                        "ymin": 0.2757660167130919,
+                        "xmax": 0.7708333333333334,
+                        "ymax": 0.4052924791086351
+                    }
+                },
+                {
+                    "text": "fe",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 0
+                    },
+                    "vertices": {
+                        "xmin": 0.8083333333333333,
+                        "ymin": 0.2827298050139276,
+                        "xmax": 0.9083333333333333,
+                        "ymax": 0.37047353760445684
+                    }
+                },
+                {
+                    "text": "SS",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 23
+                    },
+                    "vertices": {
+                        "xmin": 0.95,
+                        "ymin": 0.28133704735376047,
+                        "xmax": 1.2395833333333333,
+                        "ymax": 0.36908077994428967
+                    }
+                }
+            ]
+        },
+        {
+            "start": "18.5",
+            "objects": [
+                {
+                    "text": "YO",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 16
+                    },
+                    "vertices": {
+                        "xmin": 0.6833333333333333,
+                        "ymin": 0.2827298050139276,
+                        "xmax": 0.93125,
+                        "ymax": 0.37186629526462395
+                    }
+                },
+                {
+                    "text": "aS",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 34
+                    },
+                    "vertices": {
+                        "xmin": 1.0916666666666666,
+                        "ymin": 0.28133704735376047,
+                        "xmax": 1.2416666666666667,
+                        "ymax": 0.37047353760445684
+                    }
+                }
+            ]
+        },
+        {
+            "start": "19.0",
+            "objects": [
+                {
+                    "text": "TRUE",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 94
+                    },
+                    "vertices": {
+                        "xmin": 0.28541666666666665,
+                        "ymin": 0.2841225626740947,
+                        "xmax": 0.6208333333333333,
+                        "ymax": 0.37186629526462395
+                    }
+                },
+                {
+                    "text": "STORIES",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 94
+                    },
+                    "vertices": {
+                        "xmin": 0.6979166666666666,
+                        "ymin": 0.28133704735376047,
+                        "xmax": 1.2395833333333333,
+                        "ymax": 0.37186629526462395
+                    }
+                }
+            ]
+        },
+        {
+            "start": "19.5",
+            "objects": [
+                {
+                    "text": "YC",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 11
+                    },
+                    "vertices": {
+                        "xmin": 0.6666666666666666,
+                        "ymin": 0.28133704735376047,
+                        "xmax": 0.9104166666666667,
+                        "ymax": 0.37186629526462395
+                    }
+                },
+                {
+                    "text": "SS",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 29
+                    },
+                    "vertices": {
+                        "xmin": 1.06875,
+                        "ymin": 0.28133704735376047,
+                        "xmax": 1.2416666666666667,
+                        "ymax": 0.36908077994428967
+                    }
+                }
+            ]
+        },
+        {
+            "start": "20.0",
+            "objects": [
+                {
+                    "text": "ee",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 10
+                    },
+                    "vertices": {
+                        "xmin": 0.2791666666666667,
+                        "ymin": 0.19080779944289694,
+                        "xmax": 1.1083333333333334,
+                        "ymax": 0.2590529247910863
+                    }
+                },
+                {
+                    "text": "|",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 58
+                    },
+                    "vertices": {
+                        "xmin": 1.1729166666666666,
+                        "ymin": 0.19220055710306408,
+                        "xmax": 1.2458333333333333,
+                        "ymax": 0.2562674094707521
+                    }
+                },
+                {
+                    "text": "BUNCH",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.27708333333333335,
+                        "ymin": 0.29526462395543174,
+                        "xmax": 0.6395833333333333,
+                        "ymax": 0.362116991643454
+                    }
+                },
+                {
+                    "text": "OF",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.6895833333333333,
+                        "ymin": 0.29526462395543174,
+                        "xmax": 0.8145833333333333,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "PEOPLE",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.8645833333333334,
+                        "ymin": 0.29526462395543174,
+                        "xmax": 1.2458333333333333,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "Ad",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 21
+                    },
+                    "vertices": {
+                        "xmin": 0.275,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 0.8166666666666667,
+                        "ymax": 0.4623955431754875
+                    }
+                },
+                {
+                    "text": ">",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 45
+                    },
+                    "vertices": {
+                        "xmin": 0.94375,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 0.9833333333333333,
+                        "ymax": 0.4610027855153203
+                    }
+                },
+                {
+                    "text": "ke",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 19
+                    },
+                    "vertices": {
+                        "xmin": 0.9979166666666667,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 1.2520833333333334,
+                        "ymax": 0.4623955431754875
+                    }
+                }
+            ]
+        },
+        {
+            "start": "20.5",
+            "objects": [
+                {
+                    "text": "eed",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 0
+                    },
+                    "vertices": {
+                        "xmin": 0.41875,
+                        "ymin": 0.19220055710306408,
+                        "xmax": 1.1104166666666666,
+                        "ymax": 0.2590529247910863
+                    }
+                },
+                {
+                    "text": "|",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 50
+                    },
+                    "vertices": {
+                        "xmin": 1.1729166666666666,
+                        "ymin": 0.19220055710306408,
+                        "xmax": 1.2458333333333333,
+                        "ymax": 0.2562674094707521
+                    }
+                },
+                {
+                    "text": "LU",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 27
+                    },
+                    "vertices": {
+                        "xmin": 0.30416666666666664,
+                        "ymin": 0.298050139275766,
+                        "xmax": 0.4125,
+                        "ymax": 0.362116991643454
+                    }
+                },
+                {
+                    "text": "Td",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 18
+                    },
+                    "vertices": {
+                        "xmin": 0.47708333333333336,
+                        "ymin": 0.2966573816155989,
+                        "xmax": 0.5604166666666667,
+                        "ymax": 0.362116991643454
+                    }
+                },
+                {
+                    "text": "ee",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 29
+                    },
+                    "vertices": {
+                        "xmin": 0.6895833333333333,
+                        "ymin": 0.29526462395543174,
+                        "xmax": 1.2458333333333333,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "IN",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.27291666666666664,
+                        "ymin": 0.3997214484679666,
+                        "xmax": 0.38125,
+                        "ymax": 0.4637883008356546
+                    }
+                },
+                {
+                    "text": "VIRGIL",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 94
+                    },
+                    "vertices": {
+                        "xmin": 0.4479166666666667,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 0.8166666666666667,
+                        "ymax": 0.4623955431754875
+                    }
+                },
+                {
+                    "text": "TEXAS.",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 94
+                    },
+                    "vertices": {
+                        "xmin": 0.8645833333333334,
+                        "ymin": 0.3983286908077994,
+                        "xmax": 1.25,
+                        "ymax": 0.4623955431754875
+                    }
+                }
+            ]
+        },
+        {
+            "start": "21.0",
+            "objects": [
+                {
+                    "text": "eed",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 4
+                    },
+                    "vertices": {
+                        "xmin": 0.41875,
+                        "ymin": 0.19080779944289694,
+                        "xmax": 1.1104166666666666,
+                        "ymax": 0.2576601671309192
+                    }
+                },
+                {
+                    "text": "|",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 55
+                    },
+                    "vertices": {
+                        "xmin": 1.1729166666666666,
+                        "ymin": 0.19080779944289694,
+                        "xmax": 1.2458333333333333,
+                        "ymax": 0.25487465181058494
+                    }
+                },
+                {
+                    "text": "BUNCH",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 95
+                    },
+                    "vertices": {
+                        "xmin": 0.2791666666666667,
+                        "ymin": 0.29526462395543174,
+                        "xmax": 0.6395833333333333,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "OF",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 95
+                    },
+                    "vertices": {
+                        "xmin": 0.6895833333333333,
+                        "ymin": 0.2938718662952646,
+                        "xmax": 0.8145833333333333,
+                        "ymax": 0.3593314763231198
+                    }
+                },
+                {
+                    "text": "PEOPLE",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.8645833333333334,
+                        "ymin": 0.2938718662952646,
+                        "xmax": 1.2458333333333333,
+                        "ymax": 0.3593314763231198
+                    }
+                },
+                {
+                    "text": "IN",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.275,
+                        "ymin": 0.3983286908077994,
+                        "xmax": 0.38125,
+                        "ymax": 0.4623955431754875
+                    }
+                },
+                {
+                    "text": "VIRGIL",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 94
+                    },
+                    "vertices": {
+                        "xmin": 0.4479166666666667,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 0.8166666666666667,
+                        "ymax": 0.4610027855153203
+                    }
+                },
+                {
+                    "text": "TEXAS.",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 95
+                    },
+                    "vertices": {
+                        "xmin": 0.8645833333333334,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 1.2520833333333334,
+                        "ymax": 0.4610027855153203
+                    }
+                }
+            ]
+        },
+        {
+            "start": "21.5",
+            "objects": [
+                {
+                    "text": "Wa",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 31
+                    },
+                    "vertices": {
+                        "xmin": 0.2791666666666667,
+                        "ymin": 0.1935933147632312,
+                        "xmax": 0.6833333333333333,
+                        "ymax": 0.2590529247910863
+                    }
+                },
+                {
+                    "text": "ete)",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 15
+                    },
+                    "vertices": {
+                        "xmin": 0.74375,
+                        "ymin": 0.19220055710306408,
+                        "xmax": 1.1104166666666666,
+                        "ymax": 0.2562674094707521
+                    }
+                },
+                {
+                    "text": "|",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 43
+                    },
+                    "vertices": {
+                        "xmin": 1.175,
+                        "ymin": 0.19220055710306408,
+                        "xmax": 1.2458333333333333,
+                        "ymax": 0.2562674094707521
+                    }
+                },
+                {
+                    "text": "CU",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 16
+                    },
+                    "vertices": {
+                        "xmin": 0.2791666666666667,
+                        "ymin": 0.2966573816155989,
+                        "xmax": 0.4125,
+                        "ymax": 0.362116991643454
+                    }
+                },
+                {
+                    "text": "Td",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 24
+                    },
+                    "vertices": {
+                        "xmin": 0.4791666666666667,
+                        "ymin": 0.2966573816155989,
+                        "xmax": 0.5625,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "ee",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 27
+                    },
+                    "vertices": {
+                        "xmin": 0.6895833333333333,
+                        "ymin": 0.29526462395543174,
+                        "xmax": 1.2479166666666666,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "Ld",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 35
+                    },
+                    "vertices": {
+                        "xmin": 0.4479166666666667,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 0.81875,
+                        "ymax": 0.4623955431754875
+                    }
+                },
+                {
+                    "text": ">",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 35
+                    },
+                    "vertices": {
+                        "xmin": 0.94375,
+                        "ymin": 0.3983286908077994,
+                        "xmax": 0.9833333333333333,
+                        "ymax": 0.4610027855153203
+                    }
+                },
+                {
+                    "text": "eS",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 7
+                    },
+                    "vertices": {
+                        "xmin": 0.9979166666666667,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 1.2520833333333334,
+                        "ymax": 0.4623955431754875
+                    }
+                }
+            ]
+        },
+        {
+            "start": "22.0",
+            "objects": [
+                {
+                    "text": "Wee",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 17
+                    },
+                    "vertices": {
+                        "xmin": 0.2791666666666667,
+                        "ymin": 0.19080779944289694,
+                        "xmax": 1.1083333333333334,
+                        "ymax": 0.2576601671309192
+                    }
+                },
+                {
+                    "text": "|",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 40
+                    },
+                    "vertices": {
+                        "xmin": 1.1729166666666666,
+                        "ymin": 0.19220055710306408,
+                        "xmax": 1.24375,
+                        "ymax": 0.25487465181058494
+                    }
+                },
+                {
+                    "text": "CL",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 17
+                    },
+                    "vertices": {
+                        "xmin": 0.27708333333333335,
+                        "ymin": 0.2966573816155989,
+                        "xmax": 0.39166666666666666,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "tq",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 25
+                    },
+                    "vertices": {
+                        "xmin": 0.4625,
+                        "ymin": 0.29526462395543174,
+                        "xmax": 0.6104166666666667,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "ee",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 15
+                    },
+                    "vertices": {
+                        "xmin": 0.6875,
+                        "ymin": 0.29526462395543174,
+                        "xmax": 1.2458333333333333,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "IN",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.27291666666666664,
+                        "ymin": 0.3983286908077994,
+                        "xmax": 0.38125,
+                        "ymax": 0.4623955431754875
+                    }
+                },
+                {
+                    "text": "VIRGIL",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.4479166666666667,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 0.8166666666666667,
+                        "ymax": 0.4623955431754875
+                    }
+                },
+                {
+                    "text": "TEXAS.",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.8645833333333334,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 1.25,
+                        "ymax": 0.4623955431754875
+                    }
+                }
+            ]
+        },
+        {
+            "start": "22.5",
+            "objects": [
+                {
+                    "text": "Mee)",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 8
+                    },
+                    "vertices": {
+                        "xmin": 0.2791666666666667,
+                        "ymin": 0.19080779944289694,
+                        "xmax": 1.1083333333333334,
+                        "ymax": 0.2590529247910863
+                    }
+                },
+                {
+                    "text": "|",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 46
+                    },
+                    "vertices": {
+                        "xmin": 1.1729166666666666,
+                        "ymin": 0.19220055710306408,
+                        "xmax": 1.2458333333333333,
+                        "ymax": 0.2562674094707521
+                    }
+                },
+                {
+                    "text": "CT",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 20
+                    },
+                    "vertices": {
+                        "xmin": 0.27708333333333335,
+                        "ymin": 0.2966573816155989,
+                        "xmax": 0.39166666666666666,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "Tq",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 14
+                    },
+                    "vertices": {
+                        "xmin": 0.475,
+                        "ymin": 0.29526462395543174,
+                        "xmax": 0.5604166666666667,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "ea",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 22
+                    },
+                    "vertices": {
+                        "xmin": 0.8645833333333334,
+                        "ymin": 0.29526462395543174,
+                        "xmax": 1.2458333333333333,
+                        "ymax": 0.3593314763231198
+                    }
+                },
+                {
+                    "text": "IN",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.27291666666666664,
+                        "ymin": 0.3983286908077994,
+                        "xmax": 0.38125,
+                        "ymax": 0.4623955431754875
+                    }
+                },
+                {
+                    "text": "VIRGIL",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.4479166666666667,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 0.8166666666666667,
+                        "ymax": 0.4623955431754875
+                    }
+                },
+                {
+                    "text": "TEXAS.",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.8645833333333334,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 1.2520833333333334,
+                        "ymax": 0.4623955431754875
+                    }
+                }
+            ]
+        },
+        {
+            "start": "23.0",
+            "objects": [
+                {
+                    "text": "MD",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 0
+                    },
+                    "vertices": {
+                        "xmin": 0.28125,
+                        "ymin": 0.1935933147632312,
+                        "xmax": 0.6854166666666667,
+                        "ymax": 0.2590529247910863
+                    }
+                },
+                {
+                    "text": "ete)",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 12
+                    },
+                    "vertices": {
+                        "xmin": 0.7458333333333333,
+                        "ymin": 0.19220055710306408,
+                        "xmax": 1.1104166666666666,
+                        "ymax": 0.2562674094707521
+                    }
+                },
+                {
+                    "text": "CL",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 32
+                    },
+                    "vertices": {
+                        "xmin": 0.2791666666666667,
+                        "ymin": 0.2966573816155989,
+                        "xmax": 0.3958333333333333,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "td",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 31
+                    },
+                    "vertices": {
+                        "xmin": 0.4791666666666667,
+                        "ymin": 0.29526462395543174,
+                        "xmax": 0.5625,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "ee",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 30
+                    },
+                    "vertices": {
+                        "xmin": 0.6916666666666667,
+                        "ymin": 0.2938718662952646,
+                        "xmax": 1.2479166666666666,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "IN",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.275,
+                        "ymin": 0.3983286908077994,
+                        "xmax": 0.38333333333333336,
+                        "ymax": 0.4623955431754875
+                    }
+                },
+                {
+                    "text": "VIRGIL",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.45,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 0.81875,
+                        "ymax": 0.4623955431754875
+                    }
+                },
+                {
+                    "text": "TEXAS.",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.8666666666666667,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 1.2520833333333334,
+                        "ymax": 0.4623955431754875
+                    }
+                }
+            ]
+        },
+        {
+            "start": "23.5",
+            "objects": [
+                {
+                    "text": "MD",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 0
+                    },
+                    "vertices": {
+                        "xmin": 0.28125,
+                        "ymin": 0.1935933147632312,
+                        "xmax": 0.6854166666666667,
+                        "ymax": 0.2590529247910863
+                    }
+                },
+                {
+                    "text": "ete)",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 12
+                    },
+                    "vertices": {
+                        "xmin": 0.7458333333333333,
+                        "ymin": 0.19220055710306408,
+                        "xmax": 1.1104166666666666,
+                        "ymax": 0.2562674094707521
+                    }
+                },
+                {
+                    "text": "CL",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 32
+                    },
+                    "vertices": {
+                        "xmin": 0.2791666666666667,
+                        "ymin": 0.2966573816155989,
+                        "xmax": 0.3958333333333333,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "td",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 31
+                    },
+                    "vertices": {
+                        "xmin": 0.4791666666666667,
+                        "ymin": 0.29526462395543174,
+                        "xmax": 0.5625,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "ee",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 30
+                    },
+                    "vertices": {
+                        "xmin": 0.6916666666666667,
+                        "ymin": 0.2938718662952646,
+                        "xmax": 1.2479166666666666,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "IN",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.275,
+                        "ymin": 0.3983286908077994,
+                        "xmax": 0.38333333333333336,
+                        "ymax": 0.4623955431754875
+                    }
+                },
+                {
+                    "text": "VIRGIL",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.45,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 0.81875,
+                        "ymax": 0.4623955431754875
+                    }
+                },
+                {
+                    "text": "TEXAS.",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.8666666666666667,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 1.2520833333333334,
+                        "ymax": 0.4623955431754875
+                    }
+                }
+            ]
+        },
+        {
+            "start": "24.0",
+            "objects": [
+                {
+                    "text": "A",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 94
+                    },
+                    "vertices": {
+                        "xmin": 0.28125,
+                        "ymin": 0.19498607242339833,
+                        "xmax": 0.35,
+                        "ymax": 0.2590529247910863
+                    }
+                },
+                {
+                    "text": "FILM",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.42083333333333334,
+                        "ymin": 0.1935933147632312,
+                        "xmax": 0.6854166666666667,
+                        "ymax": 0.2576601671309192
+                    }
+                },
+                {
+                    "text": "ABOUT",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 95
+                    },
+                    "vertices": {
+                        "xmin": 0.7458333333333333,
+                        "ymin": 0.19080779944289694,
+                        "xmax": 1.1104166666666666,
+                        "ymax": 0.2562674094707521
+                    }
+                },
+                {
+                    "text": "A",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 1.175,
+                        "ymin": 0.19220055710306408,
+                        "xmax": 1.2479166666666666,
+                        "ymax": 0.2562674094707521
+                    }
+                },
+                {
+                    "text": "CU",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 23
+                    },
+                    "vertices": {
+                        "xmin": 0.2791666666666667,
+                        "ymin": 0.2966573816155989,
+                        "xmax": 0.3958333333333333,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "td",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 33
+                    },
+                    "vertices": {
+                        "xmin": 0.4791666666666667,
+                        "ymin": 0.29526462395543174,
+                        "xmax": 0.5625,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "ee",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 28
+                    },
+                    "vertices": {
+                        "xmin": 0.6916666666666667,
+                        "ymin": 0.2938718662952646,
+                        "xmax": 1.2479166666666666,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "ALS",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 29
+                    },
+                    "vertices": {
+                        "xmin": 0.45,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 0.81875,
+                        "ymax": 0.4623955431754875
+                    }
+                },
+                {
+                    "text": ">",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 39
+                    },
+                    "vertices": {
+                        "xmin": 0.9458333333333333,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 0.9833333333333333,
+                        "ymax": 0.4610027855153203
+                    }
+                },
+                {
+                    "text": "be",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 13
+                    },
+                    "vertices": {
+                        "xmin": 1.0,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 1.2520833333333334,
+                        "ymax": 0.4623955431754875
+                    }
+                }
+            ]
+        },
+        {
+            "start": "24.5",
+            "objects": [
+                {
+                    "text": "A",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 94
+                    },
+                    "vertices": {
+                        "xmin": 0.28125,
+                        "ymin": 0.19498607242339833,
+                        "xmax": 0.35,
+                        "ymax": 0.2590529247910863
+                    }
+                },
+                {
+                    "text": "FILM",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.42083333333333334,
+                        "ymin": 0.1935933147632312,
+                        "xmax": 0.6854166666666667,
+                        "ymax": 0.2576601671309192
+                    }
+                },
+                {
+                    "text": "ABOUT",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 95
+                    },
+                    "vertices": {
+                        "xmin": 0.7458333333333333,
+                        "ymin": 0.19080779944289694,
+                        "xmax": 1.1104166666666666,
+                        "ymax": 0.2562674094707521
+                    }
+                },
+                {
+                    "text": "A",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 1.175,
+                        "ymin": 0.19220055710306408,
+                        "xmax": 1.2479166666666666,
+                        "ymax": 0.2562674094707521
+                    }
+                },
+                {
+                    "text": "CU",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 23
+                    },
+                    "vertices": {
+                        "xmin": 0.2791666666666667,
+                        "ymin": 0.2966573816155989,
+                        "xmax": 0.3958333333333333,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "td",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 33
+                    },
+                    "vertices": {
+                        "xmin": 0.4791666666666667,
+                        "ymin": 0.29526462395543174,
+                        "xmax": 0.5625,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "ee",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 28
+                    },
+                    "vertices": {
+                        "xmin": 0.6916666666666667,
+                        "ymin": 0.2938718662952646,
+                        "xmax": 1.2479166666666666,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "ALS",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 29
+                    },
+                    "vertices": {
+                        "xmin": 0.45,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 0.81875,
+                        "ymax": 0.4623955431754875
+                    }
+                },
+                {
+                    "text": ">",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 39
+                    },
+                    "vertices": {
+                        "xmin": 0.9458333333333333,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 0.9833333333333333,
+                        "ymax": 0.4610027855153203
+                    }
+                },
+                {
+                    "text": "be",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 13
+                    },
+                    "vertices": {
+                        "xmin": 1.0,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 1.2520833333333334,
+                        "ymax": 0.4623955431754875
+                    }
+                }
+            ]
+        },
+        {
+            "start": "25.0",
+            "objects": [
+                {
+                    "text": "A",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 94
+                    },
+                    "vertices": {
+                        "xmin": 0.28125,
+                        "ymin": 0.19498607242339833,
+                        "xmax": 0.35,
+                        "ymax": 0.2590529247910863
+                    }
+                },
+                {
+                    "text": "FILM",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 0.42083333333333334,
+                        "ymin": 0.1935933147632312,
+                        "xmax": 0.6854166666666667,
+                        "ymax": 0.2576601671309192
+                    }
+                },
+                {
+                    "text": "ABOUT",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 95
+                    },
+                    "vertices": {
+                        "xmin": 0.7458333333333333,
+                        "ymin": 0.19080779944289694,
+                        "xmax": 1.1104166666666666,
+                        "ymax": 0.2562674094707521
+                    }
+                },
+                {
+                    "text": "A",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 96
+                    },
+                    "vertices": {
+                        "xmin": 1.175,
+                        "ymin": 0.19220055710306408,
+                        "xmax": 1.2479166666666666,
+                        "ymax": 0.2562674094707521
+                    }
+                },
+                {
+                    "text": "CU",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 23
+                    },
+                    "vertices": {
+                        "xmin": 0.2791666666666667,
+                        "ymin": 0.2966573816155989,
+                        "xmax": 0.3958333333333333,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "td",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 33
+                    },
+                    "vertices": {
+                        "xmin": 0.4791666666666667,
+                        "ymin": 0.29526462395543174,
+                        "xmax": 0.5625,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "ee",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 28
+                    },
+                    "vertices": {
+                        "xmin": 0.6916666666666667,
+                        "ymin": 0.2938718662952646,
+                        "xmax": 1.2479166666666666,
+                        "ymax": 0.3607242339832869
+                    }
+                },
+                {
+                    "text": "AL",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 33
+                    },
+                    "vertices": {
+                        "xmin": 0.46041666666666664,
+                        "ymin": 0.3983286908077994,
+                        "xmax": 0.5604166666666667,
+                        "ymax": 0.4623955431754875
+                    }
+                },
+                {
+                    "text": "<a",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 11
+                    },
+                    "vertices": {
+                        "xmin": 0.59375,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 0.7541666666666667,
+                        "ymax": 0.4623955431754875
+                    }
+                },
+                {
+                    "text": ">",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 42
+                    },
+                    "vertices": {
+                        "xmin": 0.9458333333333333,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 0.9833333333333333,
+                        "ymax": 0.4610027855153203
+                    }
+                },
+                {
+                    "text": "be",
+                    "score": {
+                        "type": "confidence",
+                        "scoreValue": 5
+                    },
+                    "vertices": {
+                        "xmin": 1.0,
+                        "ymin": 0.3969359331476323,
+                        "xmax": 1.2520833333333334,
+                        "ymax": 0.4623955431754875
+                    }
+                }
+            ]
+        }
+    ]
+}

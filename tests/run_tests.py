@@ -8,16 +8,19 @@ import logging
 import re
 import xml.etree.ElementTree as ET
 import tempfile
-
+import shutil
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("mgm_dir", help="Directory with MGMs")
     parser.add_argument("suite", help="Test suite YAML file")
+    parser.add_argument("only_these_tests", nargs="*", help="Only run the named tests")
     args = parser.parse_args()
     logging.basicConfig(format="%(asctime)s [%(levelname)-8s] (%(filename)s:%(lineno)d)  %(message)s",
                         level=logging.DEBUG if args.debug else logging.INFO)
+    
+        
     # load the fixture file names
     fixtures = {}
     for f in Path(sys.path[0], "fixtures").glob("*"):
@@ -33,9 +36,16 @@ def main():
     passes = 0
     fails = 0
     for test in tests:
+        if args.only_these_tests and test['name'] not in args.only_these_tests:
+            logging.debug(f"Skipping {test['name']} because it's not in {args.only_these_tests}")
+            continue
         cur_test += 1
-        tool_file = mgm_dir / test["tool"]
-        
+
+        if test.get("skip", False):
+            logging.info(f"Skipping {test['name']}")
+            continue
+
+        tool_file = mgm_dir / test["tool"]        
         context = f"({cur_test}/{len(tests)}) '{test['name']}'"
         if not tool_file.exists():
             logging.error(f"{context} failed:  tool file {tool_file} doesn't exist")
@@ -48,7 +58,8 @@ def main():
 
         # build the parameters needed for substitution
         params = {'__tool_directory__': str(mgm_dir.absolute())}
-        params.update(test["params"])
+        if 'params' in test:
+            params.update(test["params"])
 
         # get the input fixtures
         missing_fixture = False
@@ -94,7 +105,7 @@ set -e
             p = subprocess.run([str(runscript)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf-8")
             if p.returncode != 0:
                 logging.error(f"{context} runscript failed with return code {p.returncode}")
-                logging.error(p.stderr)
+                logging.error(p.stdout)
                 fails += 1
                 continue
 
@@ -150,9 +161,14 @@ def test_ffprobe(file, args):
         p = subprocess.run(['ffprobe', '-loglevel', 'panic', '-print_format', 'xml', '-show_streams', '-show_format', file], 
                            stdout=subprocess.PIPE, encoding='utf-8')
         ffprobes[file] = ET.fromstring(p.stdout)    
+        logging.debug(ET.tostring(ffprobes[file], encoding='utf-8'))
     ffprobe = ffprobes[file]
     return _test_xml(file, ffprobe, args)
 
+def test_xml(file, args):
+    "Just read the xml file and pass it along"
+    xml = ET.parse(file)
+    return _test_xml(file, xml, args)
 
 def _test_xml(context, xml, args):    
     node = xml.find(args['path'])
@@ -168,11 +184,58 @@ def _test_xml(context, xml, args):
         return False
     return True
 
+def test_magic(file, args):
+    "compare the mime type"
+    p = subprocess.run(['file', '-b', '--mime-type', file], stdout=subprocess.PIPE, encoding='utf-8')
+    mime = p.stdout.strip()
+    if mime != args['mime']:
+        logging.error(f"{file} should be type {args['mime']} but got {mime}")
+        return False
+    return True
+
+def test_size(file, args):
+    "compare the file size"
+    size = Path(file).stat().st_size
+    if int(args['size']) != size:
+        logging.error(f"{file} expected file size of {args['size']} but got {size} instead")
+        return False
+    return True
+
+def test_debug(file, args):
+    """Allow some thigns that make debugging easier"""
+    if args.get("save", False):
+        logging.info(f"Copying {file} to {args.get('save')}")
+        shutil.copy(file, args.get("save"))
+            
+    return True
+
+def test_strings(file, args):
+    "check if the file contains the strings"
+    with open(file, encoding='utf-8') as f:
+        data = f.read()
+        if not isinstance(args['strings'], list):
+            args['strings'] = [args['strings']]
+        for s in args['strings']:
+            if s not in data:
+                logging.error(f"{file} String '{s}' not in the file")
+                return False
+
+    return True
+
+def test_md5(file, args):
+    "compare the MD5 of the file"
+    pass
 
 
 test_functions = {
     'pass': test_pass,
-    'ffprobe': test_ffprobe
+    'magic': test_magic,
+    'ffprobe': test_ffprobe,
+    'xmlfile': test_xml,
+    'size': test_size,
+    'debug': test_debug,
+    'strings': test_strings,
+    'md5': test_md5,
 }
 
 
