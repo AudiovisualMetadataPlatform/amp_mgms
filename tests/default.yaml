@@ -1,0 +1,18 @@
+# This is the default test suite
+- name: Extract Audio
+  tool: extract_audio.xml
+  inputs:
+    input_av: video.m4v
+  outputs:
+    audio_extracted:
+      - {test: pass, status: true}
+      - {test: ffprobe, path: "streams/stream[1]", attrib: 'codec_name', value: "pcm_s16le"}
+      - {test: ffprobe, path: "streams/stream[1]", attrib: 'sample_rate', value: "44100"}
+      - {test: ffprobe, path: "streams/stream[1]", attrib: 'channels', value: "1"}
+      - {test: ffprobe, path: "format", attrib: "format_name", value: "wav"}
+  params:    
+    rate: 44100
+    channels: 1
+    sample_size: pcm_s16le
+
+
