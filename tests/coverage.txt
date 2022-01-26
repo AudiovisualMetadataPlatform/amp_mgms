@@ -1,0 +1,35 @@
+adjust_diarization_timestamps.xml
+adjust_transcript_timestamps.xml
+applause_detection_to_avalon_xml.xml
+applause_detection.xml - Done
+aws_comprehend.xml
+aws_transcribe.xml
+azure_shot_detection.xml - Done
+azure_video_indexer.xml - Done
+azure_video_ocr.xml - Fails tests because it was broken prior to refactor
+contact_sheets_collection.xml
+contact_sheets.xml
+    * time - Done
+    * quantity - Done
+    * shot - Done
+    * facial
+dlib_face_recognition.xml
+extract_audio.xml - Done
+gentle_forced_alignment.xml - Maybe?  Takes a ton of time to run...
+hmgm_ner.xml
+hmgm_segmentation.xml
+hmgm_transcript.xml
+ina_speech_segmenter.xml - Done
+kaldi.xml - Done
+keep_speech.xml
+ner_to_csv.xml
+pyscenedetect.xml - Done
+remove_silence_speech.xml
+remove_trailing_silence.xml - Done
+spacy.xml
+supplement.xml - Skipping, because this only makes sense in the context of Galaxy
+tesseract.xml - Done
+transcript_to_webvtt.xml
+vocabulary_tagging.xml
+vocr_to_csv.xml - Fails tests because it was broken prior to refactor
+vtt_generator.xml

@@ -1,0 +1,13 @@
+{
+    "media": {
+        "filename": "audio.mp3",
+        "duration": 76.08
+    },
+    "segments": [
+        {
+            "label": "non-applause",
+            "start": 0.0,
+            "end": 76.08
+        }
+    ]
+}

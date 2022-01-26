@@ -55,7 +55,7 @@ def main():
 	parser.add_argument("kaldi_transcript_file")
 	parser.add_argument("output_json_file")
 	args = parser.parse_args()
-	convert(amp.media_file, amp.kaldi_file, amp.kaldi_transcript_file, amp.output_json_file)
+	convert(args.media_file, args.kaldi_file, args.kaldi_transcript_file, args.output_json_file)
 
 
 if __name__ == "__main__":

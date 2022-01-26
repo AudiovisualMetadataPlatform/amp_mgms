@@ -1,4 +1,69 @@
 # This is the default test suite -- local tools
+- name: Applause Detection
+  tool: applause_detection.xml
+  inputs:
+    input_audio: audio.mp3
+  params:
+    min_segment_duration: 3000
+  outputs:
+    amp_applause_segments:
+      - {test: magic, mime: text/plain}
+      - {test: strings, strings: [segments, label, start, end]}      
+
+- name: Contact Sheets - shot
+  tool: contact_sheets.xml
+  inputs:
+    input_video: video.m4v
+    amp_shots: amp_shots.json
+  params:
+    type: shot
+    amp_faces: none
+    frame_seconds: 0
+    frame_quantity: 0
+    number_of_columns: 4
+    photo_width: 300
+    margin: 10
+    padding: 3
+  outputs:
+    contact_sheet:
+      - {test: magic, mime: image/png}
+
+- name: Contact Sheets - time
+  tool: contact_sheets.xml
+  inputs:
+    input_video: video.m4v    
+  params:
+    type: time
+    amp_shots: ""
+    amp_faces: ""
+    frame_seconds: 10
+    frame_quantity: 0
+    number_of_columns: 4
+    photo_width: 300
+    margin: 10
+    padding: 3
+  outputs:
+    contact_sheet:
+      - {test: magic, mime: image/png}
+
+- name: Contact Sheets - quantity
+  tool: contact_sheets.xml
+  inputs:
+    input_video: video.m4v    
+  params:
+    type: quantity
+    amp_shots: ""
+    amp_faces: ""
+    frame_seconds: 0
+    frame_quantity: 10
+    number_of_columns: 4
+    photo_width: 300
+    margin: 10
+    padding: 3
+  outputs:
+    contact_sheet:
+      - {test: magic, mime: image/png}
+
 
 - name: Extract Audio
   tool: extract_audio.xml
@@ -15,6 +80,45 @@
     channels: 1
     sample_size: pcm_s16le
 
+- name: INA Speech Segmenter
+  tool: ina_speech_segmenter.xml
+  inputs:
+    input_audio: audio.mp3
+  outputs:
+    amp_segments:
+      - {test: magic, mime: text/plain}
+      - {test: strings, strings: [segments, silence, gender, start, end]}
+
+- name: Kaldi
+  tool: kaldi.xml
+  inputs:
+    input_audio: audio.mp3
+  outputs:
+    kaldi_transcript_text:
+      - {test: magic, mime: text/plain}
+      - {test: strings, strings: "celebration of specialness"}
+    kaldi_transcript_json:
+      - {test: magic, mime: text/plain}
+      - {test: strings, strings: "duration"}
+    amp_transcript:
+      - {test: magic, mime: text/plain}
+      - {test: strings, strings: "celebration of specialness"}
+
+
+- name: PyScene Detect
+  tool: pyscenedetect.xml
+  inputs:
+    input_video: video.m4v
+  params:
+    threshold: 30
+  outputs:
+    amp_shots:
+      - {test: magic, mime: text/plain}
+      - {test: json, path: shots/i0/type, value: shot}
+      - {test: json, path: shots/i0/start, value: "0.0"}
+    frame_stats:
+      - {test: magic, mime: text/plain}
+      - {test: strings, strings: [Frame Number, Timecode, content_val, delta_hue, delta_lum, delta_sat]}
 
 - name: Remove Trailing Silence
   tool: remove_trailing_silence.xml
@@ -39,9 +143,7 @@
 
 - name: VOCR to CSV
   tool: vocr_to_csv.xml
-  # Both the original and this version fail with "unexpected keyword argument 'scoreValue'"
-  # so the MGM is broken and has been for a while.
-  skip: true
+  skip: This was broken in the pre-refactored code, and remains so now.
   inputs:
     amp_vocr: vocr.json
   outputs:

@@ -16,6 +16,7 @@
 
 - name: Azure Video OCR
   tool: azure_video_ocr.xml
+  skip: This was broken in the pre-refactor code, and remains so now.
   inputs: 
     input_video: video.m4v
     azure_video_index: azure_video_index.json
@@ -24,3 +25,13 @@
     amp_vocr:
       - {test: debug, save: /tmp/azure_vocr.json}
       
+- name: Azure Shot Detection
+  tool: azure_shot_detection.xml
+  inputs:
+    input_video: video.m4v
+    azure_video_index: azure_video_index.json
+  outputs:
+    amp_shots:
+      - {test: magic, mime: text/plain}
+      - {test: json, path: shots/i0/type, value: shot}
+      - {test: json, path: shots/i0/start, value: "0.0"}

@@ -17,20 +17,20 @@ def main():
 	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 	parser.add_argument("input_file", help="Source file")
 	parser.add_argument("type", choices=['time', 'quantity', 'shot', 'facial'], help="sheet type")
+	parser.add_argument("contact_sheet", help="Output contact sheet")
 	parser.add_argument("--frame_seconds", type=int, default=0, help="seconds per frame")
 	parser.add_argument("--frame_quantity", type=int, default=0, help="frame quantity")
 	parser.add_argument("--amp_shots", default='', help="AMP shots file")
 	parser.add_argument("--amp_facial_recognition", default='', help="AMP Facial recognition file")
-	parser.add_argument("--amp_contact_sheets", default='', help="AMP Contact sheets")
 	parser.add_argument('--number_of_columns', type=int, default=4, help="Number of columns")
 	parser.add_argument('--photow', type=int, default=300, help="Photo width")
 	parser.add_argument('--margin', type=int, default=10, help="Margin")
 	parser.add_argument('--padding', type=int, default=3, help="Padding")
 	args = parser.parse_args()
 	logging.info(f"Starting with args {args}")
-	(input_file, type, frame_seconds, frame_quantity, amp_shots, amp_facial_recognition,
-		amp_contact_sheets, number_of_columns, photow, margin, padding) = (args.input_file, args.type, args.frame_seconds, args.frame_quantity, args.amp_shots, args.amp_facial_recognition,
-		args.amp_contact_sheets, args.number_of_columns, args.photow, args.margin, args.padding)
+	(input_file, type, contact_sheet, frame_seconds, frame_quantity, amp_shots, amp_facial_recognition,
+		number_of_columns, photow, margin, padding) = (args.input_file, args.type, args.contact_sheet, args.frame_seconds, args.frame_quantity, args.amp_shots, args.amp_facial_recognition,
+		args.number_of_columns, args.photow, args.margin, args.padding)
 
 	# Print for debugging purposes
 	logging.debug("Input File: " + input_file)
@@ -39,14 +39,14 @@ def main():
 	logging.debug("frame_quantity: " + str(frame_quantity))
 	logging.debug("amp_shots: " + amp_shots)
 	logging.debug("amp_facial_recognition: " + amp_facial_recognition)
-	logging.debug("Output File: " + amp_contact_sheets)
+	logging.debug("Output File: " + contact_sheet)
 	logging.debug("Number of Columns: " + str(number_of_columns))
 	logging.debug("Photo Width: " + str(photow))
 	logging.debug("Margin: " + str(margin))
 	logging.debug("Padding: " + str(padding))
 
 	# Initialize the contact sheet
-	c = ContactSheet(input_file, amp_contact_sheets, number_of_columns, photow, margin, padding)
+	c = ContactSheet(input_file, contact_sheet, number_of_columns, photow, margin, padding)
 
 	# Based on input, create the contact sheet
 	if type == 'time':

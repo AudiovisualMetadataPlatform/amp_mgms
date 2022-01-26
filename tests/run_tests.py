@@ -43,8 +43,8 @@ def main():
             continue
         cur_test += 1
 
-        if test.get("skip", False):
-            logging.info(f"Skipping {test['name']}")
+        if 'skip' in test:        
+            logging.info(f"Skipping {test['name']}: {test['skip']}")
             continue
 
         tool_file = mgm_dir / test["tool"]        
@@ -89,9 +89,9 @@ def main():
             for k, v in params.items():
                 command_text = command_text.replace("$" + k, str(v))
             if '$' in command_text:
-                logging.warn(f"{context} Command text still contains a '$':  are all parameters substituted?")
-                logging.warn(f"{command_text}")            
-
+                logging.error(f"{context} Command text still contains a '$':  are all parameters substituted?")
+                logging.error(f"{command_text}")            
+                exit(1)
 
             runscript = Path(tempdir, "runscript.sh")
             # build the shell script

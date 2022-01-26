@@ -1,0 +1,8 @@
+- name: AWS Comprehend
+  tool: aws_comprehend.xml
+  inputs:
+    
+  params:
+
+  outputs:
+  

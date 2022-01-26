@@ -1,0 +1,12 @@
+# Gentle is really slow, so it gets its own config
+- name: Gentle Forced Alignment
+  tool: gentle_force_alignment
+  inputs:
+    speech_audio: audio.mp3
+    amp_transcript_unaligned: kaldi_amp.json
+  outputs:
+    gentle_transcript:
+      - {test: magic, mime: text/plain}
+    amp_transcript:          
+      - {test: magic, mime: text/plain}
+      - {test: strings, strings: "celebration of specialness"}
