@@ -29,6 +29,7 @@ def main():
 		parser.add_argument("input_file", help="Input file")
 		parser.add_argument("output_name", help="Output filename")
 		args = parser.parse_args()
+		logging.info(f"Starting with args={args}")
 		(input_file, output_name) = (args.input_file, args.output_name)
 
 		dateTimeObj = datetime.now()

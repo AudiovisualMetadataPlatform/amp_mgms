@@ -120,4 +120,9 @@ def get_sif_dir(root_dir):
     logging.error("get_sif_dir Deprecated")
     return None
 
-
+# get the AWS credentials from the config file and return them as a dict
+def get_aws_credentials():
+    config = get_config()
+    res = config._sections['aws']
+    logging.debug(f"AWS credentials: {res}")
+    return res

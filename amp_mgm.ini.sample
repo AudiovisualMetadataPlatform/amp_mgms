@@ -39,3 +39,7 @@ project = SOME_PROJECT
 accountId = asdfasdf
 apiKey = asdfasdfa
 s3Bucket = some-bucket
+
+[aws]
+aws_access_key_id=some_key
+aws_secret_access_key=some secret access key

@@ -85,7 +85,7 @@ class TimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
 
 def setup_logging():
     # IF --debug appears in the arguments, set the level to DEBUG    
-    logging_level = logging.DEBUG if '--debug' in sys.argv else logging.INFO    
+    logging_level = logging.DEBUG if '--debug' in sys.argv or 'MGM_DEBUG' in os.environ else logging.INFO    
 
     formatter = logging.Formatter("%(asctime)s [%(levelname)-8s] (%(filename)s:%(lineno)d:%(process)d)  %(message)s")
 

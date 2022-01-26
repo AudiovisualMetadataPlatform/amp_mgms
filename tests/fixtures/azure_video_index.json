@@ -1,0 +1,1646 @@
+{
+    "partition": "No Partition",
+    "description": "AMP File Upload",
+    "privacyMode": "Private",
+    "state": "Processed",
+    "accountId": "ca154ae3-45c8-4a39-9e89-a7b7a6525a8c",
+    "id": "8778dce51b",
+    "name": "amp_video_1643156761650",
+    "userName": "Fischer, Daniel",
+    "created": "2022-01-26T00:26:02.5490974+00:00",
+    "isOwned": true,
+    "isEditable": true,
+    "isBase": true,
+    "durationInSeconds": 48,
+    "summarizedInsights": {
+        "name": "amp_video_1643156761650",
+        "id": "8778dce51b",
+        "privacyMode": "Private",
+        "duration": {
+            "time": "0:00:48.465",
+            "seconds": 48.5
+        },
+        "thumbnailVideoId": "8778dce51b",
+        "thumbnailId": "a523991a-f204-4aa4-b399-6663a2db50dc",
+        "faces": [
+            {
+                "videoId": "8778dce51b",
+                "referenceId": "677cd048-2bfc-8e48-5a2d-9b1b265356f6",
+                "referenceType": "Bing",
+                "confidence": 0.7922,
+                "description": "David Byrne is a Scottish-American singer, songwriter, record producer, actor, writer, music theorist, and filmmaker. He was a founding member and the principal songwriter, lead singer, and guitarist of the American new wave band Talking Heads.",
+                "title": "Singer",
+                "thumbnailId": "3a9faf9e-85a8-47f2-a7d2-a6e4cefd7eb1",
+                "seenDuration": 23.1,
+                "seenDurationRatio": 0.4766,
+                "id": 1000,
+                "name": "David Byrne",
+                "appearances": [
+                    {
+                        "startTime": "0:00:25.442",
+                        "endTime": "0:00:48.465",
+                        "startSeconds": 25.4,
+                        "endSeconds": 48.5
+                    }
+                ]
+            }
+        ],
+        "keywords": [
+            {
+                "isTranscript": true,
+                "id": 3,
+                "name": "virgil",
+                "appearances": [
+                    {
+                        "startTime": "0:00:20.0199999",
+                        "endTime": "0:00:26.88",
+                        "startSeconds": 20,
+                        "endSeconds": 26.9
+                    },
+                    {
+                        "startTime": "0:00:39.59",
+                        "endTime": "0:00:43.69",
+                        "startSeconds": 39.6,
+                        "endSeconds": 43.7
+                    }
+                ]
+            },
+            {
+                "isTranscript": false,
+                "id": 1,
+                "name": "bros",
+                "appearances": [
+                    {
+                        "startTime": "0:00:05.0049999",
+                        "endTime": "0:00:13.0547082",
+                        "startSeconds": 5,
+                        "endSeconds": 13.1
+                    }
+                ]
+            },
+            {
+                "isTranscript": false,
+                "id": 2,
+                "name": "pictures",
+                "appearances": [
+                    {
+                        "startTime": "0:00:05.0049999",
+                        "endTime": "0:00:13.0547082",
+                        "startSeconds": 5,
+                        "endSeconds": 13.1
+                    }
+                ]
+            }
+        ],
+        "sentiments": [
+            {
+                "sentimentKey": "Neutral",
+                "seenDurationRatio": 0.9306,
+                "appearances": [
+                    {
+                        "startTime": "0:00:00",
+                        "endTime": "0:00:30.55",
+                        "startSeconds": 0,
+                        "endSeconds": 30.6
+                    },
+                    {
+                        "startTime": "0:00:33.99",
+                        "endTime": "0:00:48.465",
+                        "startSeconds": 34,
+                        "endSeconds": 48.5
+                    }
+                ]
+            },
+            {
+                "sentimentKey": "Positive",
+                "seenDurationRatio": 0.0702,
+                "appearances": [
+                    {
+                        "startTime": "0:00:30.55",
+                        "endTime": "0:00:33.99",
+                        "startSeconds": 30.6,
+                        "endSeconds": 34
+                    }
+                ]
+            }
+        ],
+        "emotions": [
+            {
+                "type": "Joy",
+                "seenDurationRatio": 0.0702,
+                "appearances": [
+                    {
+                        "startTime": "0:00:30.55",
+                        "endTime": "0:00:33.99",
+                        "startSeconds": 30.6,
+                        "endSeconds": 34
+                    }
+                ]
+            }
+        ],
+        "audioEffects": [
+            {
+                "audioEffectKey": "Silence",
+                "seenDurationRatio": 0.4787,
+                "seenDuration": 23.2,
+                "appearances": [
+                    {
+                        "confidence": 1,
+                        "startTime": "0:00:00",
+                        "endTime": "0:00:23.2",
+                        "startSeconds": 0,
+                        "endSeconds": 23.2
+                    }
+                ]
+            }
+        ],
+        "labels": [
+            {
+                "id": 4,
+                "name": "sky",
+                "appearances": [
+                    {
+                        "confidence": 0.9732,
+                        "startTime": "0:00:05.0049999",
+                        "endTime": "0:00:13.0547082",
+                        "startSeconds": 5,
+                        "endSeconds": 13.1
+                    },
+                    {
+                        "confidence": 0.9632,
+                        "startTime": "0:00:26.0259999",
+                        "endTime": "0:00:48.0897082",
+                        "startSeconds": 26,
+                        "endSeconds": 48.1
+                    }
+                ]
+            },
+            {
+                "id": 1,
+                "name": "text",
+                "appearances": [
+                    {
+                        "confidence": 0.9586,
+                        "startTime": "0:00:00",
+                        "endTime": "0:00:25.0667083",
+                        "startSeconds": 0,
+                        "endSeconds": 25.1
+                    }
+                ]
+            },
+            {
+                "id": 6,
+                "name": "grass",
+                "appearances": [
+                    {
+                        "confidence": 0.9821,
+                        "startTime": "0:00:26.0259999",
+                        "endTime": "0:00:48.0897082",
+                        "startSeconds": 26,
+                        "endSeconds": 48.1
+                    }
+                ]
+            },
+            {
+                "id": 7,
+                "name": "clothing",
+                "appearances": [
+                    {
+                        "confidence": 0.9806,
+                        "startTime": "0:00:26.0259999",
+                        "endTime": "0:00:48.0897082",
+                        "startSeconds": 26,
+                        "endSeconds": 48.1
+                    }
+                ]
+            },
+            {
+                "id": 9,
+                "name": "hat",
+                "appearances": [
+                    {
+                        "confidence": 0.9551,
+                        "startTime": "0:00:26.0259999",
+                        "endTime": "0:00:48.0897082",
+                        "startSeconds": 26,
+                        "endSeconds": 48.1
+                    }
+                ]
+            },
+            {
+                "id": 8,
+                "name": "person",
+                "appearances": [
+                    {
+                        "confidence": 0.978,
+                        "startTime": "0:00:26.0259999",
+                        "endTime": "0:00:47.0887083",
+                        "startSeconds": 26,
+                        "endSeconds": 47.1
+                    }
+                ]
+            },
+            {
+                "id": 10,
+                "name": "human face",
+                "appearances": [
+                    {
+                        "confidence": 0.9506,
+                        "startTime": "0:00:27.027",
+                        "endTime": "0:00:30.0717083",
+                        "startSeconds": 27,
+                        "endSeconds": 30.1
+                    },
+                    {
+                        "confidence": 0.959,
+                        "startTime": "0:00:34.034",
+                        "endTime": "0:00:39.0807082",
+                        "startSeconds": 34,
+                        "endSeconds": 39.1
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "name": "cloud",
+                "appearances": [
+                    {
+                        "confidence": 0.9884,
+                        "startTime": "0:00:05.0049999",
+                        "endTime": "0:00:13.0547082",
+                        "startSeconds": 5,
+                        "endSeconds": 13.1
+                    },
+                    {
+                        "confidence": 0.9578,
+                        "startTime": "0:00:48.0479999",
+                        "endTime": "0:00:48.0897082",
+                        "startSeconds": 48,
+                        "endSeconds": 48.1
+                    }
+                ]
+            },
+            {
+                "id": 5,
+                "name": "font",
+                "appearances": [
+                    {
+                        "confidence": 0.9709,
+                        "startTime": "0:00:20.0199999",
+                        "endTime": "0:00:25.0667083",
+                        "startSeconds": 20,
+                        "endSeconds": 25.1
+                    }
+                ]
+            },
+            {
+                "id": 11,
+                "name": "outdoor",
+                "appearances": [
+                    {
+                        "confidence": 0.9545,
+                        "startTime": "0:00:48.0479999",
+                        "endTime": "0:00:48.0897082",
+                        "startSeconds": 48,
+                        "endSeconds": 48.1
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "name": "hot air balloon",
+                "appearances": [
+                    {
+                        "confidence": 0.9732,
+                        "startTime": "0:00:05.0049999",
+                        "endTime": "0:00:05.0467082",
+                        "startSeconds": 5,
+                        "endSeconds": 5
+                    },
+                    {
+                        "confidence": 0.9805,
+                        "startTime": "0:00:13.0129999",
+                        "endTime": "0:00:13.0547082",
+                        "startSeconds": 13,
+                        "endSeconds": 13.1
+                    }
+                ]
+            }
+        ],
+        "framePatterns": [
+            {
+                "id": 1,
+                "name": "Black",
+                "appearances": [
+                    {
+                        "startTime": "0:00:00",
+                        "endTime": "0:00:04.54621",
+                        "startSeconds": 0,
+                        "endSeconds": 4.5
+                    },
+                    {
+                        "startTime": "0:00:13.3467",
+                        "endTime": "0:00:16.5582",
+                        "startSeconds": 13.3,
+                        "endSeconds": 16.6
+                    }
+                ]
+            }
+        ],
+        "brands": [
+            {
+                "referenceId": "Vericor_Power_Systems",
+                "referenceUrl": "http://en.wikipedia.org/wiki/Vericor_Power_Systems",
+                "confidence": 0.69,
+                "description": "Vericor Power Systems is a manufacturer of aeroderivative marine and industrial gas turbines based in Alpharetta, Georgia, United States. Vericor is a wholly owned subsidiary of German-based MTU Aero Engines.",
+                "seenDuration": 3.3,
+                "id": 1,
+                "name": "Vericor Power Systems",
+                "appearances": [
+                    {
+                        "startTime": "0:00:23.55",
+                        "endTime": "0:00:26.88",
+                        "startSeconds": 23.6,
+                        "endSeconds": 26.9
+                    }
+                ]
+            }
+        ],
+        "namedLocations": [
+            {
+                "referenceId": null,
+                "referenceUrl": null,
+                "confidence": 0.81,
+                "description": null,
+                "seenDuration": 3.1,
+                "id": 1,
+                "name": "court building",
+                "appearances": [
+                    {
+                        "startTime": "0:00:36.46",
+                        "endTime": "0:00:39.59",
+                        "startSeconds": 36.5,
+                        "endSeconds": 39.6
+                    }
+                ]
+            }
+        ],
+        "namedPeople": [
+            {
+                "referenceId": null,
+                "referenceUrl": null,
+                "confidence": 0.985,
+                "description": null,
+                "seenDuration": 7.4,
+                "id": 1,
+                "name": "Virgil",
+                "appearances": [
+                    {
+                        "startTime": "0:00:23.55",
+                        "endTime": "0:00:26.88",
+                        "startSeconds": 23.6,
+                        "endSeconds": 26.9
+                    },
+                    {
+                        "startTime": "0:00:39.59",
+                        "endTime": "0:00:43.69",
+                        "startSeconds": 39.6,
+                        "endSeconds": 43.7
+                    }
+                ]
+            }
+        ],
+        "statistics": {
+            "correspondenceCount": 1,
+            "speakerTalkToListenRatio": {
+                "1": 0.713,
+                "2": 0.286
+            },
+            "speakerLongestMonolog": {
+                "1": 16,
+                "2": 6
+            },
+            "speakerNumberOfFragments": {
+                "1": 1,
+                "2": 1
+            },
+            "speakerWordCount": {
+                "1": 36,
+                "2": 10
+            }
+        },
+        "topics": [
+            {
+                "referenceUrl": null,
+                "iptcName": null,
+                "iabName": null,
+                "confidence": 0.4928,
+                "id": 1,
+                "name": "Architecture & Civil Engineering",
+                "appearances": [
+                    {
+                        "startTime": "0:00:00",
+                        "endTime": "0:00:48.465",
+                        "startSeconds": 0,
+                        "endSeconds": 48.5
+                    }
+                ]
+            },
+            {
+                "referenceUrl": null,
+                "iptcName": null,
+                "iabName": null,
+                "confidence": 0.373,
+                "id": 2,
+                "name": "Buildings",
+                "appearances": [
+                    {
+                        "startTime": "0:00:00",
+                        "endTime": "0:00:48.465",
+                        "startSeconds": 0,
+                        "endSeconds": 48.5
+                    }
+                ]
+            }
+        ]
+    },
+    "videos": [
+        {
+            "accountId": "ca154ae3-45c8-4a39-9e89-a7b7a6525a8c",
+            "id": "8778dce51b",
+            "state": "Processed",
+            "moderationState": "OK",
+            "reviewState": "None",
+            "privacyMode": "Private",
+            "processingProgress": "100%",
+            "failureCode": "None",
+            "failureMessage": "",
+            "externalId": null,
+            "externalUrl": null,
+            "metadata": null,
+            "insights": {
+                "version": "1.0.0.0",
+                "duration": "0:00:48.465",
+                "sourceLanguage": "en-US",
+                "sourceLanguages": [
+                    "en-US"
+                ],
+                "language": "en-US",
+                "languages": [
+                    "en-US"
+                ],
+                "transcript": [
+                    {
+                        "id": 1,
+                        "text": "Many of Virgil's festivities are sponsored by Vericor.",
+                        "confidence": 0.6319,
+                        "speakerId": 1,
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:23.55",
+                                "adjustedEnd": "0:00:26.88",
+                                "start": "0:00:23.55",
+                                "end": "0:00:26.88"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "text": "It's a major public relations effort.",
+                        "confidence": 0.5412,
+                        "speakerId": 1,
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:26.88",
+                                "adjustedEnd": "0:00:30.55",
+                                "start": "0:00:26.88",
+                                "end": "0:00:30.55"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 3,
+                        "text": "They're calling it a celebration of special mass.",
+                        "confidence": 0.571,
+                        "speakerId": 1,
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:30.55",
+                                "adjustedEnd": "0:00:33.99",
+                                "start": "0:00:30.55",
+                                "end": "0:00:33.99"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 4,
+                        "text": "But this place is completely normal.",
+                        "confidence": 0.8477,
+                        "speakerId": 1,
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:33.99",
+                                "adjustedEnd": "0:00:36.46",
+                                "start": "0:00:33.99",
+                                "end": "0:00:36.46"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 5,
+                        "text": "Anyway. This is the very court building just",
+                        "confidence": 0.6422,
+                        "speakerId": 1,
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:36.46",
+                                "adjustedEnd": "0:00:39.59",
+                                "start": "0:00:36.46",
+                                "end": "0:00:39.59"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 6,
+                        "text": "outside Virgil. It's cool. It's a multipurpose shape.",
+                        "confidence": 0.5376,
+                        "speakerId": 2,
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:39.59",
+                                "adjustedEnd": "0:00:43.69",
+                                "start": "0:00:39.59",
+                                "end": "0:00:43.69"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 7,
+                        "text": "A box.",
+                        "confidence": 0.8175,
+                        "speakerId": 2,
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:43.69",
+                                "adjustedEnd": "0:00:46.037",
+                                "start": "0:00:43.69",
+                                "end": "0:00:46.037"
+                            }
+                        ]
+                    }
+                ],
+                "ocr": [
+                    {
+                        "id": 1,
+                        "text": "WARNER BROS. PICTURES",
+                        "confidence": 0.9687,
+                        "left": 207,
+                        "top": 173,
+                        "width": 301,
+                        "height": 45,
+                        "angle": 0,
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:05.0049999",
+                                "adjustedEnd": "0:00:13.0547082",
+                                "start": "0:00:05.0049999",
+                                "end": "0:00:13.0547082"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "text": "A WARNER COMMUNIGATIONS COMPANY",
+                        "confidence": 0.9058,
+                        "left": 138,
+                        "top": 340,
+                        "width": 440,
+                        "height": 25,
+                        "angle": 0,
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:05.0049999",
+                                "adjustedEnd": "0:00:06.0477082",
+                                "start": "0:00:05.0049999",
+                                "end": "0:00:06.0477082"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 3,
+                        "text": "TRUE STORIES",
+                        "confidence": 0.993,
+                        "left": 134,
+                        "top": 198,
+                        "width": 463,
+                        "height": 71,
+                        "angle": 0,
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:17.017",
+                                "adjustedEnd": "0:00:19.0607082",
+                                "start": "0:00:17.017",
+                                "end": "0:00:19.0607082"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 4,
+                        "text": "A FILM ABOUT A",
+                        "confidence": 0.9932,
+                        "left": 131,
+                        "top": 136,
+                        "width": 468,
+                        "height": 52,
+                        "angle": 0,
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:20.0199999",
+                                "adjustedEnd": "0:00:25.0667083",
+                                "start": "0:00:20.0199999",
+                                "end": "0:00:25.0667083"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 5,
+                        "text": "BUNCH OF PEOPLE",
+                        "confidence": 0.9977,
+                        "left": 127,
+                        "top": 209,
+                        "width": 473,
+                        "height": 52,
+                        "angle": 0,
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:20.0199999",
+                                "adjustedEnd": "0:00:25.0667083",
+                                "start": "0:00:20.0199999",
+                                "end": "0:00:25.0667083"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 6,
+                        "text": "IN VIRGIL TEXAS.",
+                        "confidence": 0.996,
+                        "left": 124,
+                        "top": 281,
+                        "width": 481,
+                        "height": 52,
+                        "angle": 0,
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:20.0199999",
+                                "adjustedEnd": "0:00:25.0667083",
+                                "start": "0:00:20.0199999",
+                                "end": "0:00:25.0667083"
+                            }
+                        ]
+                    }
+                ],
+                "keywords": [
+                    {
+                        "id": 1,
+                        "text": "bros",
+                        "confidence": 0.8041,
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:11.011",
+                                "adjustedEnd": "0:00:15.011",
+                                "start": "0:00:11.011",
+                                "end": "0:00:15.011"
+                            },
+                            {
+                                "adjustedStart": "0:00:07.341",
+                                "adjustedEnd": "0:00:07.8",
+                                "start": "0:00:07.341",
+                                "end": "0:00:07.8"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "text": "pictures",
+                        "confidence": 0.8041,
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:07.341",
+                                "adjustedEnd": "0:00:07.8",
+                                "start": "0:00:07.341",
+                                "end": "0:00:07.8"
+                            },
+                            {
+                                "adjustedStart": "0:00:08.717",
+                                "adjustedEnd": "0:00:09.176",
+                                "start": "0:00:08.717",
+                                "end": "0:00:09.176"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 3,
+                        "text": "virgil",
+                        "confidence": 0.7514,
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:23.55",
+                                "adjustedEnd": "0:00:26.88",
+                                "start": "0:00:23.55",
+                                "end": "0:00:26.88"
+                            },
+                            {
+                                "adjustedStart": "0:00:39.59",
+                                "adjustedEnd": "0:00:43.69",
+                                "start": "0:00:39.59",
+                                "end": "0:00:43.69"
+                            },
+                            {
+                                "adjustedStart": "0:00:20.187",
+                                "adjustedEnd": "0:00:22.94",
+                                "start": "0:00:20.187",
+                                "end": "0:00:22.94"
+                            }
+                        ]
+                    }
+                ],
+                "topics": [
+                    {
+                        "id": 1,
+                        "name": "Architecture & Civil Engineering",
+                        "referenceId": "Architecture & Civil Engineering",
+                        "referenceType": "VideoIndexer",
+                        "confidence": 0.4928,
+                        "iabName": null,
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:00",
+                                "adjustedEnd": "0:00:48.465",
+                                "start": "0:00:00",
+                                "end": "0:00:48.465"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "name": "Buildings",
+                        "referenceId": "Buildings",
+                        "referenceType": "VideoIndexer",
+                        "confidence": 0.373,
+                        "iabName": null,
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:00",
+                                "adjustedEnd": "0:00:48.465",
+                                "start": "0:00:00",
+                                "end": "0:00:48.465"
+                            }
+                        ]
+                    }
+                ],
+                "faces": [
+                    {
+                        "id": 1000,
+                        "name": "David Byrne",
+                        "confidence": 0.7922,
+                        "description": "David Byrne is a Scottish-American singer, songwriter, record producer, actor, writer, music theorist, and filmmaker. He was a founding member and the principal songwriter, lead singer, and guitarist of the American new wave band Talking Heads.",
+                        "thumbnailId": "3a9faf9e-85a8-47f2-a7d2-a6e4cefd7eb1",
+                        "referenceId": "677cd048-2bfc-8e48-5a2d-9b1b265356f6",
+                        "referenceType": "Bing",
+                        "title": "Singer",
+                        "imageUrl": "https://www.bing.com/th?id=AMMS_14d8d3dfedc626f25f864007f21d8344&c=12&rs=1&qlt=80&cdv=1&pid=16.2",
+                        "thumbnails": [
+                            {
+                                "id": "d96c10a5-6dff-404c-8c4d-b5aad9bdd1f2",
+                                "fileName": "FaceInstanceThumbnail_d96c10a5-6dff-404c-8c4d-b5aad9bdd1f2.jpg",
+                                "instances": [
+                                    {
+                                        "adjustedStart": "0:00:25.442",
+                                        "adjustedEnd": "0:00:25.484",
+                                        "start": "0:00:25.442",
+                                        "end": "0:00:25.484"
+                                    }
+                                ]
+                            },
+                            {
+                                "id": "59bc3fa8-9ae1-476c-a34c-b7432ce428d9",
+                                "fileName": "FaceInstanceThumbnail_59bc3fa8-9ae1-476c-a34c-b7432ce428d9.jpg",
+                                "instances": [
+                                    {
+                                        "adjustedStart": "0:00:30.447",
+                                        "adjustedEnd": "0:00:30.489",
+                                        "start": "0:00:30.447",
+                                        "end": "0:00:30.489"
+                                    }
+                                ]
+                            },
+                            {
+                                "id": "efe294f1-26d9-43c4-9a57-2ad10ddcc1c5",
+                                "fileName": "FaceInstanceThumbnail_efe294f1-26d9-43c4-9a57-2ad10ddcc1c5.jpg",
+                                "instances": [
+                                    {
+                                        "adjustedStart": "0:00:35.452",
+                                        "adjustedEnd": "0:00:35.494",
+                                        "start": "0:00:35.452",
+                                        "end": "0:00:35.494"
+                                    }
+                                ]
+                            },
+                            {
+                                "id": "0037d11c-463d-4b5b-9ace-66981ee8a92b",
+                                "fileName": "FaceInstanceThumbnail_0037d11c-463d-4b5b-9ace-66981ee8a92b.jpg",
+                                "instances": [
+                                    {
+                                        "adjustedStart": "0:00:40.457",
+                                        "adjustedEnd": "0:00:40.499",
+                                        "start": "0:00:40.457",
+                                        "end": "0:00:40.499"
+                                    }
+                                ]
+                            },
+                            {
+                                "id": "3a9faf9e-85a8-47f2-a7d2-a6e4cefd7eb1",
+                                "fileName": "FaceInstanceThumbnail_3a9faf9e-85a8-47f2-a7d2-a6e4cefd7eb1.jpg",
+                                "instances": [
+                                    {
+                                        "adjustedStart": "0:00:42.125",
+                                        "adjustedEnd": "0:00:42.167",
+                                        "start": "0:00:42.125",
+                                        "end": "0:00:42.167"
+                                    }
+                                ]
+                            },
+                            {
+                                "id": "93c272ac-1aeb-413a-a7b9-62a37f96167d",
+                                "fileName": "FaceInstanceThumbnail_93c272ac-1aeb-413a-a7b9-62a37f96167d.jpg",
+                                "instances": [
+                                    {
+                                        "adjustedStart": "0:00:45.462",
+                                        "adjustedEnd": "0:00:45.504",
+                                        "start": "0:00:45.462",
+                                        "end": "0:00:45.504"
+                                    }
+                                ]
+                            }
+                        ],
+                        "instances": [
+                            {
+                                "thumbnailsIds": [
+                                    "3a9faf9e-85a8-47f2-a7d2-a6e4cefd7eb1",
+                                    "93c272ac-1aeb-413a-a7b9-62a37f96167d",
+                                    "d96c10a5-6dff-404c-8c4d-b5aad9bdd1f2",
+                                    "59bc3fa8-9ae1-476c-a34c-b7432ce428d9",
+                                    "efe294f1-26d9-43c4-9a57-2ad10ddcc1c5",
+                                    "0037d11c-463d-4b5b-9ace-66981ee8a92b"
+                                ],
+                                "adjustedStart": "0:00:25.442",
+                                "adjustedEnd": "0:00:48.465",
+                                "start": "0:00:25.442",
+                                "end": "0:00:48.465"
+                            }
+                        ]
+                    }
+                ],
+                "labels": [
+                    {
+                        "id": 1,
+                        "name": "text",
+                        "referenceId": "communication/writing/text",
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "confidence": 0.9586,
+                                "adjustedStart": "0:00:00",
+                                "adjustedEnd": "0:00:25.0667083",
+                                "start": "0:00:00",
+                                "end": "0:00:25.0667083"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "name": "cloud",
+                        "referenceId": "natural phenomenon/weather/cloud",
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "confidence": 0.9884,
+                                "adjustedStart": "0:00:05.0049999",
+                                "adjustedEnd": "0:00:13.0547082",
+                                "start": "0:00:05.0049999",
+                                "end": "0:00:13.0547082"
+                            },
+                            {
+                                "confidence": 0.9578,
+                                "adjustedStart": "0:00:48.0479999",
+                                "adjustedEnd": "0:00:48.0897082",
+                                "start": "0:00:48.0479999",
+                                "end": "0:00:48.0897082"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 3,
+                        "name": "hot air balloon",
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "confidence": 0.9732,
+                                "adjustedStart": "0:00:05.0049999",
+                                "adjustedEnd": "0:00:05.0467082",
+                                "start": "0:00:05.0049999",
+                                "end": "0:00:05.0467082"
+                            },
+                            {
+                                "confidence": 0.9805,
+                                "adjustedStart": "0:00:13.0129999",
+                                "adjustedEnd": "0:00:13.0547082",
+                                "start": "0:00:13.0129999",
+                                "end": "0:00:13.0547082"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 4,
+                        "name": "sky",
+                        "referenceId": "atmosphere/sky",
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "confidence": 0.9732,
+                                "adjustedStart": "0:00:05.0049999",
+                                "adjustedEnd": "0:00:13.0547082",
+                                "start": "0:00:05.0049999",
+                                "end": "0:00:13.0547082"
+                            },
+                            {
+                                "confidence": 0.9632,
+                                "adjustedStart": "0:00:26.0259999",
+                                "adjustedEnd": "0:00:48.0897082",
+                                "start": "0:00:26.0259999",
+                                "end": "0:00:48.0897082"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 5,
+                        "name": "font",
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "confidence": 0.9709,
+                                "adjustedStart": "0:00:20.0199999",
+                                "adjustedEnd": "0:00:25.0667083",
+                                "start": "0:00:20.0199999",
+                                "end": "0:00:25.0667083"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 6,
+                        "name": "grass",
+                        "referenceId": "plant/herb/grass",
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "confidence": 0.9821,
+                                "adjustedStart": "0:00:26.0259999",
+                                "adjustedEnd": "0:00:48.0897082",
+                                "start": "0:00:26.0259999",
+                                "end": "0:00:48.0897082"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 7,
+                        "name": "clothing",
+                        "referenceId": "consumer goods/clothing",
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "confidence": 0.9806,
+                                "adjustedStart": "0:00:26.0259999",
+                                "adjustedEnd": "0:00:48.0897082",
+                                "start": "0:00:26.0259999",
+                                "end": "0:00:48.0897082"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 8,
+                        "name": "person",
+                        "referenceId": "person",
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "confidence": 0.978,
+                                "adjustedStart": "0:00:26.0259999",
+                                "adjustedEnd": "0:00:47.0887083",
+                                "start": "0:00:26.0259999",
+                                "end": "0:00:47.0887083"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 9,
+                        "name": "hat",
+                        "referenceId": "clothing/headdress/hat",
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "confidence": 0.9603,
+                                "adjustedStart": "0:00:26.0259999",
+                                "adjustedEnd": "0:00:26.0677082",
+                                "start": "0:00:26.0259999",
+                                "end": "0:00:26.0677082"
+                            },
+                            {
+                                "confidence": 0.9554,
+                                "adjustedStart": "0:00:28.028",
+                                "adjustedEnd": "0:00:29.0707082",
+                                "start": "0:00:28.028",
+                                "end": "0:00:29.0707082"
+                            },
+                            {
+                                "confidence": 0.9542,
+                                "adjustedStart": "0:00:31.0309999",
+                                "adjustedEnd": "0:00:33.0747082",
+                                "start": "0:00:31.0309999",
+                                "end": "0:00:33.0747082"
+                            },
+                            {
+                                "confidence": 0.9516,
+                                "adjustedStart": "0:00:35.0349999",
+                                "adjustedEnd": "0:00:35.0767082",
+                                "start": "0:00:35.0349999",
+                                "end": "0:00:35.0767082"
+                            },
+                            {
+                                "confidence": 0.9617,
+                                "adjustedStart": "0:00:38.0379999",
+                                "adjustedEnd": "0:00:38.0797082",
+                                "start": "0:00:38.0379999",
+                                "end": "0:00:38.0797082"
+                            },
+                            {
+                                "confidence": 0.9688,
+                                "adjustedStart": "0:00:40.0399999",
+                                "adjustedEnd": "0:00:44.0857082",
+                                "start": "0:00:40.0399999",
+                                "end": "0:00:44.0857082"
+                            },
+                            {
+                                "confidence": 0.9551,
+                                "adjustedStart": "0:00:46.0459999",
+                                "adjustedEnd": "0:00:48.0897082",
+                                "start": "0:00:46.0459999",
+                                "end": "0:00:48.0897082"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 10,
+                        "name": "human face",
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "confidence": 0.9551,
+                                "adjustedStart": "0:00:27.027",
+                                "adjustedEnd": "0:00:27.0687083",
+                                "start": "0:00:27.027",
+                                "end": "0:00:27.0687083"
+                            },
+                            {
+                                "confidence": 0.9506,
+                                "adjustedStart": "0:00:30.03",
+                                "adjustedEnd": "0:00:30.0717083",
+                                "start": "0:00:30.03",
+                                "end": "0:00:30.0717083"
+                            },
+                            {
+                                "confidence": 0.9522,
+                                "adjustedStart": "0:00:34.034",
+                                "adjustedEnd": "0:00:35.0767082",
+                                "start": "0:00:34.034",
+                                "end": "0:00:35.0767082"
+                            },
+                            {
+                                "confidence": 0.951,
+                                "adjustedStart": "0:00:37.037",
+                                "adjustedEnd": "0:00:37.0787083",
+                                "start": "0:00:37.037",
+                                "end": "0:00:37.0787083"
+                            },
+                            {
+                                "confidence": 0.959,
+                                "adjustedStart": "0:00:39.0389999",
+                                "adjustedEnd": "0:00:39.0807082",
+                                "start": "0:00:39.0389999",
+                                "end": "0:00:39.0807082"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 11,
+                        "name": "outdoor",
+                        "language": "en-US",
+                        "instances": [
+                            {
+                                "confidence": 0.9545,
+                                "adjustedStart": "0:00:48.0479999",
+                                "adjustedEnd": "0:00:48.0897082",
+                                "start": "0:00:48.0479999",
+                                "end": "0:00:48.0897082"
+                            }
+                        ]
+                    }
+                ],
+                "scenes": [
+                    {
+                        "id": 1,
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:00",
+                                "adjustedEnd": "0:00:05.214",
+                                "start": "0:00:00",
+                                "end": "0:00:05.214"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:05.214",
+                                "adjustedEnd": "0:00:12.596",
+                                "start": "0:00:05.214",
+                                "end": "0:00:12.596"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 3,
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:12.596",
+                                "adjustedEnd": "0:00:25.692",
+                                "start": "0:00:12.596",
+                                "end": "0:00:25.692"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 4,
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:25.692",
+                                "adjustedEnd": "0:00:48.465",
+                                "start": "0:00:25.692",
+                                "end": "0:00:48.465"
+                            }
+                        ]
+                    }
+                ],
+                "shots": [
+                    {
+                        "id": 1,
+                        "keyFrames": [
+                            {
+                                "id": 1,
+                                "instances": [
+                                    {
+                                        "thumbnailId": "22e8a0bd-4b80-4540-8d74-e9dbf237127f",
+                                        "adjustedStart": "0:00:00.209",
+                                        "adjustedEnd": "0:00:00.251",
+                                        "start": "0:00:00.209",
+                                        "end": "0:00:00.251"
+                                    }
+                                ]
+                            }
+                        ],
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:00",
+                                "adjustedEnd": "0:00:05.214",
+                                "start": "0:00:00",
+                                "end": "0:00:05.214"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "tags": [
+                            "Outdoor"
+                        ],
+                        "keyFrames": [
+                            {
+                                "id": 2,
+                                "instances": [
+                                    {
+                                        "thumbnailId": "50905c92-f779-4ab6-b962-32144819b86e",
+                                        "adjustedStart": "0:00:05.214",
+                                        "adjustedEnd": "0:00:05.256",
+                                        "start": "0:00:05.214",
+                                        "end": "0:00:05.256"
+                                    }
+                                ]
+                            },
+                            {
+                                "id": 3,
+                                "instances": [
+                                    {
+                                        "thumbnailId": "35f1c28b-f508-4644-83c4-acd72e1b35d8",
+                                        "adjustedStart": "0:00:05.839",
+                                        "adjustedEnd": "0:00:05.881",
+                                        "start": "0:00:05.839",
+                                        "end": "0:00:05.881"
+                                    }
+                                ]
+                            },
+                            {
+                                "id": 4,
+                                "instances": [
+                                    {
+                                        "thumbnailId": "da6c7dae-5894-486b-85c4-b35f7fc11c66",
+                                        "adjustedStart": "0:00:12.179",
+                                        "adjustedEnd": "0:00:12.221",
+                                        "start": "0:00:12.179",
+                                        "end": "0:00:12.221"
+                                    }
+                                ]
+                            }
+                        ],
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:05.214",
+                                "adjustedEnd": "0:00:12.596",
+                                "start": "0:00:05.214",
+                                "end": "0:00:12.596"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 3,
+                        "tags": [
+                            "Outdoor"
+                        ],
+                        "keyFrames": [
+                            {
+                                "id": 5,
+                                "instances": [
+                                    {
+                                        "thumbnailId": "57e3ca0f-c930-494e-8b7d-9940d5800dd9",
+                                        "adjustedStart": "0:00:12.596",
+                                        "adjustedEnd": "0:00:12.638",
+                                        "start": "0:00:12.596",
+                                        "end": "0:00:12.638"
+                                    }
+                                ]
+                            },
+                            {
+                                "id": 6,
+                                "instances": [
+                                    {
+                                        "thumbnailId": "f98f72ea-4ad9-4745-896f-750a9227f76e",
+                                        "adjustedStart": "0:00:19.811",
+                                        "adjustedEnd": "0:00:19.853",
+                                        "start": "0:00:19.811",
+                                        "end": "0:00:19.853"
+                                    }
+                                ]
+                            }
+                        ],
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:12.596",
+                                "adjustedEnd": "0:00:25.692",
+                                "start": "0:00:12.596",
+                                "end": "0:00:25.692"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 4,
+                        "tags": [
+                            "Medium",
+                            "CenterFace",
+                            "Wide",
+                            "Outdoor"
+                        ],
+                        "keyFrames": [
+                            {
+                                "id": 7,
+                                "instances": [
+                                    {
+                                        "thumbnailId": "c840fb28-71e0-4d54-84b2-0462c4147274",
+                                        "adjustedStart": "0:00:25.692",
+                                        "adjustedEnd": "0:00:25.734",
+                                        "start": "0:00:25.692",
+                                        "end": "0:00:25.734"
+                                    }
+                                ]
+                            },
+                            {
+                                "id": 8,
+                                "instances": [
+                                    {
+                                        "thumbnailId": "745a5c9d-1166-4ca0-a7cf-6708e5cf9fb3",
+                                        "adjustedStart": "0:00:47.923",
+                                        "adjustedEnd": "0:00:47.965",
+                                        "start": "0:00:47.923",
+                                        "end": "0:00:47.965"
+                                    }
+                                ]
+                            }
+                        ],
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:25.692",
+                                "adjustedEnd": "0:00:48.465",
+                                "start": "0:00:25.692",
+                                "end": "0:00:48.465"
+                            }
+                        ]
+                    }
+                ],
+                "brands": [
+                    {
+                        "id": 1,
+                        "referenceType": "Wiki",
+                        "name": "Vericor Power Systems",
+                        "referenceId": "Vericor_Power_Systems",
+                        "referenceUrl": "http://en.wikipedia.org/wiki/Vericor_Power_Systems",
+                        "description": "Vericor Power Systems is a manufacturer of aeroderivative marine and industrial gas turbines based in Alpharetta, Georgia, United States. Vericor is a wholly owned subsidiary of German-based MTU Aero Engines.",
+                        "tags": [],
+                        "confidence": 0.69,
+                        "isCustom": false,
+                        "instances": [
+                            {
+                                "brandType": "Transcript",
+                                "instanceSource": "Transcript",
+                                "adjustedStart": "0:00:23.55",
+                                "adjustedEnd": "0:00:26.88",
+                                "start": "0:00:23.55",
+                                "end": "0:00:26.88"
+                            }
+                        ]
+                    }
+                ],
+                "namedLocations": [
+                    {
+                        "id": 1,
+                        "name": "court building",
+                        "referenceId": null,
+                        "referenceUrl": null,
+                        "description": null,
+                        "tags": [],
+                        "confidence": 0.81,
+                        "isCustom": false,
+                        "instances": [
+                            {
+                                "instanceSource": "Transcript",
+                                "adjustedStart": "0:00:36.46",
+                                "adjustedEnd": "0:00:39.59",
+                                "start": "0:00:36.46",
+                                "end": "0:00:39.59"
+                            }
+                        ]
+                    }
+                ],
+                "namedPeople": [
+                    {
+                        "id": 1,
+                        "name": "Virgil",
+                        "referenceId": null,
+                        "referenceUrl": null,
+                        "description": null,
+                        "tags": [],
+                        "confidence": 0.985,
+                        "isCustom": false,
+                        "instances": [
+                            {
+                                "instanceSource": "Transcript",
+                                "adjustedStart": "0:00:23.55",
+                                "adjustedEnd": "0:00:26.88",
+                                "start": "0:00:23.55",
+                                "end": "0:00:26.88"
+                            },
+                            {
+                                "instanceSource": "Transcript",
+                                "adjustedStart": "0:00:39.59",
+                                "adjustedEnd": "0:00:43.69",
+                                "start": "0:00:39.59",
+                                "end": "0:00:43.69"
+                            }
+                        ]
+                    }
+                ],
+                "audioEffects": [
+                    {
+                        "id": 0,
+                        "type": "Silence",
+                        "instances": [
+                            {
+                                "confidence": 1,
+                                "adjustedStart": "0:00:00",
+                                "adjustedEnd": "0:00:23.2",
+                                "start": "0:00:00",
+                                "end": "0:00:23.2"
+                            }
+                        ]
+                    }
+                ],
+                "sentiments": [
+                    {
+                        "id": 1,
+                        "averageScore": 0.5,
+                        "sentimentType": "Neutral",
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:00",
+                                "adjustedEnd": "0:00:30.55",
+                                "start": "0:00:00",
+                                "end": "0:00:30.55"
+                            },
+                            {
+                                "adjustedStart": "0:00:33.99",
+                                "adjustedEnd": "0:00:48.465",
+                                "start": "0:00:33.99",
+                                "end": "0:00:48.465"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "averageScore": 0.9547,
+                        "sentimentType": "Positive",
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:30.55",
+                                "adjustedEnd": "0:00:33.99",
+                                "start": "0:00:30.55",
+                                "end": "0:00:33.99"
+                            }
+                        ]
+                    }
+                ],
+                "emotions": [
+                    {
+                        "id": 1,
+                        "type": "Joy",
+                        "instances": [
+                            {
+                                "confidence": 0.6983,
+                                "adjustedStart": "0:00:30.55",
+                                "adjustedEnd": "0:00:33.99",
+                                "start": "0:00:30.55",
+                                "end": "0:00:33.99"
+                            }
+                        ]
+                    }
+                ],
+                "blocks": [
+                    {
+                        "id": 0,
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:00",
+                                "adjustedEnd": "0:00:30.55",
+                                "start": "0:00:00",
+                                "end": "0:00:30.55"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 1,
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:30.55",
+                                "adjustedEnd": "0:00:48.465",
+                                "start": "0:00:30.55",
+                                "end": "0:00:48.465"
+                            }
+                        ]
+                    }
+                ],
+                "framePatterns": [
+                    {
+                        "id": 1,
+                        "patternType": "Black",
+                        "confidence": 1,
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:00",
+                                "adjustedEnd": "0:00:04.54621",
+                                "start": "0:00:00",
+                                "end": "0:00:04.54621"
+                            },
+                            {
+                                "adjustedStart": "0:00:13.3467",
+                                "adjustedEnd": "0:00:16.5582",
+                                "start": "0:00:13.3467",
+                                "end": "0:00:16.5582"
+                            }
+                        ]
+                    }
+                ],
+                "speakers": [
+                    {
+                        "id": 1,
+                        "name": "Speaker #1",
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:23.55",
+                                "adjustedEnd": "0:00:39.59",
+                                "start": "0:00:23.55",
+                                "end": "0:00:39.59"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "name": "Speaker #2",
+                        "instances": [
+                            {
+                                "adjustedStart": "0:00:39.59",
+                                "adjustedEnd": "0:00:46.037",
+                                "start": "0:00:39.59",
+                                "end": "0:00:46.037"
+                            }
+                        ]
+                    }
+                ],
+                "textualContentModeration": {
+                    "id": 0,
+                    "bannedWordsCount": 0,
+                    "bannedWordsRatio": 0,
+                    "instances": []
+                },
+                "statistics": {
+                    "correspondenceCount": 1,
+                    "speakerTalkToListenRatio": {
+                        "1": 0.713,
+                        "2": 0.286
+                    },
+                    "speakerLongestMonolog": {
+                        "1": 16,
+                        "2": 6
+                    },
+                    "speakerNumberOfFragments": {
+                        "1": 1,
+                        "2": 1
+                    },
+                    "speakerWordCount": {
+                        "1": 36,
+                        "2": 10
+                    }
+                }
+            },
+            "thumbnailId": "a523991a-f204-4aa4-b399-6663a2db50dc",
+            "detectSourceLanguage": false,
+            "languageAutoDetectMode": "None",
+            "sourceLanguage": "en-US",
+            "sourceLanguages": [
+                "en-US"
+            ],
+            "language": "en-US",
+            "languages": [
+                "en-US"
+            ],
+            "indexingPreset": "Default",
+            "linguisticModelId": "00000000-0000-0000-0000-000000000000",
+            "personModelId": "00000000-0000-0000-0000-000000000000",
+            "isAdult": false,
+            "publishedUrl": "https://videoindexerams35dce2b8-use2.streaming.media.azure.net/57c23707-5468-43d0-bcd1-b7af373b55f6/amp_video_16431.ism/manifest(encryption=cbc)",
+            "publishedProxyUrl": null,
+            "viewToken": "Bearer=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cm46bWljcm9zb2Z0OmF6dXJlOm1lZGlhc2VydmljZXM6Y29udGVudGtleWlkZW50aWZpZXIiOiIwNjNlNDY0NC00NzZhLTQ5YjItYWM0MS1iZjgwYzBjM2NiYjIiLCJuYmYiOjE2NDMxNTY5NTEsImV4cCI6MTY0MzIwMDIxMSwiaXNzIjoiaHR0cHM6Ly9icmVha2Rvd24ubWUiLCJhdWQiOiJCcmVha2Rvd25Vc2VyIn0.hcO6FQDDY-VLPoY-YdS_2JYSB2RDyTwGX7ptnZKRolo"
+        }
+    ],
+    "videosRanges": [
+        {
+            "videoId": "8778dce51b",
+            "range": {
+                "start": "0:00:00",
+                "end": "0:00:48.465"
+            }
+        }
+    ]
+}

@@ -39,12 +39,15 @@ def main():
     s3_bucket = config['azure']['s3Bucket']
     accountId = config['azure']['accountId']
     apiKey = config['azure']['apiKey']
-
+    logging.debug(f"Bucket: {s3_bucket}, accountId: {accountId}")
 
     # Turn on HTTP debugging here
     http_client.HTTPConnection.debuglevel = 1
 
     s3_path = upload_to_s3(input_file, s3_bucket)
+    if not s3_path:
+        logging.error(f"Failed to upload {input_file} to AWS bucket {s3_bucket}")
+        exit(1)
     logging.debug("S3 path " + s3_path)
     
     # Get an authorization token for subsequent requests
@@ -179,7 +182,7 @@ def upload_video(apiUrl, location, accountId, auth_token, input_file, video_url)
                 exit(1)
 
 def upload_to_s3(input_file, bucket):
-    s3_client = boto3.client('s3')
+    s3_client = boto3.client('s3', **amp.utils.get_aws_credentials())
     jobname = str(uuid.uuid1())
     try:
         response = s3_client.upload_file(input_file, bucket, jobname, ExtraArgs={'ACL': 'public-read'})
@@ -191,7 +194,7 @@ def upload_to_s3(input_file, bucket):
     return jobname
 
 def delete_from_s3(s3_path, bucket):
-    s3_client = boto3.resource('s3')
+    s3_client = boto3.resource('s3', **amp.utils.get_aws_credentials())
     try:
         obj = s3_client.Object(bucket, s3_path)
         obj.delete()

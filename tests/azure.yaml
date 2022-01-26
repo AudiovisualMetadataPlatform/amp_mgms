@@ -1,0 +1,26 @@
+- name: Azure Video Indexer
+  tool: azure_video_indexer.xml
+  inputs:
+    input_video: video.m4v
+  outputs:
+    azure_video_index: 
+      - {test: magic, mime: text/plain}
+      - {test: json, path: state, value: Processed}
+      - {test: json, path: summarizedInsights/faces/i0/name, value: David Byrne}
+    azure_artifact_ocr:
+      - {test: magic, mime: text/plain}
+      - {test: strings, strings: [A FILM ABOUT A, BUNCH OF PEOPLE, IN VIRGIL TEXAS.]}
+  params:
+    include_ocr: "true"
+    location: eastus2
+
+- name: Azure Video OCR
+  tool: azure_video_ocr.xml
+  inputs: 
+    input_video: video.m4v
+    azure_video_index: azure_video_index.json
+    azure_artifact_ocr: azure_artifact_ocr.json
+  outputs:
+    amp_vocr:
+      - {test: debug, save: /tmp/azure_vocr.json}
+      

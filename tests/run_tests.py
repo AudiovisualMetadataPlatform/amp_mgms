@@ -9,6 +9,8 @@ import re
 import xml.etree.ElementTree as ET
 import tempfile
 import shutil
+import os
+import json
 
 def main():
     parser = argparse.ArgumentParser()
@@ -90,6 +92,7 @@ def main():
                 logging.warn(f"{context} Command text still contains a '$':  are all parameters substituted?")
                 logging.warn(f"{command_text}")            
 
+
             runscript = Path(tempdir, "runscript.sh")
             # build the shell script
             script = f"""#!/bin/bash
@@ -100,6 +103,9 @@ set -e
             with open(runscript, "w") as f:
                 f.write(script)
             runscript.chmod(0o755)
+
+            if args.debug:
+                os.environ['MGM_DEBUG'] = '1'
 
             logging.debug(f"{context} Starting runscript")
             p = subprocess.run([str(runscript)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf-8")
@@ -137,7 +143,7 @@ set -e
                         continue
 
             if test_errors != 0:
-                logging.error(f"{context} {test_errors} -> {test_items} file tests failed")
+                logging.error(f"{context} {test_errors}/{test_items} file tests failed")
                 fails += 1
                 continue
 
@@ -183,6 +189,40 @@ def _test_xml(context, xml, args):
         logging.debug(ET.tostring(xml, encoding='utf-8'))
         return False
     return True
+
+def test_json(file, args):
+    return _test_json(file, file, args)
+
+def _test_json(context, filename, args):
+    with open(filename) as f:
+        json_data = json.load(f)
+    xml_string = "<data>" + _data_to_xml_string(json_data) + "</data>"
+    
+    try:
+        xml = ET.fromstring(xml_string)
+    except Exception as e:
+        logging.error("Cannot parse XML from _data_to_xml_string:")
+        logging.error(xml_string)
+        raise e
+
+    return _test_xml(context, xml, args)
+
+
+def _data_to_xml_string(data):
+    xml = ""
+    if isinstance(data, list):
+        for k, v in enumerate(data):
+            xml += f"<i{k}>" + _data_to_xml_string(v) + f"</i{k}>"
+    elif isinstance(data, dict):
+        for k, v in data.items():
+            if k[0] in "0123456789":
+                k = "_" + k
+            xml += f"<{k}>" + _data_to_xml_string(v) + f"</{k}>"
+    else:
+        xml = str(data).replace('&', '&amp;')
+        xml = xml.replace('<', '&lt;')
+        xml = xml.replace('>', '&gt;')
+    return xml
 
 def test_magic(file, args):
     "compare the mime type"
@@ -236,6 +276,7 @@ test_functions = {
     'debug': test_debug,
     'strings': test_strings,
     'md5': test_md5,
+    'json': test_json,
 }
 
 
