@@ -7,16 +7,19 @@ import argparse
 
 import amp.utils
 import amp.ner_helper
-
+import amp.logger
+import logging
 
 def main():
     #(amp_transcript, spacy_entities, amp_entities, ignore_types) = sys.argv[1:5]
     parser = argparse.ArgumentParser()
+    parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("amp_transcript")
     parser.add_argument("spacy_entities")
     parser.add_argument("amp_entities")
     parser.add_argument("ignore_types")
     args = parser.parse_args()
+    logging.info(f"Starting args={args}")
     (amp_transcript, spacy_entities, amp_entities, ignore_types) = (args.amp_transcript, args.spacy_entities, args.amp_entities, args.ignore_types)
 
     # preprocess NER inputs and initialize AMP entities output
@@ -38,7 +41,7 @@ def main():
 
     # write the output AMP entities object to JSON file
     amp.utils.write_json_file(amp_entities_obj, amp_entities)
-    
+    logging.info("Finished")
 
 if __name__ == "__main__":
     main()

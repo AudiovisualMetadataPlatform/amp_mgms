@@ -1,0 +1,299 @@
+{
+    "media": {
+        "duration": 75.96000000000001,
+        "filename": "/srv/scratch/amp_mgms/tests/fixtures//audio.mp3"
+    },
+    "results": {
+        "transcript": "fb it's beneath me we never discussed it is it's very close to major population centers they're calling it a celebration of specialness but this place is completely normal anyway this is the very court building just outside her to school some of the pritchett a box fb",
+        "words": [
+            {
+                "type": "",
+                "start": 0.0,
+                "end": 12.43,
+                "text": "fb"
+            },
+            {
+                "type": "",
+                "start": 12.76,
+                "end": 12.85,
+                "text": "it's"
+            },
+            {
+                "type": "",
+                "start": 12.85,
+                "end": 16.96,
+                "text": "beneath"
+            },
+            {
+                "type": "",
+                "start": 17.06,
+                "end": 17.439999999999998,
+                "text": "me"
+            },
+            {
+                "type": "",
+                "start": 23.54,
+                "end": 23.63,
+                "text": "we"
+            },
+            {
+                "type": "",
+                "start": 23.63,
+                "end": 23.97,
+                "text": "never"
+            },
+            {
+                "type": "",
+                "start": 23.97,
+                "end": 24.49,
+                "text": "discussed"
+            },
+            {
+                "type": "",
+                "start": 24.49,
+                "end": 24.66,
+                "text": "it"
+            },
+            {
+                "type": "",
+                "start": 24.66,
+                "end": 24.79,
+                "text": "is"
+            },
+            {
+                "type": "",
+                "start": 24.79,
+                "end": 24.98,
+                "text": "it's"
+            },
+            {
+                "type": "",
+                "start": 25.49,
+                "end": 25.759999999999998,
+                "text": "very"
+            },
+            {
+                "type": "",
+                "start": 25.76,
+                "end": 26.0,
+                "text": "close"
+            },
+            {
+                "type": "",
+                "start": 26.92,
+                "end": 27.07,
+                "text": "to"
+            },
+            {
+                "type": "",
+                "start": 27.07,
+                "end": 27.490000000000002,
+                "text": "major"
+            },
+            {
+                "type": "",
+                "start": 27.49,
+                "end": 28.18,
+                "text": "population"
+            },
+            {
+                "type": "",
+                "start": 28.18,
+                "end": 28.56,
+                "text": "centers"
+            },
+            {
+                "type": "",
+                "start": 30.56,
+                "end": 30.66,
+                "text": "they're"
+            },
+            {
+                "type": "",
+                "start": 30.66,
+                "end": 30.99,
+                "text": "calling"
+            },
+            {
+                "type": "",
+                "start": 30.99,
+                "end": 31.06,
+                "text": "it"
+            },
+            {
+                "type": "",
+                "start": 31.06,
+                "end": 31.099999999999998,
+                "text": "a"
+            },
+            {
+                "type": "",
+                "start": 31.1,
+                "end": 31.68,
+                "text": "celebration"
+            },
+            {
+                "type": "",
+                "start": 31.68,
+                "end": 31.75,
+                "text": "of"
+            },
+            {
+                "type": "",
+                "start": 31.75,
+                "end": 32.56,
+                "text": "specialness"
+            },
+            {
+                "type": "",
+                "start": 34.0,
+                "end": 34.1,
+                "text": "but"
+            },
+            {
+                "type": "",
+                "start": 34.1,
+                "end": 34.24,
+                "text": "this"
+            },
+            {
+                "type": "",
+                "start": 34.24,
+                "end": 34.46,
+                "text": "place"
+            },
+            {
+                "type": "",
+                "start": 34.46,
+                "end": 34.57,
+                "text": "is"
+            },
+            {
+                "type": "",
+                "start": 34.57,
+                "end": 34.99,
+                "text": "completely"
+            },
+            {
+                "type": "",
+                "start": 34.99,
+                "end": 35.410000000000004,
+                "text": "normal"
+            },
+            {
+                "type": "",
+                "start": 36.48,
+                "end": 36.86,
+                "text": "anyway"
+            },
+            {
+                "type": "",
+                "start": 37.85,
+                "end": 38.01,
+                "text": "this"
+            },
+            {
+                "type": "",
+                "start": 38.01,
+                "end": 38.11,
+                "text": "is"
+            },
+            {
+                "type": "",
+                "start": 38.11,
+                "end": 38.19,
+                "text": "the"
+            },
+            {
+                "type": "",
+                "start": 38.19,
+                "end": 38.47,
+                "text": "very"
+            },
+            {
+                "type": "",
+                "start": 38.47,
+                "end": 38.71,
+                "text": "court"
+            },
+            {
+                "type": "",
+                "start": 38.71,
+                "end": 39.01,
+                "text": "building"
+            },
+            {
+                "type": "",
+                "start": 39.01,
+                "end": 39.29,
+                "text": "just"
+            },
+            {
+                "type": "",
+                "start": 39.29,
+                "end": 39.69,
+                "text": "outside"
+            },
+            {
+                "type": "",
+                "start": 39.69,
+                "end": 39.849999999999994,
+                "text": "her"
+            },
+            {
+                "type": "",
+                "start": 39.85,
+                "end": 39.980000000000004,
+                "text": "to"
+            },
+            {
+                "type": "",
+                "start": 40.8,
+                "end": 41.22,
+                "text": "school"
+            },
+            {
+                "type": "",
+                "start": 41.99,
+                "end": 42.24,
+                "text": "some"
+            },
+            {
+                "type": "",
+                "start": 42.24,
+                "end": 42.330000000000005,
+                "text": "of"
+            },
+            {
+                "type": "",
+                "start": 42.33,
+                "end": 42.41,
+                "text": "the"
+            },
+            {
+                "type": "",
+                "start": 42.41,
+                "end": 43.029999999999994,
+                "text": "pritchett"
+            },
+            {
+                "type": "",
+                "start": 43.68,
+                "end": 43.76,
+                "text": "a"
+            },
+            {
+                "type": "",
+                "start": 43.76,
+                "end": 44.3,
+                "text": "box"
+            },
+            {
+                "type": "",
+                "start": 46.17,
+                "end": 75.96000000000001,
+                "text": "fb"
+            }
+        ]
+    }
+}

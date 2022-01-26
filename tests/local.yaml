@@ -129,6 +129,20 @@
       - {test: ffprobe, path: "format", attrib: "format_name", value: "wav"}
       - {test: ffprobe, path: "format", attrib: "duration", value: "42.994875"}
     
+- name: Spacy
+  tool: spacy.xml
+  inputs:
+    amp_transcript: amp_transcript.json
+  params:
+    ignore_types: QUANTITIES
+  outputs:
+    spacy_entities:
+      - {test: magic, mime: text/plain}
+      - {test: strings, strings: [sents, tokens]}
+    amp_entities:
+      - {test: magic, mime: text/plain}
+      - {test: strings, strings: [media, entities]}
+
 
 - name: Tesseract
   tool: tesseract.xml
