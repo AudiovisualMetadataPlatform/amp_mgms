@@ -1,0 +1,545 @@
+{
+    "media": {
+        "duration": 44.3,
+        "filename": "/srv/scratch/amp_mgms/tests/fixtures//audio.mp3"
+    },
+    "results": {
+        "transcript": "Many of Virgil's festivities are sponsored by very core. It's a major public relations effort. They're calling it a celebration of special mess. But this place is completely normal anyway. This is the very court building just outside Virgil. It's cool. It's a multipurpose shape, a box.",
+        "words": [
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 23.44,
+                "end": 23.72,
+                "text": "Many"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 23.72,
+                "end": 23.81,
+                "text": "of"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 23.81,
+                "end": 24.16,
+                "text": "Virgil's"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 24.16,
+                "end": 24.79,
+                "text": "festivities"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.9925
+                },
+                "type": "pronunciation",
+                "start": 24.79,
+                "end": 24.87,
+                "text": "are"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 24.87,
+                "end": 25.33,
+                "text": "sponsored"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 25.33,
+                "end": 25.46,
+                "text": "by"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.4176
+                },
+                "type": "pronunciation",
+                "start": 25.46,
+                "end": 25.76,
+                "text": "very"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.4213
+                },
+                "type": "pronunciation",
+                "start": 25.76,
+                "end": 26.05,
+                "text": "core"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.0
+                },
+                "type": "punctuation",
+                "text": "."
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.9864
+                },
+                "type": "pronunciation",
+                "start": 26.84,
+                "end": 27.03,
+                "text": "It's"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 27.03,
+                "end": 27.09,
+                "text": "a"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 27.09,
+                "end": 27.49,
+                "text": "major"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 27.49,
+                "end": 27.81,
+                "text": "public"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.9966
+                },
+                "type": "pronunciation",
+                "start": 27.81,
+                "end": 28.27,
+                "text": "relations"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.9702
+                },
+                "type": "pronunciation",
+                "start": 28.27,
+                "end": 28.66,
+                "text": "effort"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.0
+                },
+                "type": "punctuation",
+                "text": "."
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.9836
+                },
+                "type": "pronunciation",
+                "start": 30.54,
+                "end": 30.69,
+                "text": "They're"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 30.69,
+                "end": 30.99,
+                "text": "calling"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.9989
+                },
+                "type": "pronunciation",
+                "start": 30.99,
+                "end": 31.06,
+                "text": "it"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 31.06,
+                "end": 31.11,
+                "text": "a"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 31.11,
+                "end": 31.68,
+                "text": "celebration"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 31.68,
+                "end": 31.76,
+                "text": "of"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.9999
+                },
+                "type": "pronunciation",
+                "start": 31.76,
+                "end": 32.11,
+                "text": "special"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.7355
+                },
+                "type": "pronunciation",
+                "start": 32.11,
+                "end": 32.55,
+                "text": "mess"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.0
+                },
+                "type": "punctuation",
+                "text": "."
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 33.94,
+                "end": 34.12,
+                "text": "But"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 34.12,
+                "end": 34.25,
+                "text": "this"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.9997
+                },
+                "type": "pronunciation",
+                "start": 34.25,
+                "end": 34.46,
+                "text": "place"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.9997
+                },
+                "type": "pronunciation",
+                "start": 34.46,
+                "end": 34.58,
+                "text": "is"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 34.58,
+                "end": 35.0,
+                "text": "completely"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 35.0,
+                "end": 35.46,
+                "text": "normal"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.9906
+                },
+                "type": "pronunciation",
+                "start": 36.44,
+                "end": 36.86,
+                "text": "anyway"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.0
+                },
+                "type": "punctuation",
+                "text": "."
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 37.84,
+                "end": 38.0,
+                "text": "This"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 38.0,
+                "end": 38.11,
+                "text": "is"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 38.11,
+                "end": 38.2,
+                "text": "the"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.5951
+                },
+                "type": "pronunciation",
+                "start": 38.2,
+                "end": 38.46,
+                "text": "very"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.9075
+                },
+                "type": "pronunciation",
+                "start": 38.46,
+                "end": 38.69,
+                "text": "court"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 38.7,
+                "end": 39.02,
+                "text": "building"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 39.03,
+                "end": 39.28,
+                "text": "just"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 39.28,
+                "end": 39.66,
+                "text": "outside"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 39.66,
+                "end": 40.06,
+                "text": "Virgil"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.0
+                },
+                "type": "punctuation",
+                "text": "."
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.9043
+                },
+                "type": "pronunciation",
+                "start": 40.74,
+                "end": 40.93,
+                "text": "It's"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.9998
+                },
+                "type": "pronunciation",
+                "start": 40.93,
+                "end": 41.28,
+                "text": "cool"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.0
+                },
+                "type": "punctuation",
+                "text": "."
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.9935
+                },
+                "type": "pronunciation",
+                "start": 41.94,
+                "end": 42.07,
+                "text": "It's"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.9995
+                },
+                "type": "pronunciation",
+                "start": 42.07,
+                "end": 42.13,
+                "text": "a"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.5865
+                },
+                "type": "pronunciation",
+                "start": 42.13,
+                "end": 42.76,
+                "text": "multipurpose"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.953
+                },
+                "type": "pronunciation",
+                "start": 42.76,
+                "end": 43.05,
+                "text": "shape"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.0
+                },
+                "type": "punctuation",
+                "text": ","
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.7894
+                },
+                "type": "pronunciation",
+                "start": 43.64,
+                "end": 43.76,
+                "text": "a"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 1.0
+                },
+                "type": "pronunciation",
+                "start": 43.76,
+                "end": 44.3,
+                "text": "box"
+            },
+            {
+                "score": {
+                    "type": "confidence",
+                    "scoreValue": 0.0
+                },
+                "type": "punctuation",
+                "text": "."
+            }
+        ]
+    }
+}

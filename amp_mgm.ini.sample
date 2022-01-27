@@ -29,6 +29,10 @@ segmentation_api = /#/hmgm/segmentation-editor
 segmentation_input = inputPath
 ; TODO add properties for other HMGM tools
 
+[aws_transcribe]
+default_bucket = your-default-bucket
+default_directory = 
+
 [jira]
 server = https://your.jira.host
 username = asdfasdfa

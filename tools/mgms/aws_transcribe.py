@@ -1,29 +1,122 @@
 #!/bin/env mgm_python.sif
 
 # Script to run a aws transcribe job
-
+# Using https://docs.aws.amazon.com/code-samples/latest/catalog/python-transcribe-transcribe_basics.py.html
+# and
+# https://docs.aws.amazon.com/code-samples/latest/catalog/python-transcribe-getting_started.py.html
+# as a basis.
 import argparse
 from pathlib import Path
 import logging
-
+import tempfile
+from time import sleep
 import amp.logger
 import amp.utils
+import boto3
+import platform
+import os
+from datetime import datetime
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
-    parser.add_argument("job_directory")
+    # job_directory is really a temporary directory, we don't need that.
     parser.add_argument("input_file")
     parser.add_argument("output_file")
-    parser.add_argument("audio_format")
-    parser.add_argument("s3_bucket")
-    parser.add_argument("s3_directory")
+    parser.add_argument("--audio_format", default="wav", help="Format for the audio input")
+    parser.add_argument("--bucket", help="S3 Bucket to use (defaults to value in config)")
+    parser.add_argument("--directory", help="S3 Directory to use in bucket")
     args = parser.parse_args()
     logging.info(f"Starting args={args}")
 
+    config = amp.utils.get_config()
+    if args.bucket is None:        
+        args.bucket = config.get('aws_transcribe', 'default_bucket', fallback=None)
+        if args.bucket is None:
+            logging.error("--bucket not specified and aws_transcribe/default_bucket not set in config")
+            exit(1)
+    
+    if args.directory is None:
+        args.directory = config.get('aws_transcribe', 'default_directory', fallback='')
+        if args.directory is None:
+            logging.error('--directory not specified and aws_transcribe/default_directory not set in config')
+            exit(1)
+        if args.directory.startswith("/") or args.directory.endswith("/"):
+            logging.error("Directory must not begin or end with '/'")
+            exit(1)
+
+    # create the s3 path
+    args.input_file = Path(args.input_file)
+    
+    # create a unique job/object name ("<directory>/AWS-Transcribe-<hostname>-<date>-<time>-<pid>")
+    job_name = f"AWS-Transcribe-{platform.node().split('.')[0]}-{datetime.now().strftime('%Y%m%d-%H%M%S')}-{os.getpid()}"
+    if args.directory != '':
+        object_name = f"{args.directory}/{job_name}"
+    else:
+        object_name = job_name
+    s3_uri = f"s3://{args.bucket}/{object_name}"
+
+    # upload the file to S3
+    s3_client = boto3.client('s3', **amp.utils.get_aws_credentials())    
+    try:
+        logging.debug(f"Uploading file {str(args.input_file)} to {s3_uri}")
+        response = s3_client.upload_file(str(args.input_file), args.bucket, object_name) #, ExtraArgs={'ACL': 'public-read'})        
+    except Exception as e:
+        logging.error(f"Uploading file {args.input_file} failed: {e}")
+        exit(1)
+    
+    # transcribe the file
+    transcribe_client = boto3.client('transcribe', **amp.utils.get_aws_credentials())
+    transcribe_exception = False
+    try:
+        logging.debug(f"Starting transcription job {job_name}")
+        transcribe_client.start_transcription_job(
+            TranscriptionJobName=job_name,
+            Media={'MediaFileUri': s3_uri},
+            MediaFormat=args.audio_format,
+            LanguageCode="en-US",
+            OutputBucketName=args.bucket,
+            Settings={"ShowSpeakerLabels": True, "MaxSpeakerLabels": 10 }
+        )
+        logging.debug(f"Waiting for transcription job {job_name} to complete")
+        while True:
+            job = transcribe_client.get_transcription_job(TranscriptionJobName=job_name)
+            job_status = job['TranscriptionJob']['TranscriptionJobStatus']
+            logging.debug(f"Transcoding job status: {job_status}")
+            if job_status == 'COMPLETED':
+                transcription_uri = job['TranscriptionJob']['Transcript']['TranscriptFileUri']
+                logging.info(f"Result URI: {transcription_uri}")
+                s3_client.download_file(Bucket=args.bucket, Key=object_name + ".json", Filename=args.output_file)
+                s3_client.delete_object(Bucket=args.bucket, Key=object_name + ".json")
+                break
+            elif job_status == 'FAILED':
+                logging.error(f"Transcription failed: {job['TranscriptionJob']['FailureReason']}")
+                transcribe_exception = True
+                break
+            sleep(10)
+    except Exception as e:
+        logging.error(f"Exception during transcription: {e}")
+        transcribe_exception = True
+
+    # delete the input file from S3
+    try:
+        logging.debug(f"Deleting file {object_name} from s3 bucket {args.bucket}")
+        s3_client.delete_object(Bucket=args.bucket, Key=object_name)        
+    except Exception as e:
+        logging.error(f"Failed to delete file {object_name} from s3 bucket {args.bucket}: {e}")
+        transcribe_exception = True
+
+
+
+
+
+    if transcribe_exception:
+        logging.error("Transcription failed")
+        exit(1)
 
     logging.info("Finished")
 
+"""
 # Usage:
 # transcribe $input_file $job_directory $output_file $audio_format $s3_bucket $s3_directory
 
@@ -106,7 +199,7 @@ else
     exit 2
 fi
 
-
+"""
 
 if __name__ == "__main__":
     main()

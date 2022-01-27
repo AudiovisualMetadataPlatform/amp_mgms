@@ -132,7 +132,7 @@
 - name: Spacy
   tool: spacy.xml
   inputs:
-    amp_transcript: amp_transcript.json
+    amp_transcript: amp_transcript_aws.json
   params:
     ignore_types: QUANTITIES
   outputs:

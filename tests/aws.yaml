@@ -1,8 +1,28 @@
-- name: AWS Comprehend
-  tool: aws_comprehend.xml
-  inputs:
-    
-  params:
+#- name: AWS Comprehend
+#  tool: aws_comprehend.xml
+#  inputs:
+#    
+#  params:
+#
+#  outputs:
 
+- name: AWS Transcribe
+  tool: aws_transcribe.xml
+  inputs:
+    input_audio: audio.mp3
+  params:
+    audio_format: mp3
+    s3_bucket: amppd-dev-test
+    s3_directory: ''
   outputs:
+    aws_transcript:
+      - {test: magic, mime: text/plain}
+      - {test: strings, strings: [results, transcript, speaker_label, this place is completely normal]}
+    amp_transcript:
+      - {test: magic, mime: text/plain}
+      - {test: strings, strings: [results, transcript, score, type, this place is completely normal]}
+    amp_diarization:
+      - {test: magic, mime: text/plain}
+      - {test: strings, strings: [segments, label, start, end, speakerLabel]}
+
   

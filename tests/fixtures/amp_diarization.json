@@ -1,0 +1,63 @@
+{
+    "segments": [
+        {
+            "label": null,
+            "start": 23.44,
+            "end": 26.065,
+            "speakerLabel": "spk_0"
+        },
+        {
+            "label": null,
+            "start": 26.84,
+            "end": 28.665,
+            "speakerLabel": "spk_0"
+        },
+        {
+            "label": null,
+            "start": 30.54,
+            "end": 32.565,
+            "speakerLabel": "spk_1"
+        },
+        {
+            "label": null,
+            "start": 33.94,
+            "end": 35.465,
+            "speakerLabel": "spk_1"
+        },
+        {
+            "label": null,
+            "start": 36.44,
+            "end": 36.865,
+            "speakerLabel": "spk_0"
+        },
+        {
+            "label": null,
+            "start": 37.84,
+            "end": 40.065,
+            "speakerLabel": "spk_0"
+        },
+        {
+            "label": null,
+            "start": 40.74,
+            "end": 41.365,
+            "speakerLabel": "spk_0"
+        },
+        {
+            "label": null,
+            "start": 41.94,
+            "end": 43.065,
+            "speakerLabel": "spk_0"
+        },
+        {
+            "label": null,
+            "start": 43.64,
+            "end": 44.365,
+            "speakerLabel": "spk_0"
+        }
+    ],
+    "numSpeakers": 2,
+    "media": {
+        "duration": 44.3,
+        "filename": "/srv/scratch/amp_mgms/tests/fixtures//audio.mp3"
+    }
+}
