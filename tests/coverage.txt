@@ -22,14 +22,13 @@ hmgm_transcript.xml
 ina_speech_segmenter.xml - Done
 kaldi.xml - Done
 keep_speech.xml
-ner_to_csv.xml
+ner_to_csv.xml - Done
 pyscenedetect.xml - Done
 remove_silence_speech.xml
 remove_trailing_silence.xml - Done
 spacy.xml - Done
 supplement.xml - Skipping, because this only makes sense in the context of Galaxy
 tesseract.xml - Done
-transcript_to_webvtt.xml
+transcript_to_webvtt.xml - Done
 vocabulary_tagging.xml
 vocr_to_csv.xml - Fails tests because it was broken prior to refactor
-vtt_generator.xml

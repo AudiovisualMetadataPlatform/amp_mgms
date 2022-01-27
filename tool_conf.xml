@@ -74,12 +74,12 @@
     <tool file="amp_mgms/hmgm_ner.xml"/>
     <tool file="amp_mgms/hmgm_segmentation.xml"/>
   </section>
-
+  <!--
   <section id="obsolete_mgms" name="Obsolete MGMs">
     <tool file="amp_mgms/remove_silence_music.xml"/>
     <tool file="amp_mgms/vtt_generator.xml"/>
   </section>
-
+  -->
 <!-- AMP MGMs END -->
 
 </toolbox>

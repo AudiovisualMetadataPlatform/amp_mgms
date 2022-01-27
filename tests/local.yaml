@@ -104,6 +104,15 @@
       - {test: magic, mime: text/plain}
       - {test: strings, strings: "celebration of specialness"}
 
+- name: NER to CSV
+  tool: ner_to_csv.xml
+  inputs:
+    amp_entities: amp_entities.ner
+  outputs:
+    amp_csv_entities:
+      - {test: magic, mime: text/plain}
+      - {test: strings, strings: [Type, Text, Begin Offset, End Offset, Start Time, Score Type, Score Value]}
+
 
 - name: PyScene Detect
   tool: pyscenedetect.xml
@@ -153,6 +162,17 @@
       - {test: magic, mime: text/plain}
       - {test: size, size: 61388}      
       - {test: strings, strings: ["TRUE", "STORIES", "VIRGIL"]}
+
+- name: Transcript to WebVTT
+  tool: transcript_to_webvtt.xml
+  inputs:
+    amp_diarization: amp_diarization.json
+    amp_transcript: amp_transcript_aws.json
+  outputs:
+    web_vtt:
+      - {test: magic, mime: text/plain}
+      - {test: strings, strings: [WEBVTT, spk_0, multipurpose]}
+
 
 
 - name: VOCR to CSV
