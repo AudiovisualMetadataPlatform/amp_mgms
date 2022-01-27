@@ -1,10 +1,19 @@
-#- name: AWS Comprehend
-#  tool: aws_comprehend.xml
-#  inputs:
-#    
-#  params:
-#
-#  outputs:
+- name: AWS Comprehend
+  tool: aws_comprehend.xml
+  inputs:
+    amp_transcript: amp_transcript_aws.json
+  params:
+    s3_bucket: ''
+    data_access_role: ''
+    ignore_types: QUANTITY
+  outputs:
+    aws_entities:
+      - {test: magic, mime: text/plain}
+      - {test: strings, strings: [Entities, BeginOffset, EndOffset, Score, Virgil]}
+    amp_entities:
+      - {test: magic, mime: text/plain}
+      - {test: strings, strings: [media, characters, entities]}
+
 
 - name: AWS Transcribe
   tool: aws_transcribe.xml
@@ -12,7 +21,7 @@
     input_audio: audio.mp3
   params:
     audio_format: mp3
-    s3_bucket: amppd-dev-test
+    s3_bucket: ''
     s3_directory: ''
   outputs:
     aws_transcript:

@@ -2,7 +2,7 @@ adjust_diarization_timestamps.xml
 adjust_transcript_timestamps.xml
 applause_detection_to_avalon_xml.xml
 applause_detection.xml - Done
-aws_comprehend.xml
+aws_comprehend.xml - Done
 aws_transcribe.xml - Done
 azure_shot_detection.xml - Done
 azure_video_indexer.xml - Done

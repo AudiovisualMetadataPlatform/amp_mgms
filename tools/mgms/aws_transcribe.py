@@ -24,19 +24,19 @@ def main():
     parser.add_argument("input_file")
     parser.add_argument("output_file")
     parser.add_argument("--audio_format", default="wav", help="Format for the audio input")
-    parser.add_argument("--bucket", help="S3 Bucket to use (defaults to value in config)")
-    parser.add_argument("--directory", help="S3 Directory to use in bucket")
+    parser.add_argument("--bucket", default='', help="S3 Bucket to use (defaults to value in config)")
+    parser.add_argument("--directory", default='', help="S3 Directory to use in bucket")
     args = parser.parse_args()
     logging.info(f"Starting args={args}")
 
     config = amp.utils.get_config()
-    if args.bucket is None:        
+    if args.bucket is None or args.bucket == '':        
         args.bucket = config.get('aws_transcribe', 'default_bucket', fallback=None)
         if args.bucket is None:
             logging.error("--bucket not specified and aws_transcribe/default_bucket not set in config")
             exit(1)
     
-    if args.directory is None:
+    if args.directory is None or args.directory == '':
         args.directory = config.get('aws_transcribe', 'default_directory', fallback='')
         if args.directory is None:
             logging.error('--directory not specified and aws_transcribe/default_directory not set in config')

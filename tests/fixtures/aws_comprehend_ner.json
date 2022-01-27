@@ -1,0 +1,1 @@
+{"Entities": [{"BeginOffset": 8, "EndOffset": 14, "Score": 0.38273643437581145, "Text": "Virgil", "Type": "LOCATION"}, {"BeginOffset": 234, "EndOffset": 240, "Score": 0.7903321205249364, "Text": "Virgil", "Type": "LOCATION"}], "File": "AwsComprehend-capybara.dlib.indiana.edu-20220127130519"}

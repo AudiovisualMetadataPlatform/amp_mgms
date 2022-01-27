@@ -15,20 +15,37 @@ import amp.utils
 import amp.ner_helper
 import logging
 import amp.logger
+import tempfile
 
 def main():
     #(amp_transcript, aws_entities, amp_entities, ignore_types, bucket, dataAccessRoleArn) = sys.argv[1:7]
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
-    parser.add_argument("amp_transcript")
-    parser.add_argument("aws_entities")
-    parser.add_argument("amp_entities")
-    parser.add_argument("ignore_types")
-    parser.add_argument("bucket")
-    parser.add_argument("dataAccessRoleArn")
+    parser.add_argument("amp_transcript", help="Input transcription file")
+    parser.add_argument("aws_entities", help="Output aws entities file")
+    parser.add_argument("amp_entities", help="Output amp entities file")
+    parser.add_argument("--ignore_types", default="QUANTITY, DATE", help="Types of things to ignore")
+    parser.add_argument("--bucket", default='', help="S3 bucket to use")
+    parser.add_argument("--dataAccessRoleArn", default='', help="AWS ARN to use")
     args = parser.parse_args()
     logging.info(f"Starting with args {args}")
     (amp_transcript, aws_entities, amp_entities, ignore_types, bucket, dataAccessRoleArn) = (args.amp_transcript, args.aws_entities, args.amp_entities, args.ignore_types, args.bucket, args.dataAccessRoleArn)
+
+    # fixup the default arguments...
+    config = amp.utils.get_config()
+    if bucket == '':
+        bucket = config.get('aws_comprehend', 'default_bucket', fallback=None)
+        if bucket is None:
+            logging.error("No bucket defined on the command line or in the config file")
+            exit(1)
+    if dataAccessRoleArn == '':
+        dataAccessRoleArn = config.get('aws_comprehend', 'default_access_arn', fallback=None)
+        if dataAccessRoleArn is None:
+            logging.error('dataAccessRoleArn is not defined on the command line or config file')
+            exit(1)
+
+
+
 
     # preprocess NER inputs and initialize AMP entities output
     [amp_transcript_obj, amp_entities_obj, ignore_types_list] = amp.ner_helper.initialize_amp_entities(amp_transcript, amp_entities, ignore_types)
@@ -39,27 +56,29 @@ def main():
     # hostname + timestamp should ensure unique job name
     jobname = 'AwsComprehend-' + socket.gethostname() + "-" + timestamp 
 
-    # write AMP Transcript text into the input file in a temp directory and upload it to S3
-    tmpdir = tempfile.mkdtemp(dir="/tmp")
-    upload_input_to_s3(amp_transcript_obj, tmpdir, bucket, jobname)
+    with tempfile.TemporaryDirectory() as tmpdir:
+        # write AMP Transcript text into the input file in a temp directory and upload it to S3
+        #tmpdir = tempfile.mkdtemp(dir="/tmp")
+        upload_input_to_s3(amp_transcript_obj, tmpdir, bucket, jobname)
 
-    # Make call to AWS Comprehend
-    outputuri = run_comprehend_job(jobname, s3uri, dataAccessRoleArn)
+        # Make call to AWS Comprehend
+        outputuri = run_comprehend_job(jobname, s3uri, dataAccessRoleArn)
 
-    # download AWS Comprehend output from s3 to the tmp directory, uncompress and copy it to output aws_entities output file
-    download_output_from_s3(outputuri, s3uri, bucket, tmpdir, aws_entities)
+        # download AWS Comprehend output from s3 to the tmp directory, uncompress and copy it to output aws_entities output file
+        download_output_from_s3(outputuri, s3uri, bucket, tmpdir, aws_entities)
 
-    # AWS Comprehend output should contain entities
-    aws_entities_json = amp.utils.read_json_file(aws_entities)
-    if not 'Entities' in aws_entities_json.keys():
-        raise Exception(f"Error: AWS Comprehend output does not contain entities list")
-    aws_entities_list = aws_entities_json["Entities"]
+        # AWS Comprehend output should contain entities
+        aws_entities_json = amp.utils.read_json_file(aws_entities)
+        if not 'Entities' in aws_entities_json.keys():
+            logging.error(f"Error: AWS Comprehend output does not contain entities list")
+            exit(1)
+        aws_entities_list = aws_entities_json["Entities"]
 
-    # populate AMP Entities list based on input AMP transcript words list and output AWS Entities list  
-    amp.ner_helper.populate_amp_entities(amp_transcript_obj, aws_entities_list, amp_entities_obj, ignore_types_list)
+        # populate AMP Entities list based on input AMP transcript words list and output AWS Entities list  
+        amp.ner_helper.populate_amp_entities(amp_transcript_obj, aws_entities_list, amp_entities_obj, ignore_types_list)
 
-    # write the output AMP entities to JSON file
-    amp.utils.write_json_file(amp_entities_obj, amp_entities)
+        # write the output AMP entities to JSON file
+        amp.utils.write_json_file(amp_entities_obj, amp_entities)
     logging.info("Finished.")
     
 # Upload the transcript file created from amp_transcript_obj in tmpdir to the S3 bucket for the given job. 
@@ -77,7 +96,7 @@ def upload_input_to_s3(amp_transcript_obj, tmpdir, bucket, jobname):
     
     # upload the tmp file to s3
     try:
-        s3_client = boto3.client('s3')
+        s3_client = boto3.client('s3', **amp.utils.get_aws_credentials())
         response = s3_client.upload_file(input, bucket, jobname)
         logging.info(f"Successfully uploaded input file {input} to S3 bucket {bucket} for AWS Comprehend job.")
     except Exception as e:
@@ -91,7 +110,7 @@ def download_output_from_s3(outputuri, s3uri, bucket, tmpdir, aws_entities):
         outkey = outputuri.replace(s3uri, '')
         outname = outkey.rsplit("/", 1)[1]
         output = tmpdir + outname
-        s3_client = boto3.client('s3')    
+        s3_client = boto3.client('s3', **amp.utils.get_aws_credentials())    
         s3_client.download_file(bucket, outkey, output)
         logging.debug(f"Successfully downloaded AWS Comprehend output {outputuri} to compressed output file {output}.")
     except Exception as e:
@@ -120,7 +139,7 @@ def run_comprehend_job(jobname, s3uri, dataAccessRoleArn):
     # submit AWS Comprehend job
     try:
         # TODO region name should be in MGM config
-        comprehend = boto3.client(service_name='comprehend', region_name='us-east-2')
+        comprehend = boto3.client(service_name='comprehend', **amp.utils.get_aws_credentials())
         # jobname was used as the object_name uploaded to s3
         inputs3uri = s3uri + jobname
         response = comprehend.start_entities_detection_job(

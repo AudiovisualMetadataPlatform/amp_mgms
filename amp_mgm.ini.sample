@@ -29,6 +29,11 @@ segmentation_api = /#/hmgm/segmentation-editor
 segmentation_input = inputPath
 ; TODO add properties for other HMGM tools
 
+[aws_comprehend]
+default_bucket = your-default-bucket
+default_access_arn = arn:aws:iam::<SOMETHING>:role/AwsComprehend
+
+
 [aws_transcribe]
 default_bucket = your-default-bucket
 default_directory = 
