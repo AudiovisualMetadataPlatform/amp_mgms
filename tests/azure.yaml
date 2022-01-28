@@ -15,15 +15,15 @@
     location: eastus2
 
 - name: Azure Video OCR
-  tool: azure_video_ocr.xml
-  skip: This was broken in the pre-refactor code, and remains so now.
+  tool: azure_video_ocr.xml  
   inputs: 
     input_video: video.m4v
     azure_video_index: azure_video_index.json
     azure_artifact_ocr: azure_artifact_ocr.json
   outputs:
     amp_vocr:
-      - {test: debug, save: /tmp/azure_vocr.json}
+      - {test: magic, mime: text/plain}
+      - {test: strings, strings: [frames, media, duration, resolution]}
       
 - name: Azure Shot Detection
   tool: azure_shot_detection.xml
