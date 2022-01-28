@@ -106,6 +106,8 @@ def retrieve_trained_results(training_photos):
     
     
 # Get the file path of the trained model for the given training_photos.
+# As originally written IT ISN'T GOING TO WORK -- THERE'S NO CONSTRAINT ON THE 
+# FILENAMES AND THERE COULD BE MORE THAN ONE WITH THE SAME BASE NAME WITH DIFFERENT 
 def get_model_file(training_photos):
     # model file has the same file path as training_photos, but with extension .frt replacing .zip
     filename, file_extension = os.path.splitext(training_photos)

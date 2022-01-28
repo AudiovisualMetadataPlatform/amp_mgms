@@ -1,4 +1,26 @@
 # This is the default test suite -- local tools
+
+- name: Adjust Diarization Timestamps
+  tool: adjust_diarization_timestamps.xml
+  inputs:
+    amp_diarization_unadjusted: amp_diarization.json
+    kept_segments: amp_kept_segments.json
+  outputs:
+    amp_diarization_adjusted:
+      - {test: magic, mime: text/plain}
+      - {test: strings, strings: [segments, numSpeakers, media]}
+
+- name: Adjust Transcript Timestamps
+  tool: adjust_transcript_timestamps.xml
+  inputs:
+    amp_transcript_unadjusted: amp_transcript_aws.json
+    kept_segments: amp_kept_segments.json
+  outputs:
+    amp_transcript_adjusted:
+      - {test: magic, mime: text/plain}
+      - {test: strings, strings: [results, words, score, start, end]}
+
+
 - name: Applause Detection
   tool: applause_detection.xml
   inputs:
@@ -104,6 +126,18 @@
       - {test: magic, mime: text/plain}
       - {test: strings, strings: "celebration of specialness"}
 
+- name: Keep Speech
+  tool: keep_speech.xml
+  inputs:
+    original_audio: audio.wav
+    amp_segments: amp_segments.json
+  outputs:
+    speech_audio:
+      - {test: pass, status: true}
+    kept_segments:
+      - {test: magic, mime: text/plain}  
+
+
 - name: NER to CSV
   tool: ner_to_csv.xml
   inputs:
@@ -128,6 +162,18 @@
     frame_stats:
       - {test: magic, mime: text/plain}
       - {test: strings, strings: [Frame Number, Timecode, content_val, delta_hue, delta_lum, delta_sat]}
+
+- name: Remove Silence Music Speech
+  tool: remove_silence_speech.xml
+  inputs:
+    original_audio: audio.wav
+    amp_segments: amp_segments.json
+  outputs:
+    music_audio:
+      - {test: pass, status: true}
+    kept_segments:
+      - {test: magic, mime: text/plain}
+
 
 - name: Remove Trailing Silence
   tool: remove_trailing_silence.xml
@@ -173,7 +219,15 @@
       - {test: magic, mime: text/plain}
       - {test: strings, strings: [WEBVTT, spk_0, multipurpose]}
 
-
+- name: Vocabulary Tagging
+  tool: vocabulary_tagging.xml
+  inputs:
+    amp_transcript: amp_transcript_aws.json
+    tag_vocabulary: amp_words.txt
+  outputs:
+    tagged_words:
+      - {test: magic, mime: text/plain}
+      - {test: strings, strings: [Word, Start]}
 
 - name: VOCR to CSV
   tool: vocr_to_csv.xml

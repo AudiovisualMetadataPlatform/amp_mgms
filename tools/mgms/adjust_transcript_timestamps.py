@@ -25,7 +25,7 @@ def main():
     parser.add_argument("output_json")
     args = parser.parse_args()
     logging.info(f"Starting with args {args}")
-    (stt_json, adj_json, output_json) = (amp.stt_json, amp.adj_json, amp.output_json)
+    (stt_json, adj_json, output_json) = (args.stt_json, args.adj_json, args.output_json)
 
 
     # Turn adjustment data into list of kept segments

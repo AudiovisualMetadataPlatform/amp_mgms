@@ -1,19 +1,19 @@
-adjust_diarization_timestamps.xml
-adjust_transcript_timestamps.xml
-applause_detection_to_avalon_xml.xml
+adjust_diarization_timestamps.xml - Done
+adjust_transcript_timestamps.xml - Done
+applause_detection_to_avalon_xml.xml - What the heck is "JSON string containing context information needed by the MGM"
 applause_detection.xml - Done
 aws_comprehend.xml - Done
 aws_transcribe.xml - Done
 azure_shot_detection.xml - Done
 azure_video_indexer.xml - Done
 azure_video_ocr.xml - Fails tests because it was broken prior to refactor
-contact_sheets_collection.xml
+contact_sheets_collection.xml - Skipping:  "JSON string containing context information needed by the MGM"
 contact_sheets.xml
     * time - Done
     * quantity - Done
     * shot - Done
-    * facial
-dlib_face_recognition.xml
+    * facial - Skipping due to dlib_face_recognition
+dlib_face_recognition.xml - Skipping because face recognition will need to be rewritten -- it isn't multiuser safe.
 extract_audio.xml - Done
 gentle_forced_alignment.xml - There's a test there, but gentle never finishes.
 hmgm_ner.xml
@@ -21,14 +21,14 @@ hmgm_segmentation.xml
 hmgm_transcript.xml
 ina_speech_segmenter.xml - Done
 kaldi.xml - Done
-keep_speech.xml
+keep_speech.xml - Done
 ner_to_csv.xml - Done
 pyscenedetect.xml - Done
-remove_silence_speech.xml
+remove_silence_speech.xml - Done
 remove_trailing_silence.xml - Done
 spacy.xml - Done
 supplement.xml - Skipping, because this only makes sense in the context of Galaxy
 tesseract.xml - Done
 transcript_to_webvtt.xml - Done
-vocabulary_tagging.xml
+vocabulary_tagging.xml - Done
 vocr_to_csv.xml - Fails tests because it was broken prior to refactor

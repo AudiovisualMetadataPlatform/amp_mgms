@@ -14,7 +14,6 @@ import logging
 import amp.logger
 from amp.schema.segmentation import Segmentation
 
-from amp.logger import MgmLogger
 import amp.utils
 
 
@@ -29,7 +28,7 @@ def main():
 	parser.add_argument("input_segmentation_json")
 	parser.add_argument("remove_type")
 	parser.add_argument("output_file")
-	parser.add_argument("keep_segments_file")
+	parser.add_argument("kept_segments_file")
 	args = parser.parse_args()
 	logging.info(f"Starting with args {args}")
 	(input_file, input_segmentation_json, remove_type, output_file, kept_segments_file) = (args.input_file, args.input_segmentation_json, args.remove_type, args.output_file, args.kept_segments_file)

@@ -4,6 +4,7 @@ import os
 import json
 import stat
 import logging
+from pathlib import Path
 
 ERR_SUFFIX = ".err"
 
@@ -103,22 +104,15 @@ def get_config():
 
 # Get the absolute path of the specified module/mgm working directory
 def get_work_dir(work_dir):
-    config = get_config()
-    dir = config["workdir"].get(work_dir)
-    return dir    
+    # The original implementation looked it up in the .ini file, but
+    # this should be something that "just works".  With that in 
+    # mind, this will create a working directory next to the script
+    # with the work_dir parameter as the subdirectory.
+    wd = Path(sys.path[0], work_dir)
+    wd.mkdir(parents=True, exist_ok=True)
+    logging.debug(f"Getting/Creating workdir: {wd!s}")
+    return str(wd.absolute())
 
-# Get the absolute path of the mgm logs directory
-def get_log_dir(root_dir):
-    #return get_work_dir(root_dir, "mgm_log")
-    logging.error("get_log_dir Deprecated")
-    return None
-
-
-# Get the absolute path of the mgm singularities directory
-def get_sif_dir(root_dir):
-    #return get_work_dir(root_dir, "mgm_sif") 
-    logging.error("get_sif_dir Deprecated")
-    return None
 
 # get the AWS credentials from the config file and return them as a dict
 def get_aws_credentials():
@@ -126,3 +120,5 @@ def get_aws_credentials():
     res = config._sections['aws']
     logging.debug(f"AWS credentials: {res}")
     return res
+
+    
