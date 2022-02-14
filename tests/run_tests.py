@@ -1,5 +1,6 @@
 #!/bin/env python3
 import argparse
+from time import sleep
 import yaml
 import subprocess
 from pathlib import Path
@@ -107,13 +108,29 @@ set -e
             if args.debug:
                 os.environ['MGM_DEBUG'] = '1'
 
-            logging.debug(f"{context} Starting runscript")
-            p = subprocess.run([str(runscript)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf-8")
-            if p.returncode != 0:
-                logging.error(f"{context} runscript failed with return code {p.returncode}")
-                logging.error(p.stdout)
-                fails += 1
-                continue
+            rc = 255
+            script_failed = False
+            while rc == 255:
+                logging.debug(f"{context} Starting runscript")
+                p = subprocess.run([str(runscript)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf-8")
+                logging.debug(f"Runscript exited with {rc}")
+                rc = p.returncode
+                if rc == 0:                    
+                    # success
+                    break
+                if rc == 255:
+                    # wait
+                    sleep(10)
+                else:
+                    logging.error(f"{context} runscript failed with return code {p.returncode}")
+                    logging.error(p.stdout)
+                    fails += 1
+                    script_failed = True
+             
+            if script_failed:
+                # got to the next test
+                break
+
 
             # Since the script worked OK, run any tests on the output file
             test_errors = 0
