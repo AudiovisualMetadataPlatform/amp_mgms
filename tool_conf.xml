@@ -65,15 +65,18 @@
     <tool file="amp_mgms/vocr_to_csv.xml"/>
   </section>
 
+  <!--
   <section id="music_ocr" name="Music Optical Charater Recognition">
   </section>
-
+  -->
+  
   <section id="hmgm_editor" name="Human MGM Editor">
-    <tool file="amp_mgms/hmgm_sample.xml"/>
+    <!--<tool file="amp_mgms/hmgm_sample.xml"/>-->
     <tool file="amp_mgms/hmgm_transcript.xml"/>
     <tool file="amp_mgms/hmgm_ner.xml"/>
-    <tool file="amp_mgms/hmgm_segmentation.xml"/>
+    <!--<tool file="amp_mgms/hmgm_segmentation.xml"/>-->
   </section>
+  
   <!--
   <section id="obsolete_mgms" name="Obsolete MGMs">
     <tool file="amp_mgms/remove_silence_music.xml"/>

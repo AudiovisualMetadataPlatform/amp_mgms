@@ -3,20 +3,20 @@
 
 ; absolute paths of working directories for various modules/MGMs
 [workdir]
-hmgm_io = /srv/services/amp_galaxy-test-8100/galaxy_work/hmgm 
-facial_io = /srv/services/amp_galaxy-test-8100/galaxy_work/facial
+hmgm_io = /your_galaxy_parent_dir/galaxy_work/hmgm 
+facial_io = /your_galaxy_parent_dir/galaxy_work/facial
 ; TODO move hpc_dropbox under galaxy_work 
-hpc_dropbox = /srv/services/amp_galaxy-test-8100/hpc_batch/dropbox
-; below two not referenced but partly hardcoded in MGM
-transcribe_io = /srv/services/amp_galaxy-test-8100/galaxy_work/aws/transcribe
-comprehend_io = /srv/services/amp_galaxy-test-8100/galaxy_work/aws/comprehend
+hpc_dropbox = /your_galaxy_parent_dir/hpc_batch/dropbox
+; below two not referenced but partly hard-coded in MGM
+transcribe_io = /your_galaxy_parent_dir/galaxy_work/aws/transcribe
+comprehend_io = /your_galaxy_parent_dir/galaxy_work/aws/comprehend
 
 [amppd]
 server = https://amp-test.your.site.here
 
 [hmgm]
-auth_key = adfasdfasdfasdfasdf
-auth_string = authasdfasdf
+auth_key = your_auth_key
+auth_string = your_auth_string
 ;
 transcript_api = /#/hmgm/transcript-editor
 transcript_input = datasetUrl
@@ -29,26 +29,25 @@ segmentation_api = /#/hmgm/segmentation-editor
 segmentation_input = inputPath
 ; TODO add properties for other HMGM tools
 
-[aws_comprehend]
-default_bucket = your-default-bucket
-default_access_arn = arn:aws:iam::<SOMETHING>:role/AwsComprehend
-
-
-[aws_transcribe]
-default_bucket = your-default-bucket
-default_directory = 
-
 [jira]
 server = https://your.jira.host
-username = asdfasdfa
-password = asdfasdfasdf
-project = SOME_PROJECT
+username = your_username
+password = your_password
+project = YOUR_PROJECT
 
 [azure]
-accountId = asdfasdf
-apiKey = asdfasdfa
-s3Bucket = some-bucket
+accountId = your_account_id
+apiKey = your_api_key
+s3Bucket = your_s3_bucket
 
 [aws]
-aws_access_key_id=some_key
-aws_secret_access_key=some secret access key
+aws_access_key_id = your_aws_key_id
+aws_secret_access_key = your_aws_access_key
+
+[aws_comprehend]
+default_bucket = your_default_bucket
+default_access_arn = arn:aws:iam::<SOMETHING>:role/AwsComprehend
+
+[aws_transcribe]
+default_bucket = your_default_bucket
+default_directory = 
