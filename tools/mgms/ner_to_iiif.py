@@ -33,7 +33,7 @@ def main():
     # using output instead of input filename as the latter is unique while the former could be used by multiple jobs 
 
     try:
-        # exit 1 here if NER->IIIF conversion already done
+        # exit to requeue here if NER->IIIF conversion already done
         amp.utils.exit_if_file_generated(to_iiif)
         logging.debug("Converting from NER " + from_ner + " to IIIF: " + to_iiif)
        
@@ -60,7 +60,7 @@ def main():
         logging.error("Error: Failed to convert from NER " + from_ner + " to IIIF: " + to_iiif, e)
         traceback.print_exc()
         sys.stdout.flush()
-        exit(-1)
+        exit(1)
 
 
 # Populate IIIF fields other than annotations, using the provide context and ner_data.
