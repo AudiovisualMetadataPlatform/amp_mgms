@@ -35,7 +35,7 @@ def main():
     try:
         # exit to requeue here if NER->IIIF conversion already done
         amp.utils.exit_if_file_generated(to_iiif)
-        logging.debug("Converting from NER " + from_ner + " to IIIF: " + to_iiif)
+        logging.info("Converting from NER " + from_ner + " to IIIF: " + to_iiif)
        
         # parse input NER and context JSON
         context = json.loads(context_json)
@@ -50,7 +50,7 @@ def main():
         with open(to_iiif, "w") as iiif_file: 
             json.dump(iiif_data, iiif_file) 
         
-        logging.debug("Successfully converted from NER " + from_ner + " to IIIF: " + to_iiif)
+        logging.info("Successfully converted from NER " + from_ner + " to IIIF: " + to_iiif)
         sys.stdout.flush()
         # implicitly exit 0 as the current command completes
         logging.info("Finished.")

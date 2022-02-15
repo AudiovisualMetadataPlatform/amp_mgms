@@ -58,7 +58,7 @@ def main():
 		# (this means the conversion command failed before hmgm task command)
 		amp.utils.exception_if_file_not_exist(input_json)
 		
-		logging.debug("Handling HMGM task: uncorrected JSON: " + input_json + ", corrected JSON: " + output_json + ", task JSON: " + task_json)				
+		logging.info("Handling HMGM task: uncorrected JSON: " + input_json + ", corrected JSON: " + output_json + ", task JSON: " + task_json)				
         # Load basic HMGM configuration based from the property file under the given root directory
 		config = amp.utils.get_config()
 		context = json.loads(context_json)

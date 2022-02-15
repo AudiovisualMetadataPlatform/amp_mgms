@@ -63,7 +63,7 @@ class TaskJira (TaskManager):
              
          # if transition is None, that means issue is already in Done status
          if transition is None:
-             logging.warn("Issue  " + issue.id + " is already Done, probably closed manually by someone")
+             logging.warning("Issue  " + issue.id + " is already Done, probably closed manually by someone")
          # otherwise update the jira status to Done via transition
          else:
              logging.info("Transition issue " + issue.id + " to status " + transition)

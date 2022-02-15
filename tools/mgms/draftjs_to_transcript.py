@@ -33,7 +33,7 @@ def main():
         # if from_draftjs is in error raise exception to notify HMGM job runner to fail the job
          # otherwise if from_draftjs doesn't exist yet, exit to requeue (keep waiting)
         amp.utils.exit_if_file_not_ready(from_draftjs)
-        logging.debug("Converting DraftJs " + from_draftjs + " to Transcript " + to_transcript)
+        logging.info("Converting DraftJs " + from_draftjs + " to Transcript " + to_transcript)
 
         with open(from_draftjs) as json_file:
             d = json.load(json_file)
@@ -131,7 +131,7 @@ def main():
     
         # Write the output
         amp.utils.write_json_file(stt, to_transcript)
-        logging.debug("Successfully converted from DraftJs " + from_draftjs + " to Transcript " + to_transcript)
+        logging.info("Successfully converted from DraftJs " + from_draftjs + " to Transcript " + to_transcript)
         logging.info("Finished.")
         # as the last command in HMGM, implicitly exit 0 here to let the whole job complete in success
     except Exception as e:

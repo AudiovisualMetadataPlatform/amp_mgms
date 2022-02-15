@@ -89,7 +89,7 @@ def upload_input_to_s3(amp_transcript_obj, tmpdir, bucket, jobname):
         input = tmpdir + "/" + jobname
         with open(input, 'w') as infile:
             infile.write(amp_transcript_obj.results.transcript)
-            logging.debug(f"Successfully created input file {input} containing transcript for AWS Comprehend job.")
+            logging.info(f"Successfully created input file {input} containing transcript for AWS Comprehend job.")
     except Exception as e:
         logging.error(f"Error: Exception while creating input file {input} containing transcript for AWS Comprehend job.")
         raise
@@ -112,7 +112,7 @@ def download_output_from_s3(outputuri, s3uri, bucket, tmpdir, aws_entities):
         output = tmpdir + outname
         s3_client = boto3.client('s3', **amp.utils.get_aws_credentials())    
         s3_client.download_file(bucket, outkey, output)
-        logging.debug(f"Successfully downloaded AWS Comprehend output {outputuri} to compressed output file {output}.")
+        logging.info(f"Successfully downloaded AWS Comprehend output {outputuri} to compressed output file {output}.")
     except Exception as e:
         logging.error(f"Error: Exception while downloading AWS Comprehend output {outputuri} to compressed output file {output}.")
         raise
@@ -127,7 +127,7 @@ def download_output_from_s3(outputuri, s3uri, bucket, tmpdir, aws_entities):
         if len(outputs) > 0:
             source = outputs[0].name
             shutil.move(source, aws_entities) 
-            logging.debug(f"Successfully uncompressed {output} to {source} and moved it to {aws_entities}.")
+            logging.info(f"Successfully uncompressed {output} to {source} and moved it to {aws_entities}.")
         else:
             raise Exception(f"Error: Compressed output file {output} does not contain any member.")
     except Exception as e:
@@ -154,7 +154,7 @@ def run_comprehend_job(jobname, s3uri, dataAccessRoleArn):
             JobName=jobname,
             LanguageCode='en'
         )
-        logging.debug(f"Successfully submitted AWS Comprehend job with input {inputs3uri}.")
+        logging.info(f"Successfully submitted AWS Comprehend job with input {inputs3uri}.")
     except Exception as e:
         logging.error(f"Error: Exception while submitting AWS Comprehend job with input {inputs3uri}")
         raise
@@ -177,7 +177,7 @@ def run_comprehend_job(jobname, s3uri, dataAccessRoleArn):
     # check status of job upon ending
     logging.debug(jobStatusResponse)     
     if status == 'COMPLETED':
-        logging.debug(f"AWS Comprehend job {jobname} completed in success with output {outputuri}.")  
+        logging.info(f"AWS Comprehend job {jobname} completed in success with output {outputuri}.")  
         return outputuri
     else:
         raise Exception(f"Error: AWS Comprehend job {jobname} ended with status {status}.")

@@ -90,7 +90,7 @@ def submit_job(job_name, input_file, audio_format, bucket, object_name):
     s3_uri = f"s3://{bucket}/{object_name}"
     s3_client = boto3.client('s3', **amp.utils.get_aws_credentials())    
     try:
-        logging.debug(f"Uploading file {str(input_file)} to {s3_uri}")
+        logging.info(f"Uploading file {str(input_file)} to {s3_uri}")
         response = s3_client.upload_file(str(input_file), bucket, object_name) #, ExtraArgs={'ACL': 'public-read'})        
     except Exception as e:
         logging.error(f"Uploading file {input_file} failed: {e}")
@@ -98,7 +98,7 @@ def submit_job(job_name, input_file, audio_format, bucket, object_name):
     
     # transcribe the file
     try:
-        logging.debug(f"Starting transcription job {job_name}")
+        logging.info(f"Starting transcription job {job_name}")
         transcribe_client = boto3.client('transcribe', **amp.utils.get_aws_credentials())
         transcribe_client.start_transcription_job(
             TranscriptionJobName=job_name,
@@ -128,7 +128,7 @@ def check_job(job_name, bucket, object_name, output_file):
         logging.info(f"Result URI: {transcription_uri}")
         s3_client.download_file(Bucket=bucket, Key=object_name + ".json", Filename=output_file)
         cleanup_job(job_name, bucket, object_name)
-        logging.info("Finished")
+        logging.info("Job ${job_name} completed in success!")
         return 0
     elif job_status == 'FAILED':
         logging.error(f"Transcription failed: {job['TranscriptionJob']['FailureReason']}")

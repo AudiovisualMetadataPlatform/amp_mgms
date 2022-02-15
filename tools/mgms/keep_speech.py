@@ -32,16 +32,16 @@ def main():
 	(input_file, input_segmentation_json, remove_type, output_file, kept_segments_file) = (args.input_file, args.input_segmentation_json, args.remove_type, args.output_file, args.kept_segments_file)
 
 
-	logging.debug("Reading segmentation file")
+	logging.info("Reading segmentation file")
 	# Turn segmentation json file into segmentation object
 	with open(input_segmentation_json, 'r') as file:
 		seg_data = Segmentation().from_json(json.load(file))
 	
-	logging.debug("Removing silence to get a list of kept segments")
+	logging.info("Removing silence to get a list of kept segments")
 	# Remove silence and get a list of kept segments
 	kept_segments = remove_silence(remove_type, seg_data, input_file, output_file)
 
-	logging.debug("Writing  output json file")
+	logging.info("Writing  output json file")
 	# Write kept segments to json file
 	write_kept_segments_json(kept_segments, kept_segments_file)
 	logging.info("Finished.")
@@ -119,7 +119,7 @@ def create_audio_part(input_file, start, end, segment, file_duration):
 	duration = (end_offset - start_offset)
 	duration_str = time.strftime('%H:%M:%S', time.gmtime(duration))
 
-	logging.debug("Removing segment starting at " + start_str + " for " + duration_str)
+	logging.info("Removing segment starting at " + start_str + " for " + duration_str)
 
 	# Execute ffmpeg command to split of the segment
 	ffmpeg_out = subprocess.Popen(['ffmpeg', '-i', input_file, '-ss', start_str, '-t', duration_str, '-acodec', 'copy', tmp_filename], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -127,7 +127,7 @@ def create_audio_part(input_file, start, end, segment, file_duration):
 	stdout,stderr = ffmpeg_out.communicate()
 
 	# Print the output
-	logging.debug("Creating audio segment " + str(segment))
+	logging.info("Creating audio segment " + str(segment))
 	logging.debug(stdout)
 	logging.debug(stderr)
 
@@ -154,7 +154,7 @@ def concat_files(segments, output_file):
 		stdout, stderr = ffmpeg_out.communicate()
 
 		# Print the output
-		logging.debug("Creating complete audio")
+		logging.info("Creating complete audio")
 		logging.debug(stdout)
 		logging.debug(stderr)
 

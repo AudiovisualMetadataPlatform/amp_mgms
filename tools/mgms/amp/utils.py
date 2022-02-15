@@ -19,7 +19,7 @@ def exit_if_file_generated(file):
     # if the file has already been generated, for ex, by the HMGM converter, exit calling command with error code 255 
     # to avoid redundant process, and inform HMGM job runner to reschedule the job till all commands complete.     
     if os.path.exists(file) and os.stat(file).st_size > 0:
-        logging.error("File " + file + " has already been generated, exit 255")
+        logging.debug("File " + file + " has already been generated, exit 255")
         exit(255)
  
  
@@ -27,7 +27,7 @@ def exit_if_file_generated(file):
 # This method is typically called by a command depending on the previous command's success in a multi-command MGM.
 def exception_if_file_not_exist(file):       
     # the exception should stop further processing in the calling command, which could either exit with the exception, 
-    # or handle the exception and exit with error code -1, to signal HMGM job runner to fail the whole job in ERROR status
+    # or handle the exception and exit with error code 1, to signal HMGM job runner to fail the whole job in ERROR status
     if not os.path.exists(file) or os.stat(file).st_size == 0:
         raise Exception("Exception: File " + file + " doesn't exist or is empty, the previous command generating it must have failed.")
  
@@ -49,7 +49,7 @@ def exit_if_file_not_ready(file):
          
 
 # Empty out the content of the given (output) file as needed.
-# This method is typically called by an MGM command exiting with error code -1 upon exceptions.
+# This method is typically called by an MGM command exiting with error code 1 upon exceptions.
 def empty_file(file):
     # overwrite the given file to empty if it had contents, so no invalid output is generated in case of exception
     if os.path.exists(file) and os.stat(file).st_size > 0:
@@ -59,7 +59,7 @@ def empty_file(file):
     
  
 # Create an empty error file for the given (output) file to indicate it's in error.
-# This method is typically called by an MGM command exiting with error code -1 upon exceptions.
+# This method is typically called by an MGM command exiting with error code 1 upon exceptions.
 def create_err_file(file):
     # error file has the .err suffix added to the original file path
     err_file = file + ERR_SUFFIX
@@ -104,10 +104,8 @@ def get_config():
 
 # Get the absolute path of the specified module/mgm working directory
 def get_work_dir(work_dir):
-    # The original implementation looked it up in the .ini file, but
-    # this should be something that "just works".  With that in 
-    # mind, this will create a working directory next to the script
-    # with the work_dir parameter as the subdirectory.
+    # The original implementation looked it up in the .ini file, but this should be something that "just works".  
+    # With that in mind, this will create a working directory next to the script with the work_dir parameter as the subdirectory.
     wd = Path(sys.path[0], work_dir)
     wd.mkdir(parents=True, exist_ok=True)
     logging.debug(f"Getting/Creating workdir: {wd!s}")

@@ -15,7 +15,7 @@ import logging
 def initialize_amp_entities(amp_transcript, amp_entities, ignore_types):
     # get a list of entity types to ignore when outputting entity list
     ignore_types_list = extract_ignore_types(ignore_types)
-    logging.debug(f"Ignore types: {ignore_types_list}")    
+    logging.info(f"Ignore types: {ignore_types_list}")    
 
     # parse input AMP Transcript JSON file into amp_entities object
     try:
@@ -31,7 +31,7 @@ def initialize_amp_entities(amp_transcript, amp_entities, ignore_types):
 
     # If input AMP transcript is empty, don't error, instead, output AMP Entity JSON with empty entity list and complete the whole process
     if mediaLength == 0:
-        logging.warn(f"Warning: Input AMP Transcript Json file has empty transcript, will output AMP NER Json with empty entities list.")
+        logging.warning(f"Warning: Input AMP Transcript Json file has empty transcript, will output AMP NER Json with empty entities list.")
         amp.utils.write_json_file(amp_entities_obj, amp_entities)
         exit(0)
 
@@ -105,7 +105,7 @@ def populate_amp_entities(amp_transcript_obj, ner_entities_list, amp_entities_ob
             traceback.print_exc()           
 
     lena = len(amp_entities_obj.entities)
-    logging.debug(f"Among all {lene} {mgm} entities, {lena} are successfully populated into AMP Entities, {ignored} are ignored, {lene-lena-ignored} are unmatched.")
+    logging.info(f"Among all {lene} {mgm} entities, {lena} are successfully populated into AMP Entities, {ignored} are ignored, {lene-lena-ignored} are unmatched.")
     
 
 # Extract a list of cleaned entity types from the given comma separated ignore_types string. 

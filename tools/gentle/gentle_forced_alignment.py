@@ -54,18 +54,18 @@ def main():
 			shutil.copy(speech_audio, tmp_speech_audio)
 
 			# Run gentle
-			logging.debug(f"Running Gentle... tmp_speech_audio: {tmp_speech_audio}, tmp_amp_transcript_unaligned: {tmp_amp_transcript_unaligned}, tmp_gentle_transcript: {tmp_gentle_transcript}")
+			logging.info(f"Running Gentle... tmp_speech_audio: {tmp_speech_audio}, tmp_amp_transcript_unaligned: {tmp_amp_transcript_unaligned}, tmp_gentle_transcript: {tmp_gentle_transcript}")
 			#sif = mgm_utils.get_sif_dir(root_dir) + "/gentle_forced_alignment.sif"
 			sif = sys.path[0] + "/gentle_forced_alignment.sif"
 			r = subprocess.run(["singularity", "run", sif, tmp_speech_audio, tmp_amp_transcript_unaligned, "-o", tmp_gentle_transcript], stdout=subprocess.PIPE)
-			logging.debug(f"Finished running Gentle with return Code: {r.returncode}")
+			logging.info(f"Finished running Gentle with return Code: {r.returncode}")
 
 			# if Gentle completed in success, continue with transcript conversion
 			if r.returncode == 0:
 				# Copy the tmp Gentle output file to gentle_transcript
 				shutil.copy(tmp_gentle_transcript, gentle_transcript)
 	
-				logging.debug("Creating AMP transcript aligned...")
+				logging.info("Creating AMP transcript aligned...")
 				gentle_transcript_to_amp_transcript(gentle_transcript, amp_transcript_unaligned_json, amp_transcript_aligned)
 
 			logging.info("Finished")
@@ -133,11 +133,11 @@ def gentle_transcript_to_amp_transcript(gentle_transcript, amp_transcript_unalig
 			
 		# append punctuations after the last word if any text left
 		[preoffset, curoffset] = insert_punctuations(words, gwords, gi, preoffset, transcript)
-		logging.debug(f"Successfully added {len(words)} words into AMP aligned transcript, including {len(gwords)} words from Gentle words, and {len(words)-len(gwords)} punctuations inserted from Gentle transcript.")
+		logging.info(f"Successfully added {len(words)} words into AMP aligned transcript, including {len(gwords)} words from Gentle words, and {len(words)-len(gwords)} punctuations inserted from Gentle transcript.")
 		 	
 		# update words confidence in amp_transcript_aligned_json, based on amp_transcript_unaligned_json words
 		updated = update_confidence(words, uwords)
-		logging.debug(f"Successfully updated confidence for {updated} words in AMP aligned transcript.")
+		logging.info(f"Successfully updated confidence for {updated} words in AMP aligned transcript.")
 		
 		# write final amp_transcript_aligned_json to file
 		amp.utils.write_json_file(amp_transcript_aligned_json, amp_transcript_aligned)
@@ -180,7 +180,7 @@ def find_next_success(words, current, duration):
 	# since we only look for next success at the end of the last success, the previous word must be the last success
 	last = current - 1	
 	if (next > current):
-		logging.debug(f"Use timestamps with interval {interval} starting at time {lastend} for unmatached Gentle words between index {last} and {next}.")
+		logging.info(f"Use timestamps with interval {interval} starting at time {lastend} for unmatached Gentle words between index {last} and {next}.")
 	return [last, next, lastend, interval]
 		
 		
@@ -214,7 +214,7 @@ def insert_punctuations(words, gwords, gi, preoffset, transcript):
 					"scoreValue": 0.0,
 				},
 			})
-			logging.debug(f"Insert punctuation as AMP words[{len(words)-1}]={text} after Gentle words[{gi}]={gword}")
+			logging.info(f"Insert punctuation as AMP words[{len(words)-1}]={text} after Gentle words[{gi}]={gword}")
 
 	# if current word is not the last one, future punctuation end boundary should be the end of the current word
 	if gi < lenw:		
@@ -232,7 +232,7 @@ def update_confidence(words, uwords):
 	alen = len(words)
 	ulen = len(uwords)
 	if alen != ulen:
-		logging.debug(f"Warning: The algined words list length = {alen} does not equal the unaligned words list length {ulen}.")	
+		logging.warning(f"Warning: The algined words list length = {alen} does not equal the unaligned words list length {ulen}.")	
 	
 	ui = -1
 	i = si = 0
@@ -250,7 +250,7 @@ def update_confidence(words, uwords):
 			
 			# check boundary of unaligned words
 			if ui == len(uwords):
-				logging.warn(f"Warning: Reaching the end of unaligned words at length {ui} while updating confidence for aligned word {word} at index {i}.")
+				logging.warning(f"Warning: Reaching the end of unaligned words at length {ui} while updating confidence for aligned word {word} at index {i}.")
 			
 			# check current word
 			type = uwords[ui]["type"]
@@ -266,7 +266,7 @@ def update_confidence(words, uwords):
 		# compare aligned/unaligned words and update confidence
 		text = word["text"]
 		if text != stexts[si]:
-			logging.warn(f"Warning: Algined words[{i}] = {text} does not match unaligned words[{ui}][{si}] = {stexts[si]}, using default confidence for it.")
+			logging.warning(f"Warning: Algined words[{i}] = {text} does not match unaligned words[{ui}][{si}] = {stexts[si]}, using default confidence for it.")
 		elif "score" in uwords[ui]:
 			word["score"]["scoreValue"] = uwords[ui]["score"]["scoreValue"]
 			updated = updated + 1

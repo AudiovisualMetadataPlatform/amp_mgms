@@ -217,7 +217,7 @@ class ContactSheet:
 			return False
 		# give a warning if frame interval is greater than video_length
 		if frame_seconds > video_length:
-			logging.warn(f"Warning: the frame interval in seconds {frame_seconds} is greater than the video length {video_length}, so only one frame will be extracted.")
+			logging.warning(f"Warning: the frame interval in seconds {frame_seconds} is greater than the video length {video_length}, so only one frame will be extracted.")
 		return True
 
 	def validate_quantity(self, frame_quantity, video_length):
@@ -227,7 +227,7 @@ class ContactSheet:
 			return False
 		# give a warning if frame quantity is greater than video_length
 		if frame_quantity > video_length:
-			logging.warn(f"Warning: the frame quantity {frame_quantity} is greater than the video length {video_length}, so only {video_length} frames will be extracted.")
+			logging.warning(f"Warning: the frame quantity {frame_quantity} is greater than the video length {video_length}, so only {video_length} frames will be extracted.")
 		return True
 
 	def validate_shots(self, amp_shots):
@@ -257,5 +257,5 @@ class ContactSheet:
 				.output(outname, vframes=1)
 				.run()
 			)
-			logging.debug("  Saved thumbnail: %d/%d" % (i+1, len(times)))
+			logging.info("Saved thumbnail: %d/%d" % (i+1, len(times)))
 		return fnames

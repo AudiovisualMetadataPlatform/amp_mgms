@@ -33,7 +33,7 @@ def main():
         # if from_iiif is in error raise exception to notify HMGM job runner to fail the job
         # otherwise if from_iiif doesn't exist yet, exit to requeue and keep waiting
         amp.utils.exit_if_file_not_ready(from_iiif)
-        logging.debug("Converting from IIIF " + from_iiif + " to NER " + to_ner)
+        logging.info("Converting from IIIF " + from_iiif + " to NER " + to_ner)
 
         # parse output IIIF and original input NER
         with open(from_iiif, 'r') as iiif_file:
@@ -49,7 +49,7 @@ def main():
         with open(to_ner, "w") as outfile: 
             json.dump(ner_data, outfile) 
         
-        logging.debug("Successfully converted from IIIF " + from_iiif + " to NER " + to_ner)
+        logging.info("Successfully converted from IIIF " + from_iiif + " to NER " + to_ner)
         sys.stdout.flush()
         # as the last command in HMGM, implicitly exit 0 here to let the whole job complete in success
         logging.info("Finished.")
