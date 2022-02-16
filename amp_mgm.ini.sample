@@ -3,13 +3,8 @@
 
 ; absolute paths of working directories for various modules/MGMs
 [workdir]
-hmgm_io = /your_galaxy_parent_dir/galaxy_work/hmgm 
-facial_io = /your_galaxy_parent_dir/galaxy_work/facial
 ; TODO move hpc_dropbox under galaxy_work 
 hpc_dropbox = /your_galaxy_parent_dir/hpc_batch/dropbox
-; below two not referenced but partly hard-coded in MGM
-transcribe_io = /your_galaxy_parent_dir/galaxy_work/aws/transcribe
-comprehend_io = /your_galaxy_parent_dir/galaxy_work/aws/comprehend
 
 [amppd]
 server = https://amp-test.your.site.here
