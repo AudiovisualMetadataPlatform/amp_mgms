@@ -128,7 +128,7 @@ def check_job(job_name, bucket, object_name, output_file):
         logging.info(f"Result URI: {transcription_uri}")
         s3_client.download_file(Bucket=bucket, Key=object_name + ".json", Filename=output_file)
         cleanup_job(job_name, bucket, object_name)
-        logging.info("Job ${job_name} completed in success!")
+        logging.info("Job {job_name} completed in success!")
         return 0
     elif job_status == 'FAILED':
         logging.error(f"Transcription failed: {job['TranscriptionJob']['FailureReason']}")
