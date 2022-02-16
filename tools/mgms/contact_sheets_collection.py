@@ -40,20 +40,20 @@ def main():
 	logging.debug("Duration: " + str(video_length_seconds))
 	if int(collection_id) in (3, 4):
 		if video_length_seconds < 2000:
-			logging.debug("Creating a frame per 20 seconds")
+			logging.info("Creating a frame per 20 seconds")
 			c.create_time(20)
 		else:
-			logging.debug("Creating a frame every 1%: " + str(video_length_seconds * .01) + " seconds")
+			logging.info("Creating a frame every 1%: " + str(video_length_seconds * .01) + " seconds")
 			c.create_time(int(video_length_seconds * .01))
 	else:
 		if video_length_seconds < 300:
-			logging.debug("Creating a frame per 10 seconds")
+			logging.info("Creating a frame per 10 seconds")
 			c.create_time(10)
 		elif video_length_seconds < 1800:
-			logging.debug("Creating a frame per 60 seconds")
+			logging.info("Creating a frame per 60 seconds")
 			c.create_time(60)
 		else:
-			logging.debug("Creating a frame per 120 seconds")
+			logging.info("Creating a frame per 120 seconds")
 			c.create_time(120)
 	logging.info("Finished.")
 

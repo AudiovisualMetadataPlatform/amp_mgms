@@ -30,7 +30,7 @@ def train_faces(training_photos):
 #     # exit in error if no training data found    
 #     if (len(person_dir_names) == 0):
 #         print("Training failed as training photos " + training_photos + " contains no sub-directory")
-#         exit(-1)
+#         exit(1)
          
     known_names = []
     known_faces = []
@@ -64,7 +64,7 @@ def train_faces(training_photos):
                 known_faces.append(face_encoding)
                 model.append({"name": name, "encoding": face_encoding})
                 count = count + 1
-                logging.debug("Added face encoding from " + photo + " for " + name + " to training model")
+                logging.info("Added face encoding from " + photo + " for " + name + " to training model")
             # otherwise skip this photo
             else:
                 logging.warning("Warning: Skipped " + photo + " for " + name + " as it contains no or more than one faces")
@@ -79,12 +79,12 @@ def train_faces(training_photos):
     # return the training results as known_names and known_faces
     if (len(model) > 0):       
         save_trained_model(model, training_photos)
-        logging.debug(f"Successfully trained a total of {len(known_faces)} faces for a total of {len(person_dir_names)} people")
+        logging.info(f"Successfully trained a total of {len(known_faces)} faces for a total of {len(person_dir_names)} people")
         return known_names, known_faces
     # otherwise report error and exit in error as FR can't continue without any trained results
     else:
         logging.error("Error: Failed training as there is no valid face detected in the given training photos " + training_photos)
-        exit(-1)
+        exit(1)
 
 
 # Get the known faces names and encodings from previously trained face recognition model for training_photos.
@@ -98,7 +98,7 @@ def retrieve_trained_results(training_photos):
             known_faces = [face["encoding"] for face in trained_model]
             logging.info(f"Successfully retrieved a total of {len(known_faces)} previously trained faces from {model_file} for training photos {training_photos}")
         else:
-            logging.warn("Warning: Could not find previously trained model " + model_file + " for training photos " + training_photos + ", will retrain")
+            logging.warning("Warning: Could not find previously trained model " + model_file + " for training photos " + training_photos + ", will retrain")
     except Exception as e:
         logging.error("Failed to read previously trained model from " + model_file + " for training photos " + training_photos + ", will retrain", e)
         traceback.print_exc()
@@ -136,7 +136,7 @@ def unzip_training_photos(training_photos, facial_dir):
     except Exception as e:
         logging.error("Failed to unzip training photos " + training_photos + "into directory " + dirpath, e)
         traceback.print_exc()
-        exit(-1)
+        exit(1)
         # if training photos can't be unzipped, FR process can't continue, exit in error 
     
 
@@ -145,7 +145,7 @@ def save_trained_model(model, training_photos):
     try:
         model_file = get_model_file(training_photos)
         pickle.dump(model, open(model_file, "wb"))        
-        logging.debug("Successfully saved model trained from training photos " + training_photos + " to file " + model_file)
+        logging.info("Successfully saved model trained from training photos " + training_photos + " to file " + model_file)
     except Exception as e:
         logging.error("Failed to save model trained from training photos " + training_photos + " to file " + model_file, e)
         traceback.print_exc()
@@ -156,7 +156,7 @@ def save_trained_model(model, training_photos):
 def cleanup_training_photos(photos_dir):    
     try:
         shutil.rmtree(photos_dir)
-        logging.debug("Successfully cleaned up training photos directory " + photos_dir)
+        logging.info("Successfully cleaned up training photos directory " + photos_dir)
     except Exception as e:
         logging.error("Failed to clean up training photos directory " + photos_dir, e)  
         traceback.print_exc()

@@ -22,8 +22,7 @@ def main():
     parser.add_argument("amp_segments")
     args = parser.parse_args()
     logging.info(f"Starting with args={args}")
-    (input_audio, min_segment_duration, amp_segments) = (args.input_audio, args.min_segment_duration, args.amp_segments)
-    
+    (input_audio, min_segment_duration, amp_segments) = (args.input_audio, args.min_segment_duration, args.amp_segments)    
     
     logging.debug("Current directory: " + os.getcwd())
     logging.debug("Input audio: " + input_audio)
@@ -33,7 +32,7 @@ def main():
         # copy the input audio file to the tmp directory
         filename = os.path.basename(input_audio)
         shutil.copy(input_audio, f"{tmpdir}/{filename}")
-        logging.debug("Temporary directory " + tmpdir + " after input file copied: " + str(os.listdir(tmpdir)))
+        logging.info("Temporary directory " + tmpdir + " after input file copied: " + str(os.listdir(tmpdir)))
         
         # The applause_detection singularity file is assumed to be @ {mgm_sif}/applause_detection.sif
         #sif = amp.utils.get_sif_dir(root_dir) + "/applause_detection.sif"
@@ -44,7 +43,7 @@ def main():
         subprocess.run([sif, tmpdir, min_segment_duration], check=True)
 
         # copy the corresponding temporary output file to the output AMP segments JSON
-        logging.debug("Temporary directory " + tmpdir + " after output file generated: " + str(os.listdir(tmpdir)))   
+        logging.info("Temporary directory " + tmpdir + " after output file generated: " + str(os.listdir(tmpdir)))   
         shutil.copy(f"{tmpdir}/{filename}.json", amp_segments)
         logging.debug("Output AMP Segment: " + amp_segments)
     logging.info("Finished")

@@ -25,7 +25,7 @@ def main():
 
 	# using output instead of input filename as the latter is unique while the former could be used by multiple jobs 
 	try:
-		# exit 1 here if Transcript->DraftJs conversion already done
+		# exit to requeue here if Transcript->DraftJs conversion already done
 		amp.utils.exit_if_file_generated(to_draftjs)
 		logging.info("Converting from Transcript " + from_transcript + " to DraftJs: " + to_draftjs)	   	
 		
@@ -173,7 +173,7 @@ def main():
 		logging.error("Error: Failed to convert from Transcript " + from_transcript + " to DraftJs: " + to_draftjs, e)
 		traceback.print_exc()
 		sys.stdout.flush()		
-		exit(-1)
+		exit(1)
 	logging.info("Finished.")
 	
 def createBlock(depth, data, entityRanges, transcript):

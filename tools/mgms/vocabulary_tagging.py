@@ -37,7 +37,7 @@ def main():
             transcript_words = transcript_dict["results"]["words"]
             matching_words = match_words(words_to_flag.values(), transcript_words)
         else:
-            logging.warn("Warning: Results or words missing from AMP Json")
+            logging.warning("Warning: Results or words missing from AMP Json")
 
     # Print the output
     logging.debug("Matching Words:")

@@ -58,7 +58,7 @@ def main():
 		# (this means the conversion command failed before hmgm task command)
 		amp.utils.exception_if_file_not_exist(input_json)
 		
-		logging.debug("Handling HMGM task: uncorrected JSON: " + input_json + ", corrected JSON: " + output_json + ", task JSON: " + task_json)				
+		logging.info("Handling HMGM task: uncorrected JSON: " + input_json + ", corrected JSON: " + output_json + ", task JSON: " + task_json)				
         # Load basic HMGM configuration based from the property file under the given root directory
 		config = amp.utils.get_config()
 		context = json.loads(context_json)
@@ -66,15 +66,15 @@ def main():
 		
 		# if input_json has empty data (not empty file), no need to go through HMGM task, just copy it to the output file, and done
 		if empty_input(input_json, task_type):
-			logging.debug("Input file " + input_json + " for HMGM " + task_type + " editor contains empty data, skipping HMGM task and copy the input to the output")
+			logging.info("Input file " + input_json + " for HMGM " + task_type + " editor contains empty data, skipping HMGM task and copy the input to the output")
 			shutil.copy(input_json, output_json)
             # implicitly exit 0 as the current command completes
-		# otherwise, if HMGM task hasn't been created, create one, exit 1 to get re-queued	
+		# otherwise, if HMGM task hasn't been created, create one, exit 1 to get requeued	
 		elif not task_created(task_json):
 			task = create_task(config, task_type, context, input_json, output_json, task_json)
-			logging.error("Successfully created HMGM task " + task.key + ", exit 1")
+			logging.info("Successfully created HMGM task " + task.key + ", exit 255 to requeue")
 			sys.stdout.flush()
-			exit(1) 
+			exit(255) 
 		# otherwise, check if HMGM task is completed
 		else:
 			editor_output = task_completed(config, output_json)
@@ -85,18 +85,18 @@ def main():
 				logging.info("Finished.")
 				sys.stdout.flush()
 				# implicitly exit 0 as the current command completes
-			# otherwise exit 1 to get re-queued
+			# otherwise exit 255 to get requeued
 			else:
-				logging.error("Waiting for HMGM task to complete ... exit 1")
+				logging.debug("Waiting for HMGM task to complete ... exit 255 to requeue")
 				sys.stdout.flush()
-				exit(1)        
-	# upon exception, create error file to notify the following conversion command to fail, and exit -1 (error) to avoid re-quene
+				exit(255)        
+	# upon exception, create error file to notify the following conversion command to fail, and exit 1 (error) to avoid requene
 	except Exception as e:
 		amp.utils.create_err_file(output_json)
 		logging.error("Failed to handle HMGM task: uncorrected JSON: " + input_json + ", corrected JSON: " + output_json, e)
 		traceback.print_exc()
 		sys.stdout.flush()
-		exit(-1)
+		exit(1)
 
 
 # Desanitize all the names in the given context.

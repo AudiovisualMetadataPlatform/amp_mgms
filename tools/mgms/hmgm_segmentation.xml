@@ -5,7 +5,7 @@
 	<requirement type="package" version="2.0">jira</requirement>
   </requirements>
   <command detect_errors="exit_code">
-	'$__tool_directory__/mgm_python.sif' '$__tool_directory__/hmgm_main.py' 'Segmentation' '$structmeta_uncorrected' '$structmeta_corrected' '$task_info' '$context_json';	
+	'$__tool_directory__/mgm_python.sif' '$__tool_directory__/hmgm_main.py' 'Segmentation' '$structmeta_uncorrected' '$structmeta_corrected' '$task_info' '$context_json'	
   </command>
   <inputs>
     <param name="amp_segments_uncorrected" type="data" format="segment" label="AMP Segments Uncorrected" help="Original AMP segment file to be corrected "/>

@@ -4,7 +4,7 @@
 	<requirement type="package" version="3.8">python</requirement>
   </requirements>
   <command detect_errors="exit_code">
-    '$__tool_directory__/ner_to_csv.py' '$amp_entities' '$amp_csv_entities';
+    '$__tool_directory__/ner_to_csv.py' '$amp_entities' '$amp_csv_entities'
   </command>
   <inputs>
     <param name="amp_entities" type="data" format="ner" label="AMP Named Entities" help="AMP Named Entities JSON file" ></param>

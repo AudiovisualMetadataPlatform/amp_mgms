@@ -118,7 +118,7 @@ def create_audio_part(input_file, start, end, segment, file_duration):
 	duration = (end_offset - start_offset)
 	duration_str = time.strftime('%H:%M:%S', time.gmtime(duration))
 
-	logging.debug("Removing segment starting at " + start_str + " for " + duration_str)
+	logging.info("Removing segment starting at " + start_str + " for " + duration_str)
 
 	# Execute ffmpeg command to split of the segment
 	ffmpeg_out = subprocess.Popen(['ffmpeg', '-i', input_file, '-ss', start_str, '-t', duration_str, '-acodec', 'copy', tmp_filename], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -126,7 +126,7 @@ def create_audio_part(input_file, start, end, segment, file_duration):
 	stdout,stderr = ffmpeg_out.communicate()
 
 	# Print the output
-	logging.debug("Creating audio segment " + str(segment))
+	logging.info("Creating audio segment " + str(segment))
 	logging.debug(stdout)
 	logging.debug(stderr)
 
@@ -152,7 +152,7 @@ def concat_files(segments, output_file):
 		stdout, stderr = ffmpeg_out.communicate()
 
 		# Print the output
-		logging.debug("Creating complete audio")
+		logging.info("Creating complete audio")
 		logging.debug(stdout)
 		logging.debug(stderr)
 

@@ -36,7 +36,7 @@ def main():
     # Get a list of scenes as tuples (start, end) 
     if threshold is None or isinstance(threshold, int) == False:
         threshold = 30
-        logging.debug("Setting threshold to default because it wasn't a valid integer")
+        logging.info("Setting threshold to default because it wasn't a valid integer")
 
     shots = find_shots(input_file, output_csv, threshold)
 
@@ -97,7 +97,7 @@ def find_shots(video_path, stats_file, threshold):
             with open(stats_file, 'w') as stats_file:
                 stats_manager.save_to_csv(stats_file, base_timecode)
     except Exception as err:
-        logging.debug("Failed to find shots for: video: " + video_path + ", stats: " + stats_file + ", threshold: " + threshold, err)
+        logging.error("Failed to find shots for: video: " + video_path + ", stats: " + stats_file + ", threshold: " + threshold, err)
         traceback.print_exc()        
     finally:
         video_manager.release()
