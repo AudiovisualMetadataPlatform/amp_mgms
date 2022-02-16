@@ -4,10 +4,10 @@
     <requirement type="package" version="3.8">python</requirement>
     <requirement type="package" version="8.30">coreutils</requirement>
   </requirements>
-  <command detect_errors="exit_code">
+  <command detect_errors="exit_code"><![CDATA[
   	'$__tool_directory__/kaldi.py' '$input_audio' '$kaldi_transcript_json' '$kaldi_transcript_text' &&
     '$__tool_directory__/kaldi_transcript_to_amp_transcript.py' '$input_audio' '$kaldi_transcript_json' '$kaldi_transcript_text' '$amp_transcript'
-  </command>
+  ]]></command>
   <inputs>
     <!-- should be wav data type -->
     <param name="input_audio" type="data" format="wav" label="Input Audio" help="Audio file to transcribe"/>
