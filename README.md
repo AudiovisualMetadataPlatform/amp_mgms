@@ -27,6 +27,20 @@ To build the MGMs as a distributable package:
 ./amp_build.py --package <package_directory>
 ````
 
+To run unit tests on the MGMs (command help):
+````
+cd tests/
+./run_tests.py -h
+````
+
+For ex, to run unit tests on the MGMs installed in galaxy (local suite, gentle suite, or some particular test names in local suite):
+````
+./run_tests.py ../../galaxy/tools/amp_mgms/ local.yaml
+./run_tests.py ../../galaxy/tools/amp_mgms/ gentle.yaml
+./run_tests.py ../../galaxy/tools/amp_mgms/ local.yaml 'Adjust Diarization Timestamps' 'Adjust Transcript Timestamps'
+````
+
+
 ## Current status
 This is the first pass to clean up the MGMs that were used during the 
 pilot and get them ready for production use.
