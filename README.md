@@ -27,7 +27,7 @@ To build the MGMs as a distributable package:
 ./amp_build.py --package <package_directory>
 ````
 
-To run unit tests on the MGMs (command help): test bamboo
+To run unit tests on the MGMs (command help):
 ````
 cd tests/
 ./run_tests.py -h
