@@ -4,7 +4,7 @@
     <requirement type="package" version="8.30">coreutils</requirement>
     <requirement type="package" version="3.4">ffmpeg</requirement>
   </requirements>
-  <command>
+  <command detect_errors="exit_code">
   	$__tool_directory__/mgm_python.sif $__tool_directory__/extract_audio.py '$input_av' '$rate' '$channels' '$sample_size' '$audio_extracted'    
   </command>
   <inputs>
