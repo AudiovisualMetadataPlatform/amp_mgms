@@ -19,8 +19,8 @@
     </param>
     <param name="amp_shots" type="data" format="shot" optional="true" label="AMP Shots" help="AMP Shot file to create frames from"/>
 	<param name="amp_faces" type="data" format="face" optional="true" label="AMP Faces" help="AMP Face file to create frames from"/>
-	<param name="frame_seconds" type="integer" optional="true" min="0" max="60" label="Seconds" help="Interval in seconds to space frames"/>
-	<param name="frame_quantity" type="integer" optional="true" min="0" label="Quantity" help="Total number of frames"/>
+	<param name="frame_seconds" type="integer" optional="true" min="0" value="30" max="60" label="Seconds" help="Interval in seconds to space frames"/>
+	<param name="frame_quantity" type="integer" optional="true" min="0" value="16" label="Quantity" help="Total number of frames"/>
 	<param name="number_of_columns" type="integer" optional="true" min="0" value="4" label="Number of Columns" help="Number of columns in the contact sheet"/>
 	<param name="photo_width" type="integer" optional="true" min="0" value="300" label="Photo Width" help="Photo Width"/>
 	<param name="margin" type="integer" optional="true" min="0" value="10" label="Margin" help="Margin around each frame"/>
