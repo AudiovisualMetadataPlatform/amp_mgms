@@ -19,18 +19,20 @@ def main():
 
     with open(args.config_file) as f:
         config = yaml.safe_load(f)
-    
-    install_root = get_amp_root('amp_mgms')    
-    galaxy_install_root = get_amp_root('galaxy')
 
-    # symlink a couple of the galaxy tool directories so we can use them.
-    for n in ('tools/data_source', 'tools/cloud'):
-        try:
-            if (install_root / n).exists():
-                (install_root / n).unlink()
-            (install_root / n).symlink_to(galaxy_install_root / n)
-        except Exception as e:
-            logging.error(f"Couldn't symlink {n}: {e}")
+    # don't know what to do right now..    
+    if False:
+        install_root = get_amp_root('amp_mgms')    
+        galaxy_install_root = get_amp_root('galaxy')
+
+        # symlink a couple of the galaxy tool directories so we can use them.
+        for n in ('tools/data_source', 'tools/cloud'):
+            try:
+                if (install_root / n).exists():
+                    (install_root / n).unlink()
+                (install_root / n).symlink_to(galaxy_install_root / n)
+            except Exception as e:
+                logging.error(f"Couldn't symlink {n}: {e}")
 
 
 if __name__ == "__main__":

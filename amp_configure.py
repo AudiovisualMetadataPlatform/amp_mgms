@@ -23,26 +23,28 @@ def main():
     with open(args.config) as f:
         config = yaml.safe_load(f)
 
-    mgmsdir = Path(sys.path[0]).resolve()
-    logging.debug(f"Moving to mgm directory {mgmsdir}")
-    os.chdir(mgmsdir)
+    # don't know what to do for now.
+    if False:
+        mgmsdir = Path(sys.path[0]).resolve()
+        logging.debug(f"Moving to mgm directory {mgmsdir}")
+        os.chdir(mgmsdir)
 
-    galaxydir = get_amp_root('galaxy')
-    galaxyconfigfile = galaxydir / "config/galaxy.yml"
-    if not galaxyconfigfile.exists():
-        logging.error(f"The galaxy configuration file {galaxyconfigfile} doesn't exist.")
-        logging.info("Configure galaxy first")
-        exit(1)
+        galaxydir = get_amp_root('galaxy')
+        galaxyconfigfile = galaxydir / "config/galaxy.yml"
+        if not galaxyconfigfile.exists():
+            logging.error(f"The galaxy configuration file {galaxyconfigfile} doesn't exist.")
+            logging.info("Configure galaxy first")
+            exit(1)
 
-    logging.info(f"Loading galaxy configuration from {galaxyconfigfile!s}")    
-    gconfig = read_galaxy_config(galaxyconfigfile)
+        logging.info(f"Loading galaxy configuration from {galaxyconfigfile!s}")    
+        gconfig = read_galaxy_config(galaxyconfigfile)
 
-    # set tool_config_file and tool_path
-    gconfig['galaxy']['tool_config_file'] = str((mgmsdir / 'amp_tool_conf.xml').resolve())
-    gconfig['galaxy']['tool_path'] = str((mgmsdir / 'tools').resolve())
+        # set tool_config_file and tool_path
+        gconfig['galaxy']['tool_config_file'] = str((mgmsdir / 'amp_tool_conf.xml').resolve())
+        gconfig['galaxy']['tool_path'] = str((mgmsdir / 'tools').resolve())
 
-    logging.info(f"Saving configuration to {galaxyconfigfile}")
-    write_galaxy_config(gconfig, galaxyconfigfile)
+        logging.info(f"Saving configuration to {galaxyconfigfile}")
+        write_galaxy_config(gconfig, galaxyconfigfile)
 
 if __name__ == "__main__":
     main()
