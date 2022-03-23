@@ -26,17 +26,13 @@ def main():
                         level=logging.DEBUG if args.debug else logging.INFO)
 
     # build anything that needs to be built...
-    logging.info("Building MGMs")
-    here = Path.cwd().resolve()
-    if args.package:
-        destdir = "/some/directory/i'll/figure/out/later"
-    else:
-        destdir = Path(args.destdir).resolve()
-    
     # Singularity builds need a lot of disk space. If 
     # SINGULARITY_TMPDIR isn't set, we'll use the temp
     # directory next to this script.  Same for the
     # singularity cache.
+    tempdir = Path(sys.path[0], 'temp')
+    logging.info(f"Setting tempdir to {tempdir}")
+    tempdir.mkdir(exist_ok=True)
     if 'SINGULARITY_TMPDIR' not in os.environ:
         os.environ['SINGULARITY_TMPDIR'] = sys.path[0] + "/temp"
         Path(os.environ['SINGULARITY_TMPDIR']).mkdir(exist_ok=True)
@@ -46,34 +42,52 @@ def main():
         Path(os.environ['SINGULARITY_CACHEDIR']).mkdir(exist_ok=True, parents=True)
         logging.info(f"Setting SINGULARITY_CACHEDIR = {os.environ['SINGULARITY_CACHEDIR']}")
 
-    for script_name in ('mgm_build.sh', 'mgm_build.py'):        
-        for buildscript in here.glob(f"tools/*/{script_name}"):
-            logging.info(f"Running build script {buildscript}")
-            os.chdir(buildscript.parent)
-            cmd = [str(buildscript), str(destdir)]
-            if args.debug:
-                cmd.append('--debug')
-            logging.debug(f"Running command: {cmd}")
-            p = subprocess.run(cmd)
-            if p.returncode:
-                logging.error(f"Build command failed with return code {p.returncode}")            
-            os.chdir(here)
 
 
-    if args.package:
-        with tempfile.TemporaryDirectory(prefix='amp_mgms_build-') as tmpdir:
-            logging.debug(f"Temporary directory is: {tmpdir}")
-            logging.info(f"Copying . to {tmpdir}")
-            run_cmd(['cp', '-a', '.', tmpdir], "Copy to tempdir failed", workdir=sys.path[0])
-            
-            # remove git stuff
-            run_cmd(['rm', '-rf', '.git'], "Remove git directory", workdir=tmpdir)
+    logging.info("Building MGMs")
+    here = Path.cwd().resolve()
+    destdir = Path(args.destdir).resolve()
+    for buildscript in here.glob(f"tools/*/mgm_build.sh"):
+        # figure out where we're building this
+        if args.package:
+            buildtmp = tempfile.TemporaryDirectory(prefix='amp_mgms_build-', dir=tempdir)
+            builddir = Path(buildtmp.name).resolve()
+        else:
+            builddir = destdir
+    
+        logging.info(f"Running build script {buildscript}")
+        os.chdir(buildscript.parent)
+        cmd = [str(buildscript), str(builddir)]
+        if args.debug:
+            cmd.append('--debug')
+        logging.debug(f"Running command: {cmd}")
+        p = subprocess.run(cmd)
+        if p.returncode:
+            logging.error(f"Build command failed with return code {p.returncode}")            
+            exit(1)
+        os.chdir(here)
 
-            # create the package
-            args.destdir = Path(args.destdir).resolve()
-            logging.info(f"Creating package in {args.destdir}")
-            outfile = build_package(tmpdir, args.destdir, 'amp_mgms', version=args.version)
-            print(outfile)
+        if args.package:            
+            with tempfile.TemporaryDirectory(prefix='amp_mgms_pkg-', dir=tempdir) as tmpdir:
+                logging.debug(f"Temporary directory is: {tmpdir}")
+                logging.info(f"Copying . to {tmpdir}")
+                run_cmd(['cp', '-a', '.', tmpdir], "Copy to tempdir failed", workdir=builddir)
+
+                # TODO: copy amp_install.py and amp_configure.py into the builddir.
+                for prog in ('amp_install.py', 'amp_configure.py'):
+                    if (here / prog).exists():
+                        logging.info(f"Copying {prog} into package")
+                        shutil.copy(here / prog, tmpdir)
+
+
+                if args.version is None:
+                    if (buildscript.parent / "mgm_version").exists():
+                        with open(buildscript.parent / "mgm_version") as f:
+                            args.version = f.readline().strip()
+
+                logging.info(f"Creating package for {buildscript.parent.stem} with version {args.version} in {destdir}")
+                outfile = build_package(tmpdir, destdir, f'amp_mgms-{buildscript.parent.stem}', version=args.version, install_path='galaxy')
+                logging.info(f"New package {outfile}")
 
 
         
