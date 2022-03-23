@@ -13,7 +13,10 @@ import yaml
 from datetime import datetime
 import os
 import subprocess
-from amp_bootstrap_utils import run_cmd, build_package
+#from amp_bootstrap_utils import run_cmd, build_package
+import time
+import tarfile
+import io
 
 def main():
     parser = argparse.ArgumentParser()
@@ -71,7 +74,13 @@ def main():
             with tempfile.TemporaryDirectory(prefix='amp_mgms_pkg-', dir=tempdir) as tmpdir:
                 logging.debug(f"Temporary directory is: {tmpdir}")
                 logging.info(f"Copying . to {tmpdir}")
-                run_cmd(['cp', '-a', '.', tmpdir], "Copy to tempdir failed", workdir=builddir)
+                os.chdir(builddir)
+                try:
+                    subprocess.run(['cp', '-a', '.', tmpdir], check=True)
+                except Exception as e:
+                    print(f"Copy to tempdir failed: {e}")
+                    exit(1)                
+                os.chdir(here)
 
                 # TODO: copy amp_install.py and amp_configure.py into the builddir.
                 for prog in ('amp_install.py', 'amp_configure.py'):
@@ -80,14 +89,40 @@ def main():
                         shutil.copy(here / prog, tmpdir)
 
 
+                buildtime = datetime.now().strftime("%Y%m%d_%H%M%S")        
                 if args.version is None:
                     if (buildscript.parent / "mgm_version").exists():
                         with open(buildscript.parent / "mgm_version") as f:
                             args.version = f.readline().strip()
+                    else:
+                        args.version = buildtime
 
                 logging.info(f"Creating package for {buildscript.parent.stem} with version {args.version} in {destdir}")
-                outfile = build_package(tmpdir, destdir, f'amp_mgms-{buildscript.parent.stem}', version=args.version, install_path='galaxy')
-                logging.info(f"New package {outfile}")
+                basedir= f"amp_mgms-{buildscript.parent.stem}-{args.version}"
+                pkgfile = Path(destdir, f"{basedir}.tar")
+                with tarfile.TarFile(pkgfile, "w") as tfile:
+                    # create base directory
+                    base_info = tarfile.TarInfo(name=basedir)
+                    base_info.mtime = int(time.time())
+                    base_info.type = tarfile.DIRTYPE
+                    base_info.mode = 0o755
+                    tfile.addfile(base_info, None)                    
+
+                    # write metadata file
+                    metafile = tarfile.TarInfo(name=f"{basedir}/amp_package.yaml")
+                    metafile_data = yaml.safe_dump({
+                        'name': 'amp_ui',
+                        'version': args.version,
+                        'build_date': buildtime
+                    }).encode('utf-8')
+                    metafile.size = len(metafile_data)
+                    metafile.mtime = int(time.time())
+                    metafile.mode = 0o644
+                    tfile.addfile(metafile, io.BytesIO(metafile_data))
+                    logging.debug(f"Pushing data from {builddir!s} to data in tarball")
+                    tfile.add(builddir, f'{basedir}/data', recursive=True)
+                
+                logging.info(f"New package {pkgfile!s}")
 
 
         
