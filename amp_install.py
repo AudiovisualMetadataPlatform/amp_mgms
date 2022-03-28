@@ -1,6 +1,6 @@
 #!/bin/env python3
 #
-# Installation stuff
+# Installation and configuration stuff
 #
 
 import argparse
@@ -8,6 +8,10 @@ import logging
 import yaml
 from pathlib import Path
 from amp_bootstrap_utils import get_amp_root
+
+def install(amp_root, config):    
+    logging.info("No module specific installation required")    
+    print(amp_root, config)
 
 def main():
     parser = argparse.ArgumentParser()

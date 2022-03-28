@@ -82,13 +82,6 @@ def main():
                     exit(1)                
                 os.chdir(here)
 
-                # TODO: copy amp_install.py and amp_configure.py into the builddir.
-                for prog in ('amp_install.py', 'amp_configure.py'):
-                    if (here / prog).exists():
-                        logging.info(f"Copying {prog} into package")
-                        shutil.copy(here / prog, tmpdir)
-
-
                 buildtime = datetime.now().strftime("%Y%m%d_%H%M%S")        
                 if args.version is None:
                     if (buildscript.parent / "mgm_version").exists():
@@ -113,7 +106,8 @@ def main():
                     metafile_data = yaml.safe_dump({
                         'name': 'amp_ui',
                         'version': args.version,
-                        'build_date': buildtime
+                        'build_date': buildtime,
+                        'install_path': 'galaxy'
                     }).encode('utf-8')
                     metafile.size = len(metafile_data)
                     metafile.mtime = int(time.time())
