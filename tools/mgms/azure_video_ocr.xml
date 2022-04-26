@@ -1,4 +1,4 @@
-<tool id="azure_video_ocr" name="Azure Video OCR Generator" version="1.0.0">
+<tool id="azure_video_ocr" name="Azure Video OCR" version="1.0.0">
   <description>Generate AMP Video OCR using results from Azure Video Indexer</description>
   <requirements>
 	<requirement type="package" version="3.8">python</requirement>
