@@ -13,8 +13,8 @@ kaldi-pua-cpu.sif: kaldi-pua-singularity/Singularity.cpu
 kaldi-pua-gpu.sif: kaldi-pua-singularity/Singularity.gpu
 	cd kaldi-pua-singularity && singularity build --force --fakeroot ../kaldi-pua-gpu.sif Singularity.gpu
 
-
-install:  kaldi-pua-cpu.sif kaldi-pua-gpu.sif kaldi.py kaldi.xml kaldi_transcript_to_amp_transcript.py
+# disabling the kalid-pua-gpu.sif since it doesn't build.
+install:  kaldi-pua-cpu.sif kaldi.py kaldi.xml kaldi_transcript_to_amp_transcript.py
 	mkdir -p $(DESTDIR)/tools/amp_mgms
 	cp $^ $(DESTDIR)/tools/amp_mgms
 	
