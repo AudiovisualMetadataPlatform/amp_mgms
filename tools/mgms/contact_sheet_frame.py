@@ -49,15 +49,15 @@ def main():
 		logging.info("Generating contact sheet with frame quantity only: " + frame_quantity)
 		sheet.create_quantity(frame_quantity)
 	# if both frame_interval and frame_quantity are provided, 
-	# total number of frames will be the lesser of video_length divided by frame_interval and frame_quantity.
+	# the total number of frames will be the lesser of (video_length/frame_interval, frame_quantity)
 	elif frame_quantity and frame_interval:
-		video_duration = c.get_duration(input_file)		
-		logging.debug("Video Duration: " + str(video_length_seconds))
+		video_duration = sheet.get_duration(input_video)		
+		logging.debug("Video Duration: " + str(video_duration))
 		if math.ceil(video_duration / frame_interval)  <= frame_quantity:
-			logging.info("Generating contact sheet with frame interval " + frame_interval + " as the number of frames is less than the max limit " + frame_quantity)
+			logging.info("Generating contact sheet with frame interval " + frame_interval + " as the number of frames is less than the limit " + frame_quantity)
 			sheet.create_interval(frame_interval)
 		else:
-			logging.info("Generating contact sheet with frame quantity " + frame_quantity + " as the number of frames based on frame_interval " +  + frame_quantity + " would exceed the max limit.")
+			logging.info("Generating contact sheet with the maximum frame quantity " + frame_quantity + " as the number of frames based on frame_interval " +  + frame_quantity + " would exceed the limit.")
 			sheet.create_quantity(frame_quantity)
 	# if neither frame_interval nor frame_quantity is provided, exit in error 	
 	else:
