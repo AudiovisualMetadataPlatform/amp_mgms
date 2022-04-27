@@ -1,4 +1,4 @@
-<tool id="contact_sheet_face" name="Contact Sheet via Frame" version="1.0.0">
+<tool id="contact_sheet_frame" name="Contact Sheet by Frame" version="1.0.0">
   <description>Generate contact sheet based on frame interval or quantity</description>
   <requirements>
 	<requirement type="package" version="3.8">python</requirement>
@@ -7,7 +7,7 @@
     <requirement type="package" version="8.0.1">pillow</requirement>
   </requirements>
   <command detect_errors="exit_code">
-  	'$__tool_directory__/mgm_python.sif' '$__tool_directory__/contact_sheet_face.py' '$input_video' '$contact_sheet' --frame_interval '$frame_interval' --frame_quantity '$frame_quantity' --columns '$columns' --width '$width' --margin '$margin' --padding '$padding'
+  	'$__tool_directory__/mgm_python.sif' '$__tool_directory__/contact_sheet_frame.py' '$input_video' '$contact_sheet' --frame_interval '$frame_interval' --frame_quantity '$frame_quantity' --columns '$columns' --width '$width' --margin '$margin' --padding '$padding'
   </command>
   <inputs>
 	<param name="input_video" type="data" format="video" label="Input Video" help="Input video file"/>
