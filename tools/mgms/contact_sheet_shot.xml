@@ -1,4 +1,4 @@
-<tool id="contact_sheet_shot" name="Contact Sheet via Shot" version="1.0.0">
+<tool id="contact_sheet_shot" name="Contact Sheet by Shot" version="1.0.0">
   <description>Generate contact sheet based on shot detection</description>
   <requirements>
 	<requirement type="package" version="3.8">python</requirement>
@@ -25,6 +25,6 @@
   <help>
 .. class:: infomark
 
-  Generate contact sheet containing thumbnails of the frames with shot detected from the video.
+  Generate contact sheet containing thumbnails of the frames with shots detected from the video.
   </help>
 </tool>

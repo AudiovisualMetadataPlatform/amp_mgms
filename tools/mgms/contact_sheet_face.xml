@@ -1,4 +1,4 @@
-<tool id="contact_sheet_face" name="Contact Sheet via Face" version="1.0.0">
+<tool id="contact_sheet_face" name="Contact Sheet by Face" version="1.0.0">
   <description>Generate contact sheet based on face recognition</description>
   <requirements>
 	<requirement type="package" version="3.8">python</requirement>
@@ -25,6 +25,6 @@
   <help>
 .. class:: infomark
 
-  Generate contact sheet containing thumbnails of the frames with face recognized from the video.
+  Generate contact sheet containing thumbnails of the frames with faces recognized from the video.
   </help>
 </tool>
