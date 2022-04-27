@@ -12,7 +12,7 @@
   <inputs>
 	<param name="input_video" type="data" format="video" label="Input Video" help="Input video file"/>
 	<param name="amp_faces" type="data" format="face" label="AMP Faces" help="AMP Faces file from Face Recognition"/>
-	<param name="columns" type="integer" optional="true" min="0" value="4" label="Thumbnail Columns" help="Columns of thumbnails per row"/>
+	<param name="columns" type="integer" optional="true" min="0" value="4" label="Thumbnail Columns" help="Number of thumbnail columns of per row"/>
 	<param name="width" type="integer" optional="true" min="0" value="300" label="Thumbnail Width" help=" Width of thumbnail image"/>
 	<param name="margin" type="integer" optional="true" min="0" value="10" label="Thumbnail Margin" help="Margin around each thumbnail"/>
 	<param name="padding" type="integer" optional="true" min="0" value="3" label="Thumbnail Padding" help="Padding around each thumbnail"/>

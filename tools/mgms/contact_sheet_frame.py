@@ -19,25 +19,26 @@ def main():
 	parser.add_argument("contact_sheet", help="Output Contact Sheet file")
 	parser.add_argument("--frame_interval", type=int, default=0, help="Interval in seconds between frames")
 	parser.add_argument("--frame_quantity", type=int, default=0, help="Total number of frames")	
-	parser.add_argument('--column', type=int, default=4, help="Columns of thumbnails per row")
+	parser.add_argument('--columns', type=int, default=4, help="Number of thumbnail columns of per row")
 	parser.add_argument('--width', type=int, default=300, help="Width of thumbnail image")
 	parser.add_argument('--margin', type=int, default=10, help="Margin around each thumbnail")
 	parser.add_argument('--padding', type=int, default=3, help="Padding around each thumbnail")
 	args = parser.parse_args()
 	
 	logging.info(f"Starting with args {args}")
-	(input_video, contact_sheet, frame_interval, frame_quantity, column, width, margin, padding) = (args.input_video, args.contact_sheet, args.frame_interval, args.frame_quantity, args.column, args.width, args.margin, args.padding)
+	(input_video, contact_sheet, frame_interval, frame_quantity, columns, width, margin, padding) = (args.input_video, args.contact_sheet, args.frame_interval, args.frame_quantity, args.columns, args.width, args.margin, args.padding)
 
 	# Print for debugging purposes
 	logging.debug("input_video: " + input_video)
-	logging.debug("amp_shots: " + amp_shots)
 	logging.debug("contact_sheet: " + contact_sheet)
-	logging.debug("column: " + str(column))
+	logging.debug("frame_interval: " + str(frame_interval))
+	logging.debug("frame_quantity: " + str(frame_quantity))
+	logging.debug("columns: " + str(columns))
 	logging.debug("width: " + str(width))
 	logging.debug("margin: " + str(margin))
 	logging.debug("padding: " + str(padding))
 	
-	sheet = ContactSheet(input_video, contact_sheet, column, width, margin, padding)
+	sheet = ContactSheet(input_video, contact_sheet, columns, width, margin, padding)
 	
 	# if only frame_interval is provided, extract frames based on the interval
 	if frame_interval and not frame_quantity:
