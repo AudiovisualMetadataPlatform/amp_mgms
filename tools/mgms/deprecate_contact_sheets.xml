@@ -6,8 +6,8 @@
     <requirement type="package" version="3.4">ffmpeg</requirement>
   </requirements>
   <command detect_errors="exit_code">
-  	<!-- '$__tool_directory__/mgm_python.sif' '$__tool_directory__/contact_sheets.py' '$input_video' '$type' '$frame_seconds' '$frame_quantity' '$amp_shots' '$amp_faces' '$contact_sheet' '$number_of_columns' '$photo_width' '$margin' '$padding' -->
-    '$__tool_directory__/mgm_python.sif' '$__tool_directory__/contact_sheets.py' '$input_video' '$type' '$contact_sheet' --frame_seconds '$frame_seconds' --frame_quantity '$frame_quantity' --amp_shots '$amp_shots' --amp_facial_recognition '$amp_faces' --number_of_columns '$number_of_columns' --photow '$photo_width' --margin '$margin' --padding '$padding'
+  	<!-- '$__tool_directory__/mgm_python.sif' '$__tool_directory__/contact_sheets.py' '$input_video' '$type' '$frame_interval' '$frame_quantity' '$amp_shots' '$amp_faces' '$contact_sheet' '$number_of_columns' '$photo_width' '$margin' '$padding' -->
+    '$__tool_directory__/mgm_python.sif' '$__tool_directory__/deprecate_contact_sheets.py' '$input_video' '$type' '$contact_sheet' --frame_interval '$frame_interval' --frame_quantity '$frame_quantity' --amp_shots '$amp_shots' --amp_facial_recognition '$amp_faces' --number_of_columns '$number_of_columns' --photow '$photo_width' --margin '$margin' --padding '$padding'
   </command>
   <inputs>
 	<param name="input_video" type="data" format="video" label="Input Video" help="An input video file for OCR"/>
@@ -19,7 +19,7 @@
     </param>
     <param name="amp_shots" type="data" format="shot" optional="true" label="AMP Shots" help="AMP Shot file to create frames from"/>
 	<param name="amp_faces" type="data" format="face" optional="true" label="AMP Faces" help="AMP Face file to create frames from"/>
-	<param name="frame_seconds" type="integer" optional="true" min="0" value="30" max="60" label="Seconds" help="Interval in seconds to space frames"/>
+	<param name="frame_interval" type="integer" optional="true" min="0" value="30" max="60" label="Seconds" help="Interval in seconds to space frames"/>
 	<param name="frame_quantity" type="integer" optional="true" min="0" value="16" label="Quantity" help="Total number of frames"/>
 	<param name="number_of_columns" type="integer" optional="true" min="0" value="4" label="Number of Columns" help="Number of columns in the contact sheet"/>
 	<param name="photo_width" type="integer" optional="true" min="0" value="300" label="Photo Width" help="Photo Width"/>

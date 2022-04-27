@@ -1,0 +1,32 @@
+<tool id="contact_sheet_face" name="Contact Sheet via Frame" version="1.0.0">
+  <description>Generate contact sheet based on frame interval or quantity</description>
+  <requirements>
+	<requirement type="package" version="3.8">python</requirement>
+    <requirement type="package" version="8.30">coreutils</requirement>
+    <requirement type="package" version="0.1.18">ffmpeg-python</requirement>
+    <requirement type="package" version="8.0.1">pillow</requirement>
+  </requirements>
+  <command detect_errors="exit_code">
+  	'$__tool_directory__/mgm_python.sif' '$__tool_directory__/contact_sheet_face.py' '$input_video' '$contact_sheet' --frame_interval '$frame_interval' --frame_quantity '$frame_quantity' --columns '$columns' --width '$width' --margin '$margin' --padding '$padding'
+  </command>
+  <inputs>
+	<param name="input_video" type="data" format="video" label="Input Video" help="Input video file"/>
+	<param name="frame_interval" type="integer" optional="true" min="0" value="0" max="60" label="Frame Interval" help="Interval in seconds between frames"/>
+	<param name="frame_quantity" type="integer" optional="true" min="0" value="0" max="120" label="Frame Quantity" help="Total number of frames"/>
+	<param name="columns" type="integer" optional="true" min="0" value="4" label="Thumbnail Columns" help="Number of thumbnail columns of per row"/>
+	<param name="width" type="integer" optional="true" min="0" value="300" label="Thumbnail Width" help=" Width of thumbnail image"/>
+	<param name="margin" type="integer" optional="true" min="0" value="10" label="Thumbnail Margin" help="Margin around each thumbnail"/>
+	<param name="padding" type="integer" optional="true" min="0" value="3" label="Thumbnail Padding" help="Padding around each thumbnail"/>
+  </inputs>
+  <outputs>
+    <data name="contact_sheet" format="png" label="Contact Sheet"/>
+  </outputs>
+  <tests>
+  </tests>
+  <help>
+.. class:: infomark
+
+  Generate contact sheet containing thumbnails of the frames from the video, based on the interval between frames or the total number of frames;
+  if both parameters are specified, then the total number of frames will be the lesser of video_length divided by frame_interval and frame_quantity.
+  </help>
+</tool>

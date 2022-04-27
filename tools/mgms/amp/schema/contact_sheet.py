@@ -20,18 +20,18 @@ class ContactSheet:
 		self.temporary_directory = tempfile.TemporaryDirectory()
 		self.input_file = input_file
 		self.output_file = output_file
-		self.video_length = self.get_length(input_file)
+		self.video_length = self.get_duration(input_file)
 		self.ncols = ncols # number of columns
 		self.photow = photow # width of each thumbnail, in px
 		self.marl, self.mart, self.marr, self.marb = margin, margin, margin, margin # margin around edge of contact sheet, in px
 		self.padding = padding # space between each image, in px
 		
-	def create_time(self, frame_seconds):
-		valid_input = self.validate_time(frame_seconds, self.video_length)
+	def create_interval(self, frame_interval):
+		valid_input = self.validate_time(frame_interval, self.video_length)
 		if valid_input == False:
 			exit(1)
 
-		times, labels = self.getTimesInterval(self.video_length, frame_seconds)
+		times, labels = self.getTimesInterval(self.video_length, frame_interval)
 		filenames = self.get_thumbs(self.input_file, times, self.temporary_directory.name)
 		logging.debug(filenames)
 		self.create_contact_sheet(filenames, labels)
@@ -152,7 +152,7 @@ class ContactSheet:
 				break
 		return inew
 
-	def get_length(self, input_video):
+	def get_duration(self, input_video):
 		result = subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'default=noprint_wrappers=1:nokey=1', input_video], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 		len = math.floor(float(result.stdout))
 		return int(len)
@@ -210,14 +210,14 @@ class ContactSheet:
 		total_seconds = pt.second + pt.minute*60 + pt.hour*3600
 		return total_seconds
 
-	def validate_time(self, frame_seconds, video_length):
+	def validate_time(self, frame_interval, video_length):
 		# frame interval should be not empty and greater than 0
-		if frame_seconds is None or frame_seconds <= 0:
-			logging.error(f"Error: Invalid seconds input for time: {frame_seconds}")
+		if frame_interval is None or frame_interval <= 0:
+			logging.error(f"Error: Invalid seconds input for time: {frame_interval}")
 			return False
 		# give a warning if frame interval is greater than video_length
-		if frame_seconds > video_length:
-			logging.warning(f"Warning: the frame interval in seconds {frame_seconds} is greater than the video length {video_length}, so only one frame will be extracted.")
+		if frame_interval > video_length:
+			logging.warning(f"Warning: the frame interval in seconds {frame_interval} is greater than the video length {video_length}, so only one frame will be extracted.")
 		return True
 
 	def validate_quantity(self, frame_quantity, video_length):
