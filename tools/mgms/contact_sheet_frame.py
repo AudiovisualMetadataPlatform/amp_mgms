@@ -42,22 +42,23 @@ def main():
 	
 	# if only frame_interval is provided, extract frames based on the interval
 	if frame_interval and not frame_quantity:
-		logging.info("Generating contact sheet with frame interval only: " + frame_interval)
+		logging.info(f"Generating contact sheet with frame interval only: {frame_interval}")
 		sheet.create_interval(frame_interval)
 	# if only frame_quantity is provided, extract frames based on the quantity
 	elif frame_quantity and not frame_interval:
-		logging.info("Generating contact sheet with frame quantity only: " + frame_quantity)
+		logging.info(f"Generating contact sheet with frame quantity only: {frame_quantity}")
 		sheet.create_quantity(frame_quantity)
 	# if both frame_interval and frame_quantity are provided, 
 	# the total number of frames will be the lesser of (video_length/frame_interval, frame_quantity)
 	elif frame_quantity and frame_interval:
 		video_duration = sheet.get_duration(input_video)		
-		logging.debug("Video Duration: " + str(video_duration))
-		if math.ceil(video_duration / frame_interval)  <= frame_quantity:
-			logging.info("Generating contact sheet with frame interval " + frame_interval + " as the number of frames is less than the limit " + frame_quantity)
+		logging.info(f"Video duration: {video_duration} seconds")
+		n = math.ceil(video_duration / frame_interval)
+		if n <= frame_quantity:
+			logging.info(f"Generating contact sheet with frame interval {frame_interval} as the number of frames {n} is less than the limit {frame_quantity}")
 			sheet.create_interval(frame_interval)
 		else:
-			logging.info("Generating contact sheet with the maximum frame quantity " + frame_quantity + " as the number of frames based on frame_interval " +  + frame_quantity + " would exceed the limit.")
+			logging.info(f"Generating contact sheet with the maximum frame quantity {frame_quantity} as the number of frames {n} with interval {frame_interval} exceeds the limit.")
 			sheet.create_quantity(frame_quantity)
 	# if neither frame_interval nor frame_quantity is provided, exit in error 	
 	else:
