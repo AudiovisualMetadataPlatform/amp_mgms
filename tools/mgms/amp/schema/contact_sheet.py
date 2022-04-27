@@ -20,7 +20,7 @@ class ContactSheet:
 		self.temporary_directory = tempfile.TemporaryDirectory()
 		self.input_file = input_file
 		self.output_file = output_file
-		self.video_length = self.get_length(input_file)
+		self.video_length = self.get_duration(input_file)
 		self.ncols = ncols # number of columns
 		self.photow = photow # width of each thumbnail, in px
 		self.marl, self.mart, self.marr, self.marb = margin, margin, margin, margin # margin around edge of contact sheet, in px
@@ -152,7 +152,7 @@ class ContactSheet:
 				break
 		return inew
 
-	def get_length(self, input_video):
+	def get_duration(self, input_video):
 		result = subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'default=noprint_wrappers=1:nokey=1', input_video], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 		len = math.floor(float(result.stdout))
 		return int(len)

@@ -50,7 +50,7 @@ def main():
 	# if both frame_interval and frame_quantity are provided, 
 	# total number of frames will be the lesser of video_length divided by frame_interval and frame_quantity.
 	elif frame_quantity and frame_interval:
-		video_duration = c.get_length(input_file)		
+		video_duration = c.get_duration(input_file)		
 		logging.debug("Video Duration: " + str(video_length_seconds))
 		if math.ceil(video_duration / frame_interval)  <= frame_quantity:
 			logging.info("Generating contact sheet with frame interval " + frame_interval + " as the number of frames is less than the max limit " + frame_quantity)
