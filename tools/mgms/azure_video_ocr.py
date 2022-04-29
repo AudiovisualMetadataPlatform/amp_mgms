@@ -8,10 +8,10 @@ import math
 import argparse
 
 from amp.schema.video_ocr import VideoOcr, VideoOcrMedia, VideoOcrResolution, VideoOcrFrame, VideoOcrObject, VideoOcrObjectScore, VideoOcrObjectVertices
-
 import amp.utils
 import logging
 import amp.logger
+
 
 def main():
 	parser = argparse.ArgumentParser()
@@ -20,12 +20,12 @@ def main():
 	parser.add_argument("azure_video_index", help="Azure video index input file")
 	parser.add_argument("azure_artifact_ocr", help="Azure Artifact OCR input file")
 	parser.add_argument("dedupe", default=True, help="Whether to dedupe consecutive frames with same texts")
-	parser.add_argument("duration", default=5, help="Duration in seconds to last as consecutive duplicate frames")	
+	parser.add_argument("period", default=5, help="Period in seconds to last as consecutive duplicate frames")	
 	parser.add_argument("amp_vocr", help="Original AMP Video OCR output file")
 	parser.add_argument("amp_vocr_dedupe", help="Deduped AMP Video OCR output file")
 	args = parser.parse_args()
 	logging.info(f"Starting with args {args}")
-	(input_video, azure_video_index, azure_artifact_ocr, dedupe, duration, amp_vocr, amp_vocr_dedupe) = (args.input_video, args.azure_video_index, args.azure_artifact_ocr, args.dedupe, args.duration, args.amp_vocr, args.amp_vocr_dedupe)
+	(input_video, azure_video_index, azure_artifact_ocr, dedupe, period, amp_vocr, amp_vocr_dedupe) = (args.input_video, args.azure_video_index, args.azure_artifact_ocr, args.dedupe, args.period, args.amp_vocr, args.amp_vocr_dedupe)
 	
 	# Get Azure video index json
 	with open(azure_video_index, 'r') as azure_index_file:
@@ -43,7 +43,7 @@ def main():
 	
 	# if dedupe, create the deduped AMP VOCR
 	if dedupe:
-		vocr_deduped = vocr.dedupe(duration)
+		vocr_deduped = amp_vocr_obj.dedupe(period)
 		amp.utils.write_json_file(vocr_deduped, amp_vocr_deduped)
 			
 	logging.info("Finished.")
@@ -66,8 +66,8 @@ def create_amp_ocr(input_video, azure_index_json, azure_ocr_json):
 	#frameRate = azure_ocr_json["framerate"]	
 	frameRate = azure_ocr_json["Fps"]
 	duration = azure_index_json["summarizedInsights"]["duration"]["seconds"]
-	frames = int(frameRate * duration)
-	amp_media  = VideoOcrMedia(duration, input_video, frameRate, frames, resolution)
+	numFrames = int(frameRate * duration)
+	amp_media  = VideoOcrMedia(input_video, duration, frameRate, numFrames, resolution)
 	amp_ocr.media = amp_media
 
 	# Create a dictionary of all the frames [FrameNum : List of Terms]
@@ -87,7 +87,7 @@ def convertTimestampToSeconds(timestamp):
 	total_seconds = (h * 3600) + (m * 60) + s
 	return total_seconds
 
-# Calculate the frame index based on the start time and frames per second
+# Calculate the frame index based on the start time and frame rate
 def getFrameIndex(start_time, fps):
 	startSeconds = convertTimestampToSeconds(start_time)
 	frameSeconds = 1/fps
