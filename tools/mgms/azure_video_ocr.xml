@@ -4,21 +4,25 @@
 	<requirement type="package" version="3.8">python</requirement>
   </requirements>
   <command detect_errors="exit_code">
-  	'$__tool_directory__/azure_video_ocr.py' '$input_video' '$azure_video_index' '$azure_artifact_ocr' '$amp_vocr'
+  	'$__tool_directory__/azure_video_ocr.py' '$input_video' '$azure_video_index' '$azure_artifact_ocr' '$dedupe' '$duration' '$amp_vocr' '$amp_vocr_dedupe'
   </command>
   <inputs>
 	<param name="input_video" type="data" format="video" label="Input Video" help="Input video file used by Azure Video Indexer"/>
 	<param name="azure_video_index" type="data" format="json" label="Azure Video Index JSON" help="Azure Video Index JSON file from Azure Video Indexer"/>
 	<param name="azure_artifact_ocr" type="data" format="json" label="Azure Artifact OCR JSON" help="Azure Artifact OCR JSON file from Azure Video Indexer"/>
+	<param name="dedupe" type="boolean" value ="true" label="Dedupe" help="Whether to dedupe consecutive frames with same texts"/>
+	<param name="duration" type="integer" optional="true" value ="5" label="Duration" help="Duration in seconds to last as consecutive duplicate frames"/>
   </inputs>
   <outputs>
     <data name="amp_vocr" format="vocr" label="AMP Video OCR Generated" />
+    <data name="amp_vocr_dedupe" format="vocr" label="AMP Video OCR Deduped" />
   </outputs>
   <tests>
   </tests>
   <help>
 .. class:: infomark
 
-  Generate AMP Video OCR using results from Microsoft Azure Video Indexer
+  Generate AMP Video Optical Character Recognition output using results from Microsoft Azure Video Indexer. If "dedupe" option is checked, 
+  also generate AMP OCRR JSON with duplicate frames removed, i.e. consecutive frames with same texts within the specified duration.
   </help>
 </tool>

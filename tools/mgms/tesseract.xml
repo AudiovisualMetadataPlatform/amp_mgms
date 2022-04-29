@@ -1,5 +1,5 @@
 <tool id="tesseract_video_ocr" name="Tesseract Video OCR" version="1.0.0">
-  <description>Runs OCR on frames in a video</description>
+  <description>Optical Character Recognition using Tesseract on frames of a video</description>
   <requirements>
 	<requirement type="package" version="3.8">python</requirement>
     <requirement type="package" version="8.30">coreutils</requirement>
@@ -7,10 +7,12 @@
     <requirement type="package" version="0.3">pytesseract</requirement>
   </requirements>
   <command detect_errors="exit_code">
-  	'$__tool_directory__/mgm_python.sif' '$__tool_directory__/tesseract.py' '$input_video' '$amp_vocr'
+  	'$__tool_directory__/mgm_python.sif' '$__tool_directory__/tesseract.py' '$input_video' '$dedupe' '$duration '$amp_vocr' '$amp_vocr_dedupe'
   </command>
   <inputs>
-	<param name="input_video" type="data" format="video" label="Input Video" help="An input video file for OCR"/>
+	<param name="input_video" type="data" format="video" label="Input Video" help="An input video file"/>
+	<param name="dedupe" type="boolean" value ="true" label="Dedupe" help="Whether to dedupe consecutive frames with same texts"/>
+	<param name="duration" type="integer" optional="true" value ="5" label="Duration" help="Duration in seconds to last as consecutive duplicate frames"/>
 	<!--
 	<param name="start" type="integer" value="0" label="Start time frame in seconds" help="A starting time frame on the input video"/>
 	<param name="duration" type="integer" value="0" label="Duration of video in seconds" help="Duration of the video to passed through OCR"/> 
@@ -18,13 +20,15 @@
   </inputs>
   <outputs>
     <data name="amp_vocr" format="vocr" label="AMP Video OCR Generated"/>
+    <data name="amp_vocr_dedupe" format="vocr" label="AMP Video OCR Deduped" />
   </outputs>
   <tests>
   </tests>
   <help>
 .. class:: infomark
 
-Run a OCR using Tesseract on the image frames extracted from a video with FFMpeg 
+Optical Character Recognition using Tesseract on frames of a video extracted with FFMpeg. If "dedupe" option is checked, 
+also generate AMP OCRR JSON with duplicate frames removed, i.e. consecutive frames with same texts within the specified duration.
 
   </help>
 </tool>
