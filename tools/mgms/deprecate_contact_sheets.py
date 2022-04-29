@@ -58,7 +58,7 @@ def main():
 		c.create_shots(shots)
 	elif type == 'facial':
 		fr = read_json_file(amp_facial_recognition)
-		c.create_facial(fr)
+		c.create_faces(fr)
 	logging.info("Finished.")
 
 def read_json_file(input):

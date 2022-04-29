@@ -2,50 +2,52 @@
 
 # Python imports
 import argparse
-import pytesseract
-import os
-import json
-import sys
-import time
-import subprocess
-import shlex
-import pprint
-import tempfile
-# Python imports
-from PIL import Image
 from datetime import datetime
-from pytesseract import Output
-from amp.logger import MgmLogger
-import amp.utils
-
+import json
 import logging
-import amp.logger
+import os
+import pprint
+import shlex
+import subprocess
+import sys
+import tempfile
+import time
 
+from PIL import Image
+from amp.logger import MgmLogger
+import amp.logger
+import amp.utils
+from pytesseract import Output
+import pytesseract
+
+
+# Python imports
 def main():
 	with tempfile.TemporaryDirectory(dir = "/tmp") as tmpdir:
-		#(input_file, output_name) = sys.argv[1:3]
 		parser = argparse.ArgumentParser()
 		parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
-		parser.add_argument("input_file", help="Input file")
-		parser.add_argument("output_name", help="Output filename")
+		parser.add_argument("input_video", help="Video input file")
+		parser.add_argument("dedupe", default=True, help="Whether to dedupe consecutive frames with same texts")
+		parser.add_argument("duration", default=5, help="Duration in seconds to last as consecutive duplicate frames")
+		parser.add_argument("amp_vocr", help="Original AMP Video OCR output file")
+		parser.add_argument("amp_vocr_dedupe", help="Deduped AMP Video OCR output file")
 		args = parser.parse_args()
 		logging.info(f"Starting with args={args}")
-		(input_file, output_name) = (args.input_file, args.output_name)
+		(input_video, dedupe, duration, amp_vocr, amp_vocr_dedupe) = (args.input_video, args.dedupe, args.duration, args.amp_vocr, args.amp_vocr_dedupe)
 
 		dateTimeObj = datetime.now()
 
 		#ffmpeg extracts the frames from the video input
-		command = "ffmpeg -i "+input_file+ " -an -vf fps=2 '"+tmpdir+"/frame_%05d_"+str(dateTimeObj)+".jpg'"
+		command = "ffmpeg -i "+input_video+ " -an -vf fps=2 '"+tmpdir+"/frame_%05d_"+str(dateTimeObj)+".jpg'"
 		subprocess.call(command, shell=True)
 		
 		#Tesseract runs the ocr on frames extracted
 		script_start = time.time()
-		#output_name =  input_file[:-4]+ "-ocr_"+str(dateTimeObj)+".json"
 		
 		# Get some stats on the video
-		(dim, frameRate, numFrames) = findVideoMetada(input_file)
+		(dim, frameRate, numFrames) = findVideoMetada(input_video)
 
-		output = {"media": {"filename": input_file,
+		vocr = {"media": {"filename": input_video,
 					"frameRate": frameRate,
 					"numFrames": numFrames,
 					"resolution": {
@@ -79,21 +81,28 @@ def main():
 								},
 							# relative coords
 							"vertices": {
-							"xmin": result["left"][i]/output["media"]["resolution"]["width"],
-							"ymin": result["top"][i]/output["media"]["resolution"]["height"],
-							"xmax": (result["left"][i] + result["width"][i])/output["media"]["resolution"]["width"],
-							"ymax": (result["top"][i] + result["height"][i])/output["media"]["resolution"]["height"]
+							"xmin": result["left"][i]/vocr["media"]["resolution"]["width"],
+							"ymin": result["top"][i]/vocr["media"]["resolution"]["height"],
+							"xmax": (result["left"][i] + result["width"][i])/vocr["media"]["resolution"]["width"],
+							"ymax": (result["top"][i] + result["height"][i])/vocr["media"]["resolution"]["height"]
 							}
 						}
 					frameList["objects"].append(box)
 		
 				#save frame if it had text
 			if len(frameList["objects"]) > 0:
-				output["frames"].append(frameList)
+				vocr["frames"].append(frameList)
 		
-		# save the output json file
-		amp.utils.write_json_file(output, output_name)
+		# save the vocr json file
+		amp.utils.write_json_file(vocr, amp_vocr)
+		
+		# if dedupe, create the deduped AMP VOCR
+		if dedupe:
+			vocr_deduped = vocr.dedupe(duration)
+			amp.utils.write_json_file(vocr_deduped, amp_vocr_deduped)
+		
 		logging.info("Finished.")
+		
 
 # UTIL FUNCTIONS
 def findVideoMetada(pathToInputVideo):

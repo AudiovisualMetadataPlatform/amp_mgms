@@ -49,7 +49,7 @@ def main():
 		logging.info(f"Generating contact sheet with frame quantity only: {frame_quantity}")
 		sheet.create_quantity(frame_quantity)
 	# if both frame_interval and frame_quantity are provided, 
-	# the total number of frames will be the lesser of (video_length/frame_interval, frame_quantity)
+	# the total number of frames will be the lesser of (video_duration/frame_interval, frame_quantity)
 	elif frame_quantity and frame_interval:
 		video_duration = sheet.get_duration(input_video)		
 		logging.info(f"Video duration: {video_duration} seconds")
