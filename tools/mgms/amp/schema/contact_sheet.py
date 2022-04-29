@@ -46,12 +46,12 @@ class ContactSheet:
 		logging.debug(filenames)
 		self.create_contact_sheet(filenames, labels)
 
-	def create_facial(self, amp_facial_recognition):
-		valid_input = self.validate_facial(amp_facial_recognition)
+	def create_faces(self, amp_faces):
+		valid_input = self.validate_faces(amp_faces)
 		if valid_input == False:
 			exit(1)
 		
-		times, labels = self.getTimesFacialRecognition(amp_facial_recognition)
+		times, labels = self.getTimesFrames(amp_faces)
 		# Get images
 		filenames = self.get_thumbs(self.input_file, times, self.temporary_directory.name)
 		logging.debug(filenames)
@@ -62,7 +62,18 @@ class ContactSheet:
 		if valid_input == False:
 			exit(1)
 
-		times, labels = self.getTimesShotDetection(amp_shots)
+		times, labels = self.getTimesShots(amp_shots)
+		# Get images
+		filenames = self.get_thumbs(self.input_file, times, self.temporary_directory.name)
+		logging.debug(filenames)
+		self.create_contact_sheet(filenames, labels)
+
+	def create_vocr(self, amp_vocr):
+		valid_input = self.validate_vocr(amp_vocr)
+		if valid_input == False:
+			exit(1)
+
+		times, labels = self.getTimesFrames(amp_vocr)
 		# Get images
 		filenames = self.get_thumbs(self.input_file, times, self.temporary_directory.name)
 		logging.debug(filenames)
@@ -173,21 +184,21 @@ class ContactSheet:
 		interval = math.ceil(videoLength/numFrames)
 		return self.getTimesInterval(videoLength, interval)
 
-	def getTimesFacialRecognition(self, data):
+	def getTimesFrames(self, data):
 		times = []
 		labels = []
 		
-		for i, shot in enumerate(data["frames"]):
-			# Find the timestamp for the middle frame of the shot
-			start = float(shot["start"])
+		for i, frame in enumerate(data["frames"]):
+			# Find the timestamp for the middle frame of the frame
+			start = float(frame["start"])
 			times.append(start)
 
-			# Save a formatted time range for this shot in the list of times
+			# Save a formatted time range for this frame in the list of times
 			range = str(timedelta(seconds=round(start)))
 			labels.append(range)
 		return times, labels
 
-	def getTimesShotDetection(self, data):
+	def getTimesShots(self, data):
 		times = []
 		labels = []
 		for i, shot in enumerate(data["shots"]):
@@ -204,7 +215,7 @@ class ContactSheet:
 			range = str(timedelta(seconds=round(start))) + " - " + str(timedelta(seconds=round(end)))
 			labels.append(range)
 		return times, labels
-
+	
 	def get_seconds_from_time_string(self, time_string):
 		pt = datetime.strptime(time_string,'%H:%M:%S.%f')
 		total_seconds = pt.second + pt.minute*60 + pt.hour*3600
@@ -230,15 +241,21 @@ class ContactSheet:
 			logging.warning(f"Warning: the frame quantity {frame_quantity} is greater than the video length {video_length}, so only {video_length} frames will be extracted.")
 		return True
 
-	def validate_shots(self, amp_shots):
-		if amp_shots is None or 'shots' not in amp_shots.keys():
-			logging.error("Invalid shots json for shots")
+	def validate_faces(self, amp_faces):
+		if amp_faces is None or 'frames' not in amp_faces.keys():
+			logging.error("Invalid amp_faces json")
 			return False
 		return True
 
-	def validate_facial(self, amp_facial_recognition):
-		if amp_facial_recognition is None or 'frames' not in amp_facial_recognition.keys():
-			logging.error("Invalid frames json for facial recognition")
+	def validate_shots(self, amp_shots):
+		if amp_shots is None or 'shots' not in amp_shots.keys():
+			logging.error("Invalid amp_shots json")
+			return False
+		return True
+
+	def validate_vocr(self, amp_vocr):
+		if amp_vocr is None or 'frames' not in amp_vocr.keys():
+			logging.error("Invalid amp_vocr json")
 			return False
 		return True
 

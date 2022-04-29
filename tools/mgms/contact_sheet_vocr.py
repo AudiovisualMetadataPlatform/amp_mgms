@@ -15,7 +15,7 @@ def main():
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 	parser.add_argument("input_video", help="Input video file")
-	parser.add_argument("amp_faces", help="Input AMP Faces file")
+	parser.add_argument("amp_vocr", help="Input AMP VOCR file")
 	parser.add_argument("contact_sheet", help="Output Contact Sheet file")
 	parser.add_argument('--columns', type=int, default=4, help="Number of thumbnail columns of per row")
 	parser.add_argument('--width', type=int, default=300, help="Width of thumbnail image")
@@ -24,11 +24,11 @@ def main():
 	args = parser.parse_args()
 	
 	logging.info(f"Starting with args {args}")
-	(input_video, amp_faces, contact_sheet, columns, width, margin, padding) = (args.input_video, args.amp_faces, args.contact_sheet, args.columns, args.width, args.margin, args.padding)
+	(input_video, amp_vocr, contact_sheet, columns, width, margin, padding) = (args.input_video, args.amp_vocr, args.contact_sheet, args.columns, args.width, args.margin, args.padding)
 
 	# Print for debugging purposes
 	logging.debug("input_video: " + input_video)
-	logging.debug("amp_faces: " + amp_faces)
+	logging.debug("amp_vocr: " + amp_vocr)
 	logging.debug("contact_sheet: " + contact_sheet)
 	logging.debug("columns: " + str(columns))
 	logging.debug("width: " + str(width))
@@ -36,8 +36,8 @@ def main():
 	logging.debug("padding: " + str(padding))
 	
 	sheet = ContactSheet(input_video, contact_sheet, columns, width, margin, padding)
-	faces = amp.utils.read_json_file(amp_faces)
-	sheet.create_faces(faces)
+	vocr = amp.utils.read_json_file(amp_vocr)
+	sheet.create_vocr(vocr)
 	logging.info("Finished.")
 
 
