@@ -43,10 +43,11 @@ def main():
 	
 	# if dedupe, create the deduped AMP VOCR
 	if dedupe:
-		vocr_deduped = amp_vocr_obj.dedupe(period)
-		amp.utils.write_json_file(vocr_deduped, amp_vocr_deduped)
+		vocr_dedupe = amp_vocr_obj.dedupe(int(period))
+		logging.info(f"Successfully deduped AMP VOCR to {len(vocr_dedupe.frames)} frames.")
+		amp.utils.write_json_file(vocr_dedupe, amp_vocr_dedupe)
 			
-	logging.info("Finished.")
+	logging.info(f"Successfully generated AMP VOCR with {len(amp_vocr_obj.frames)} original frames.")
 	
 	
 # Parse the results

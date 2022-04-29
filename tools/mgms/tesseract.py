@@ -38,11 +38,11 @@ def main():
 
 		dateTimeObj = datetime.now()
 
-		#ffmpeg extracts the frames from the video input
+		# ffmpeg extracts the frames from the video input
 		command = "ffmpeg -i "+input_video+ " -an -vf fps=2 '"+tmpdir+"/frame_%05d_"+str(dateTimeObj)+".jpg'"
 		subprocess.call(command, shell=True)
 		
-		#Tesseract runs the ocr on frames extracted
+		# Tesseract runs the ocr on frames extracted
 		script_start = time.time()
 		
 		# Get some stats on the video
@@ -51,27 +51,11 @@ def main():
 		# create AMP VOCR instance
 		resolution = VideoOcrResolution(int(dim[0]), int(dim[1]))
 		amp_media = VideoOcrMedia(input_video, duration, frameRate, numFrames, resolution)
-		frames = []
+		frames = []		
 		
-# 		vocr = {"media": {"filename": input_video,
-# 					"frameRate": frameRate,
-# 					"numFrames": numFrames,
-# 					"resolution": {
-# 							"width": int(dim[0]),
-# 							"height": int(dim[1])
-# 						}
-# 			
-# 				},
-# 			"frames": []
-# 			}
-		
-		# for every saved frame
-		for num, img in enumerate(sorted(os.listdir(tmpdir))): 
-# 			frameList = {"start": str(start_time),
-# 				"objects": []
-# 				}
-		
-			# Run OCR
+		# for every saved frame run VOCR
+		for num, img in enumerate(sorted(os.listdir(tmpdir))): 		
+			# Run OCR with Tesseract
 			result = pytesseract.image_to_data(Image.open(tmpdir+"/"+img), output_type=Output.DICT)
 			objects = []
 			
@@ -86,29 +70,12 @@ def main():
 					score = VideoOcrObjectScore("confidence", result["conf"][i])
 					object = VideoOcrObject(result["text"][i], score, vertices)
 					objects.append(object)
-# 					box = {
-# 						"text": result["text"][i],
-# 						"score": {
-# 							"type":"confidence",
-# 							"value": result["conf"][i]
-# 								},
-# 							# relative coords
-# 							"vertices": {
-# 							"xmin": result["left"][i]/vocr["media"]["resolution"]["width"],
-# 							"ymin": result["top"][i]/vocr["media"]["resolution"]["height"],
-# 							"xmax": (result["left"][i] + result["width"][i])/vocr["media"]["resolution"]["width"],
-# 							"ymax": (result["top"][i] + result["height"][i])/vocr["media"]["resolution"]["height"]
-# 							}
-# 						}
-# 					frame["objects"].append(box)
 		
 			# add frame if it had text
 			if len(objects) > 0:
 				start_time =+ (.5 * num) 
 				frame = VideoOcrFrame(start_time, objects)
 				frames.append(frame)
-# 			if len(frameList["objects"]) > 0:
-# 				vocr["frames"].append(frameList)
 		
 		# create and save the AMP VOCR instance
 		vocr = VideoOcr(amp_media, frames)					
@@ -116,10 +83,11 @@ def main():
 		
 		# if dedupe, create and save the deduped AMP VOCR
 		if dedupe:
-			vocr_deduped = vocr.dedupe(period)
-			amp.utils.write_json_file(vocr_deduped, amp_vocr_deduped)
+			vocr_dedupe = vocr.dedupe(int(period))
+			logging.info(f"Successfully deduped AMP VOCR to {len(vocr_dedupe.frames)} frames.")
+			amp.utils.write_json_file(vocr_dedupe, amp_vocr_dedupe)
 		
-		logging.info("Finished.")
+		logging.info(f"Successfully generated AMP VOCR with {len(frames)} original frames.")
 		
 
 # UTIL FUNCTIONS
