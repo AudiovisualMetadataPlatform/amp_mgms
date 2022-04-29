@@ -26,11 +26,11 @@ class ContactSheet:
 		self.marl, self.mart, self.marr, self.marb = margin, margin, margin, margin # margin around edge of contact sheet, in px
 		self.padding = padding # space between each image, in px
 		
+		
 	def create_interval(self, frame_interval):
-		valid_input = self.validate_time(frame_interval, self.video_length)
+		valid_input = self.validate_interval(frame_interval, self.video_length)
 		if valid_input == False:
 			exit(1)
-
 		times, labels = self.getTimesInterval(self.video_length, frame_interval)
 		filenames = self.get_thumbs(self.input_file, times, self.temporary_directory.name)
 		logging.debug(filenames)
@@ -40,7 +40,6 @@ class ContactSheet:
 		valid_input = self.validate_quantity(frame_quantity, self.video_length)
 		if valid_input == False:
 			exit(1)
-
 		times, labels = self.getTimesQuantity(self.video_length, frame_quantity)
 		filenames = self.get_thumbs(self.input_file, times, self.temporary_directory.name)
 		logging.debug(filenames)
@@ -49,10 +48,8 @@ class ContactSheet:
 	def create_faces(self, amp_faces):
 		valid_input = self.validate_faces(amp_faces)
 		if valid_input == False:
-			exit(1)
-		
+			exit(1)		
 		times, labels = self.getTimesFrames(amp_faces)
-		# Get images
 		filenames = self.get_thumbs(self.input_file, times, self.temporary_directory.name)
 		logging.debug(filenames)
 		self.create_contact_sheet(filenames, labels)
@@ -61,9 +58,7 @@ class ContactSheet:
 		valid_input = self.validate_shots(amp_shots)
 		if valid_input == False:
 			exit(1)
-
 		times, labels = self.getTimesShots(amp_shots)
-		# Get images
 		filenames = self.get_thumbs(self.input_file, times, self.temporary_directory.name)
 		logging.debug(filenames)
 		self.create_contact_sheet(filenames, labels)
@@ -72,12 +67,11 @@ class ContactSheet:
 		valid_input = self.validate_vocr(amp_vocr)
 		if valid_input == False:
 			exit(1)
-
 		times, labels = self.getTimesFrames(amp_vocr)
-		# Get images
 		filenames = self.get_thumbs(self.input_file, times, self.temporary_directory.name)
 		logging.debug(filenames)
 		self.create_contact_sheet(filenames, labels)
+
 
 	def create_contact_sheet(self, filenames, labels):
 		nrows = math.ceil(len(filenames)/self.ncols) # number of rows of images
@@ -98,7 +92,6 @@ class ContactSheet:
 		shutil.copyfile(temp_file, self.output_file)
 		if os.path.exists(temp_file):
 			os.remove(temp_file)
-
 
 	def contact_sheet_assembly(self, fnames, ftimes, headerInfo, nrows, photoh):
 		"""\
@@ -162,7 +155,8 @@ class ContactSheet:
 			if(count>=len(fnames)):
 				break
 		return inew
-
+	
+	
 	def get_duration(self, input_video):
 		result = subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'default=noprint_wrappers=1:nokey=1', input_video], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 		len = math.floor(float(result.stdout))
@@ -184,10 +178,10 @@ class ContactSheet:
 		interval = math.ceil(videoLength/numFrames)
 		return self.getTimesInterval(videoLength, interval)
 
+	# for Faces and VOCR
 	def getTimesFrames(self, data):
 		times = []
-		labels = []
-		
+		labels = []		
 		for i, frame in enumerate(data["frames"]):
 			# Find the timestamp for the middle frame of the frame
 			start = float(frame["start"])
@@ -204,13 +198,11 @@ class ContactSheet:
 		for i, shot in enumerate(data["shots"]):
 			if shot["type"] == "scene": # for Azure-- skip things labeled "scene"
 				continue
-
 			# Find the timestamp for the middle frame of the shot
 			start = float(shot["start"])
 			end = float(shot["end"])
 			middle = str(timedelta(seconds=(end-start)/2 + start))
 			times.append(middle)
-
 			# Save a formatted time range for this shot in the list of times
 			range = str(timedelta(seconds=round(start))) + " - " + str(timedelta(seconds=round(end)))
 			labels.append(range)
@@ -221,7 +213,8 @@ class ContactSheet:
 		total_seconds = pt.second + pt.minute*60 + pt.hour*3600
 		return total_seconds
 
-	def validate_time(self, frame_interval, video_length):
+
+	def validate_interval(self, frame_interval, video_length):
 		# frame interval should be not empty and greater than 0
 		if frame_interval is None or frame_interval <= 0:
 			logging.error(f"Error: Invalid seconds input for time: {frame_interval}")

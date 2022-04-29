@@ -2,34 +2,36 @@
 
 # Python imports
 import argparse
-import pytesseract
-import os
-import json
-import sys
-import time
-import subprocess
-import shlex
-import pprint
-import tempfile
-# Python imports
-from PIL import Image
 from datetime import datetime
-from pytesseract import Output
-from amp.logger import MgmLogger
-import amp.utils
-
+import json
 import logging
-import amp.logger
+import os
+import pprint
+import shlex
+import subprocess
+import sys
+import tempfile
+import time
 
+from PIL import Image
+from amp.logger import MgmLogger
+import amp.logger
+import amp.utils
+from pytesseract import Output
+import pytesseract
+
+
+# Python imports
 def main():
 	with tempfile.TemporaryDirectory(dir = "/tmp") as tmpdir:
 		#(input_video, amp_vocr) = sys.argv[1:3]
 		parser = argparse.ArgumentParser()
 		parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
-		parser.add_argument("input_video", help="Input video file")
+		parser.add_argument("input_video", help="Video input file")
 		parser.add_argument("dedupe", default=True, help="Whether to dedupe consecutive frames with same texts")
 		parser.add_argument("duration", default=5, help="Duration in seconds to last as consecutive duplicate frames")
-		parser.add_argument("amp_vocr", help="Output AMP Video OCR file")
+		parser.add_argument("amp_vocr", help="Original AMP Video OCR output file")
+		parser.add_argument("amp_vocr_dedupe", help="Deduped AMP Video OCR output file")
 		args = parser.parse_args()
 		logging.info(f"Starting with args={args}")
 		(input_video, dedupe, duration, amp_vocr, amp_vocr_dedupe) = (args.input_video, args.dedupe, args.duration, args.amp_vocr, args.amp_vocr_dedupe)

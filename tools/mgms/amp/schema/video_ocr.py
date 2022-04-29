@@ -92,7 +92,7 @@ class VideoOcrFrame:
             return False
         
         # the given frame is assumed to be prior to this one; 
-        # if the difference between the start time is beyond the duration, they are not considered consecutive, thus not duplicate
+        # if the difference between frames start times is beyond the duration, they are not considered consecutive, thus not duplicate
         if self.start - frame.start >= duration:
             return false
         
@@ -101,10 +101,10 @@ class VideoOcrFrame:
             return false
         
         # otherwise compare the text in each object
-        # Note: In theory, the order of the objects could be random, in which case we can't compare by index, 
+        # TODO: In theory, the order of the objects could be random, in which case we can't compare by index, 
         # but need to match whole list for each object; an efficient way is to use hashmap.
         # For our use case, it's probably fine to assume that the VOCR tool will generate the list 
-        # in the same order for duplicate frames
+        # in the same order for duplicate frames.
         for i, object in enumerate(self.objects):
             if not object.match(frame.objects[i]):
                 # if one doesn't match return false
@@ -130,6 +130,7 @@ class VideoOcrObject:
         self.vertices = vertices
         
     # Return true if the text in this object equals that in the given object.
+    # TODO We might want to match positions as well in some use cases.
     def match(self, object):
         return self.text == object.text
         

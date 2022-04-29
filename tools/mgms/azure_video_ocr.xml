@@ -14,7 +14,7 @@
 	<param name="duration" type="integer" optional="true" value ="5" label="Duration" help="Duration in seconds to last as consecutive duplicate frames"/>
   </inputs>
   <outputs>
-    <data name="amp_vocr" format="vocr" label="AMP Video OCR Generated" />
+    <data name="amp_vocr" format="vocr" label="AMP Video OCR Original" />
     <data name="amp_vocr_dedupe" format="vocr" label="AMP Video OCR Deduped" />
   </outputs>
   <tests>
