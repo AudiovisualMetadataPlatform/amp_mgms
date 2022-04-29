@@ -10,11 +10,11 @@ class VideoOcr:
             self.media = media
    
     # Return a new VideoOcr instance with the duplicate frames removed. 
-    def dedupe(self, duration):
+    def dedupe(self, period):
         frames = []
         current = None
         for frame in self.frames:
-            if not frame.duplicate(current, duration):
+            if not frame.duplicate(current, period):
                 current = frame
                 frames.append(current)
         return VideoOcr(self.media, frames)
@@ -48,7 +48,6 @@ class VideoOcr:
 class VideoOcrResolution:
     width = None
     height = None
-    frames = []
     
     def __init__(self, width = None, height = None):
         self.width = width
@@ -65,9 +64,9 @@ class VideoOcrMedia:
     numFrames = None
     resolution = VideoOcrResolution()
 
-    def __init__(self, duration = 0, filename = "", frameRate = None, numFrames = None, resolution = None):
-        self.duration = duration
+    def __init__(self, filename = "", duration = 0, frameRate = None, numFrames = None, resolution = None):
         self.filename = filename
+        self.duration = duration
         self.frameRate = frameRate
         self.numFrames = numFrames
         self.resolution = resolution
@@ -85,15 +84,15 @@ class VideoOcrFrame:
         self.objects = objects
 
     # Return true if the given (previous) frame is a duplicate of this one.
-    # Frames are considered duplicate if they have the same texts and are consecutive within the given duration.
-    def duplicate(self, frame, duration):
+    # Frames are considered duplicate if they have the same texts and are consecutive within the given period.
+    def duplicate(self, frame, period):
         # if the given frame is None return false
         if frame == None:
             return False
         
         # the given frame is assumed to be prior to this one; 
-        # if the difference between frames start times is beyond the duration, they are not considered consecutive, thus not duplicate
-        if self.start - frame.start >= duration:
+        # if the difference between frames start times is beyond the period, they are not considered consecutive, thus not duplicate
+        if self.start - frame.start >= period:
             return false
         
         # if the frames contain different number of objects, return false
