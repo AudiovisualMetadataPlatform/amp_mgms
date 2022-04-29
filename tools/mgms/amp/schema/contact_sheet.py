@@ -21,7 +21,7 @@ class ContactSheet:
 		self.input_file = input_file
 		self.output_file = output_file
 		self.video_duration = self.get_duration(input_file)
-		self.ncols = ncols # number of columns
+		self.ncols = ncols # number of thumbnail columns
 		self.thumbw = thumbw # width of each thumbnail, in px
 		self.marl, self.mart, self.marr, self.marb = margin, margin, margin, margin # margin around edge of contact sheet, in px
 		self.padding = padding # space between each image, in px
@@ -101,8 +101,8 @@ class ContactSheet:
 		
 		ncols        Number of columns in the contact sheet
 		nrows        Number of rows in the contact sheet
-		thumbw       The width of the photo thumbs in pixels
-		thumbh       The height of the photo thumbs in pixels
+		thumbw       The width of the thumbnails in pixels
+		thumbh       The height of the thumbnails in pixels
 		
 		marl         The left margin in pixels
 		mart         The top margin in pixels
