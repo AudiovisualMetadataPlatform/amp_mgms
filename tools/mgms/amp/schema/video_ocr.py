@@ -92,12 +92,13 @@ class VideoOcrFrame:
         
         # the given frame is assumed to be prior to this one; 
         # if the difference between frames start times is beyond the period, they are not considered consecutive, thus not duplicate
+#         print(f"self.start = {self.start}, frame.start = {frame.start}, period = {period}")
         if self.start - frame.start >= period:
-            return false
+            return False
         
         # if the frames contain different number of objects, return false
         if len(self.objects) != len(frame.objects):
-            return false
+            return False
         
         # otherwise compare the text in each object
         # TODO: In theory, the order of the objects could be random, in which case we can't compare by index, 
@@ -107,10 +108,10 @@ class VideoOcrFrame:
         for i, object in enumerate(self.objects):
             if not object.match(frame.objects[i]):
                 # if one doesn't match return false
-                return false
+                return False
             
         # if all texts match return true
-        return true
+        return True
     
     @classmethod
     def from_json(cls, json_data: dict):                  

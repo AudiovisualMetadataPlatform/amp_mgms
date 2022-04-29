@@ -1,5 +1,5 @@
 <tool id="contact_sheet_vocr" name="Contact Sheet by VOCR" version="1.0.0">
-  <description>Generate contact sheet based on Video OCR</description>
+  <description>Generate contact sheet based on video OCR</description>
   <requirements>
 	<requirement type="package" version="3.8">python</requirement>
     <requirement type="package" version="8.30">coreutils</requirement>
