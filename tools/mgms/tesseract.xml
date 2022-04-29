@@ -13,10 +13,6 @@
 	<param name="input_video" type="data" format="video" label="Input Video" help="An input video file"/>
 	<param name="dedupe" type="boolean" value ="true" label="Dedupe" help="Whether to dedupe consecutive frames with same texts"/>
 	<param name="duration" type="integer" optional="true" value ="5" label="Duration" help="Duration in seconds to last as consecutive duplicate frames"/>
-	<!--
-	<param name="start" type="integer" value="0" label="Start time frame in seconds" help="A starting time frame on the input video"/>
-	<param name="duration" type="integer" value="0" label="Duration of video in seconds" help="Duration of the video to passed through OCR"/> 
-	-->
   </inputs>
   <outputs>
     <data name="amp_vocr" format="vocr" label="AMP Video OCR Original"/>

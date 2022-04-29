@@ -24,7 +24,6 @@ import pytesseract
 # Python imports
 def main():
 	with tempfile.TemporaryDirectory(dir = "/tmp") as tmpdir:
-		#(input_video, amp_vocr) = sys.argv[1:3]
 		parser = argparse.ArgumentParser()
 		parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 		parser.add_argument("input_video", help="Video input file")
@@ -44,7 +43,6 @@ def main():
 		
 		#Tesseract runs the ocr on frames extracted
 		script_start = time.time()
-		#amp_vocr =  input_video[:-4]+ "-ocr_"+str(dateTimeObj)+".json"
 		
 		# Get some stats on the video
 		(dim, frameRate, numFrames) = findVideoMetada(input_video)

@@ -14,7 +14,6 @@ import logging
 import amp.logger
 
 def main():
-	#(input_video, azure_video_index, azure_artifact_ocr, amp_vocr) = sys.argv[1:5]
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 	parser.add_argument("input_video", help="Video input file")
