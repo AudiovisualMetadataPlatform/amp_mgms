@@ -16,31 +16,31 @@ import shutil
 from PIL import Image, ImageDraw, ImageFont
 
 class ContactSheet:
-	def __init__(self, input_file, output_file, ncols = 4, photow = 300, margin = 10, padding = 3):
+	def __init__(self, input_file, output_file, ncols = 4, thumbw = 300, margin = 10, padding = 3):
 		self.temporary_directory = tempfile.TemporaryDirectory()
 		self.input_file = input_file
 		self.output_file = output_file
-		self.video_length = self.get_duration(input_file)
+		self.video_duration = self.get_duration(input_file)
 		self.ncols = ncols # number of columns
-		self.photow = photow # width of each thumbnail, in px
+		self.thumbw = thumbw # width of each thumbnail, in px
 		self.marl, self.mart, self.marr, self.marb = margin, margin, margin, margin # margin around edge of contact sheet, in px
 		self.padding = padding # space between each image, in px
 		
 		
 	def create_interval(self, frame_interval):
-		valid_input = self.validate_interval(frame_interval, self.video_length)
+		valid_input = self.validate_interval(frame_interval, self.video_duration)
 		if valid_input == False:
 			exit(1)
-		times, labels = self.getTimesInterval(self.video_length, frame_interval)
+		times, labels = self.getTimesInterval(self.video_duration, frame_interval)
 		filenames = self.get_thumbs(self.input_file, times, self.temporary_directory.name)
 		logging.debug(filenames)
 		self.create_contact_sheet(filenames, labels)
 
 	def create_quantity(self, frame_quantity):
-		valid_input = self.validate_quantity(frame_quantity, self.video_length)
+		valid_input = self.validate_quantity(frame_quantity, self.video_duration)
 		if valid_input == False:
 			exit(1)
-		times, labels = self.getTimesQuantity(self.video_length, frame_quantity)
+		times, labels = self.getTimesQuantity(self.video_duration, frame_quantity)
 		filenames = self.get_thumbs(self.input_file, times, self.temporary_directory.name)
 		logging.debug(filenames)
 		self.create_contact_sheet(filenames, labels)
@@ -83,9 +83,9 @@ class ContactSheet:
 		else:
 			ratio = 1.0	# default ratio if no frame	
 			
-		photoh = round(self.photow * ratio) # calculated height based on aspect ratio & set width
+		thumbh = round(self.thumbw * ratio) # calculated height based on aspect ratio & set width
 		filename = self.input_file.split('/')[-1] # Get filename for labelling purposes
-		image = self.contact_sheet_assembly(filenames, labels, "file: %s\nLabel: %s" % (filename, 'AMP Contact Sheet'), nrows, photoh)		
+		image = self.contact_sheet_assembly(filenames, labels, "file: %s\nLabel: %s" % (filename, 'AMP Contact Sheet'), nrows, thumbh)		
 		
 		temp_file = self.output_file + ".png"
 		image.save(temp_file)		
@@ -93,7 +93,7 @@ class ContactSheet:
 		if os.path.exists(temp_file):
 			os.remove(temp_file)
 
-	def contact_sheet_assembly(self, fnames, ftimes, headerInfo, nrows, photoh):
+	def contact_sheet_assembly(self, fnames, ftimes, headerInfo, nrows, thumbh):
 		"""\
 		Make a contact sheet from a group of filenames:
 		
@@ -101,8 +101,8 @@ class ContactSheet:
 		
 		ncols        Number of columns in the contact sheet
 		nrows        Number of rows in the contact sheet
-		photow       The width of the photo thumbs in pixels
-		photoh       The height of the photo thumbs in pixels
+		thumbw       The width of the photo thumbs in pixels
+		thumbh       The height of the photo thumbs in pixels
 		
 		marl         The left margin in pixels
 		mart         The top margin in pixels
@@ -116,19 +116,19 @@ class ContactSheet:
 		# Calculate the size of the output image, based on the
 		#  photo thumb sizes, margins, and padding
 		self.mart = self.mart + 100
-		marw = self.marl+self.marr
-		marh = self.mart+ self.marb
+		marw = self.marl + self.marr
+		marh = self.mart + self.marb
 
-		padw = (self.ncols-1)*self.padding
+		padw = (self.ncols - 1) * self.padding
 		if nrows == 0:
 			padh = 0
 		else:
-			padh = (nrows-1)*self.padding
-		isize = (self.ncols*self.photow+marw+padw, nrows*photoh+marh+padh)
+			padh = (nrows - 1) * self.padding
+		isize = (self.ncols*self.thumbw+marw+padw, nrows*thumbh+marh+padh)
 
 		# Create the new image. The background doesn't have to be white
 		white = (255,255,255)
-		inew = Image.new('RGB',isize,white)
+		inew = Image.new('RGB', isize, white)
 		# Write the header
 		ImageDraw.Draw(inew).text((10,10), str(headerInfo), fill=(0,0,0))
 		count = 0
@@ -136,23 +136,23 @@ class ContactSheet:
 		# Insert each thumb:
 		for irow in range(nrows):
 			for icol in range(self.ncols):
-				left = self.marl + icol*(self.photow+self.padding)
-				right = left + self.photow
-				upper = self.mart + irow*(photoh+self.padding)
-				lower = upper + photoh
+				left = self.marl + icol * (self.thumbw + self.padding)
+				right = left + self.thumbw
+				upper = self.mart + irow * (thumbh + self.padding)
+				lower = upper + thumbh
 				bbox = (left,upper,right,lower)
 				try:
 					# Read in an image and resize appropriately
-					img = Image.open(fnames[count]).resize((self.photow,photoh))
+					img = Image.open(fnames[count]).resize((self.thumbw,thumbh))
 					ImageDraw.Draw(img).text((10,10), str(ftimes[count]), fill=(255,255,0))
 				except:
 					break
 				inew.paste(img,bbox)
 				count += 1
-				if(count>=len(fnames)):
+				if (count >= len(fnames)):
 					break
 			
-			if(count>=len(fnames)):
+			if (count >= len(fnames)):
 				break
 		return inew
 	
@@ -214,24 +214,24 @@ class ContactSheet:
 		return total_seconds
 
 
-	def validate_interval(self, frame_interval, video_length):
+	def validate_interval(self, frame_interval, video_duration):
 		# frame interval should be not empty and greater than 0
 		if frame_interval is None or frame_interval <= 0:
 			logging.error(f"Error: Invalid seconds input for time: {frame_interval}")
 			return False
-		# give a warning if frame interval is greater than video_length
-		if frame_interval > video_length:
-			logging.warning(f"Warning: the frame interval in seconds {frame_interval} is greater than the video length {video_length}, so only one frame will be extracted.")
+		# give a warning if frame interval is greater than video_duration
+		if frame_interval > video_duration:
+			logging.warning(f"Warning: the frame interval in seconds {frame_interval} is greater than the video length {video_duration}, so only one frame will be extracted.")
 		return True
 
-	def validate_quantity(self, frame_quantity, video_length):
+	def validate_quantity(self, frame_quantity, video_duration):
 		# frame quantity should be not empty and greater than 0
 		if frame_quantity is None or frame_quantity <= 0:
 			logging.error(f"Invalid quantity input for quantity: {frame_quantity}")
 			return False
-		# give a warning if frame quantity is greater than video_length
-		if frame_quantity > video_length:
-			logging.warning(f"Warning: the frame quantity {frame_quantity} is greater than the video length {video_length}, so only {video_length} frames will be extracted.")
+		# give a warning if frame quantity is greater than video_duration
+		if frame_quantity > video_duration:
+			logging.warning(f"Warning: the frame quantity {frame_quantity} is greater than the video length {video_duration}, so only {video_duration} frames will be extracted.")
 		return True
 
 	def validate_faces(self, amp_faces):
