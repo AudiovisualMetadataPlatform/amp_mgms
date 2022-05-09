@@ -5,6 +5,8 @@ import json
 import stat
 import logging
 from pathlib import Path
+from datetime import datetime
+
 
 ERR_SUFFIX = ".err"
 
@@ -119,4 +121,19 @@ def get_aws_credentials():
     logging.debug(f"AWS credentials: {res}")
     return res
 
-    
+
+# Convert the given timestamp in the format of HH:MM:SS.fff to total seconds
+def timestampToSeconds(timestamp):
+    try:
+        x = datetime.strptime(timestamp, '%H:%M:%S.%f')
+    except ValueError:
+        x = datetime.strptime(timestamp, '%H:%M:%S')
+    hourSec = x.hour * 60.0 * 60.0
+    minSec = x.minute * 60.0
+    total_seconds = hourSec + minSec + x.second + x.microsecond/600000
+    return total_seconds    
+
+# Convert the given seconds to timestamp in the format of HH:MM:SS.fff
+def secondsToTimestamp(seconds): 
+    dt = datetime.utcfromtimestamp(seconds)
+    return dt.strftime("%H:%M:%S.%f")[:-3] 

@@ -3,14 +3,13 @@ import sys
 import logging
 import json
 import os
-from datetime import datetime
 import argparse
+import logging
 
+import amp.logger
+import amp.utils
 from amp.schema.shot_detection import ShotDetection, ShotDetectionMedia, ShotDetectionShot
 
-import amp.utils
-import logging
-import amp.logger
 
 def main():
 	#(input_video, azure_video_index, amp_shots) = sys.argv[1:4]
@@ -63,7 +62,7 @@ def create_amp_shots(input_video, azure_index_json):
 def addShots(amp_shot_list, azure_shot_list, type):
 	for shot in azure_shot_list:
 		for instance in shot['instances']:
-			start = convertTimestampToSeconds(instance['start'])
+			start = amp.utils.timestampToSeconds(instance['start'])
 			end = convertTimestampToSeconds(instance['end'])
 			shot = ShotDetectionShot(type, start, end)
 			amp_shot_list.append(shot)
@@ -71,18 +70,6 @@ def addShots(amp_shot_list, azure_shot_list, type):
 	# We can either use each instance of an Azure shot as an AMP shot; or
 	# we can combine all instances of an Azure shot (i.e. take start of the first instance and end of the last instance) into one AMP shot.  
 	# Here we use the former option. In reality the instances most likely only contain one instance.
-
-
-# Convert the timestamp to total seconds
-def convertTimestampToSeconds(timestamp):
-	try:
-		x = datetime.strptime(timestamp, '%H:%M:%S.%f')
-	except ValueError:
-		x = datetime.strptime(timestamp, '%H:%M:%S')
-	hourSec = x.hour * 60.0 * 60.0
-	minSec = x.minute * 60.0
-	total_seconds = hourSec + minSec + x.second + x.microsecond/600000
-	return total_seconds
 
 
 if __name__ == "__main__":
