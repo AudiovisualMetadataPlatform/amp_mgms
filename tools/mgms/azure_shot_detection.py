@@ -62,7 +62,7 @@ def create_amp_shots(input_video, azure_index_json):
 def addShots(amp_shot_list, azure_shot_list, type):
 	for shot in azure_shot_list:
 		for instance in shot['instances']:
-			start = amp.utils.timestampToSeconds(instance['start'])
+			start = amp.utils.timestampToSecond(instance['start'])
 			end = convertTimestampToSeconds(instance['end'])
 			shot = ShotDetectionShot(type, start, end)
 			amp_shot_list.append(shot)

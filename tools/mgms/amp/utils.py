@@ -114,7 +114,7 @@ def get_work_dir(work_dir):
     return str(wd.absolute())
 
 
-# get the AWS credentials from the config file and return them as a dict
+# get the AWS credentials from the config file and return them as a dict.
 def get_aws_credentials():
     config = get_config()
     res = config._sections['aws']
@@ -122,18 +122,31 @@ def get_aws_credentials():
     return res
 
 
-# Convert the given timestamp in the format of HH:MM:SS.fff to total seconds
-def timestampToSeconds(timestamp):
+# Convert the given timestamp in the format of HH:MM:SS.fff to total seconds.
+def timestampToSecond(timestamp):
     try:
-        x = datetime.strptime(timestamp, '%H:%M:%S.%f')
+        t = datetime.strptime(timestamp, '%H:%M:%S.%f')
     except ValueError:
-        x = datetime.strptime(timestamp, '%H:%M:%S')
-    hourSec = x.hour * 60.0 * 60.0
-    minSec = x.minute * 60.0
-    total_seconds = hourSec + minSec + x.second + x.microsecond/600000
-    return total_seconds    
+        t = datetime.strptime(timestamp, '%H:%M:%S')
+    delta = t - datetime(1900, 1, 1)
+    second = delta.total_seconds()
+    return second 
 
-# Convert the given seconds to timestamp in the format of HH:MM:SS.fff
-def secondsToTimestamp(seconds): 
-    dt = datetime.utcfromtimestamp(seconds)
-    return dt.strftime("%H:%M:%S.%f")[:-3] 
+
+# Convert the given second to timestamp in the format of HH:MM:SS.fff
+def secondToTimestamp(second): 
+    dt = datetime.utcfromtimestamp(second)
+    timestamp = dt.strftime("%H:%M:%S.%f")[:-3] 
+    return timestamp
+
+
+# Convert the given start time in seconds (float number) to frame index based on the given frame rate.
+def secondToFrame(second, fps):
+    nframe = round(second * fps)
+    return nframe
+
+# Convert the given frame index to the start time in seconds (float number).
+def frameToSecond(nframe, fps):
+    second = nframe / fps
+    return second
+

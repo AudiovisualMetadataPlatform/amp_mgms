@@ -94,7 +94,7 @@ def write_csv(output_file, matching_words):
         
         # Print each row, sorted by text/start
         for word in sorted(matching_words, key = lambda i: (i['text'], i['start'])):
-            csvwriter.writerow([word["text"], amp.utils.secondsToTimestamp(word["start"])])
+            csvwriter.writerow([word["text"], amp.utils.secondToTimestamp(word["start"])])
 
 # Simple word cleaning function for comparison
 def clean_word(word):
