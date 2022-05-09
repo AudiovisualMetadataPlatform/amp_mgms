@@ -28,18 +28,20 @@ def main():
 		parser = argparse.ArgumentParser()
 		parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 		parser.add_argument("input_video", help="Video input file")
+		parser.add_argument("vocr_interval", help="Interval in seconds by which video frames are extracted for VOCR")
 		parser.add_argument("dedupe", default=True, help="Whether to dedupe consecutive frames with same texts")
-		parser.add_argument("period", default=5, help="Period in seconds to last as consecutive duplicate frames")
+		parser.add_argument("dup_gap", default=5, help="Gap in seconds within which adjacent VOCR frames with same text are considered duplicates")
 		parser.add_argument("amp_vocr", help="Original AMP Video OCR output file")
 		parser.add_argument("amp_vocr_dedupe", help="Deduped AMP Video OCR output file")
 		args = parser.parse_args()
 		logging.info(f"Starting with args={args}")
-		(input_video, dedupe, period, amp_vocr, amp_vocr_dedupe) = (args.input_video, args.dedupe, args.period, args.amp_vocr, args.amp_vocr_dedupe)
-
-		dateTimeObj = datetime.now()
+		(input_video, vocr_interval, dedupe, dup_gap, amp_vocr, amp_vocr_dedupe) = (args.input_video, args.vocr_interval, args.dedupe, args.dup_gap, args.amp_vocr, args.amp_vocr_dedupe)
 
 		# ffmpeg extracts the frames from the video input
-		command = "ffmpeg -i "+input_video+ " -an -vf fps=2 '"+tmpdir+"/frame_%05d_"+str(dateTimeObj)+".jpg'"
+		dateTimeObj = datetime.now()
+		fps = 1 / vocr_interval;
+		command = "ffmpeg -i " + input_video + " -an -vf fps=" + fps + " '" + tmpdir + "/frame_%05d_" + str(dateTimeObj) + ".jpg'"
+		logging.info(f"Extracting frames for VOCR with command {command}")
 		subprocess.call(command, shell=True)
 		
 		# Tesseract runs the ocr on frames extracted
@@ -60,20 +62,23 @@ def main():
 			objects = []
 			
 			# For every result, make an object & add it to the list of boxes for this frame
+			content = ""
 			for i in range(len(result["text"])): 
-				if result["text"][i].strip(): #if the text isn't empty/whitespace
+				text = result["text"][i].strip()
+				if text: #if the text isn't empty/whitespace
+					content = content + text
 					vertices = VideoOcrObjectVertices(						
 						result["left"][i] / resolution.width, 
 						result["top"][i] / resolution.height,
 						(result["left"][i] + result["width"][i]) / resolution.width, 
 						(result["top"][i] + result["height"][i]) / resolution.height)
 					score = VideoOcrObjectScore("confidence", result["conf"][i])
-					object = VideoOcrObject(result["text"][i], score, vertices)
+					object = VideoOcrObject(text, score, vertices)
 					objects.append(object)
 		
 			# add frame if it had text
 			if len(objects) > 0:
-				start_time =+ (.5 * num) 
+				start_time =+ (vocr_interval * num) 
 				frame = VideoOcrFrame(start_time, objects)
 				frames.append(frame)
 		
@@ -83,7 +88,7 @@ def main():
 		
 		# if dedupe, create and save the deduped AMP VOCR
 		if dedupe:
-			vocr_dedupe = vocr.dedupe(int(period))
+			vocr_dedupe = vocr.dedupe(int(dup_gap))
 			logging.info(f"Successfully deduped AMP VOCR to {len(vocr_dedupe.frames)} frames.")
 			amp.utils.write_json_file(vocr_dedupe, amp_vocr_dedupe)
 		

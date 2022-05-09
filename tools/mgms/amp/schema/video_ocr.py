@@ -1,20 +1,21 @@
 import json
 import csv
 
+
 class VideoOcr:
-    def __init__(self, media=None, frames = []):
+    media = VideoOcrMedia()
+    frames = []
+    
+    def __init__(self, media = VideoOcrMedia(), frames = []):
+        self.media = media
         self.frames = frames
-        if media is None:
-            self.media = VideoOcrMedia()
-        else:
-            self.media = media
    
     # Return a new VideoOcr instance with the duplicate frames removed. 
-    def dedupe(self, period):
+    def dedupe(self, dup_gap):
         frames = []
         current = None
         for frame in self.frames:
-            if not frame.duplicate(current, period):
+            if not frame.duplicate(current, dup_gap):
                 current = frame
                 frames.append(current)
         return VideoOcr(self.media, frames)
@@ -44,27 +45,16 @@ class VideoOcr:
         media = VideoOcrMedia.from_json(json_data["media"])                  
         frames = list(map(VideoOcrFrame.from_json, json_data["frames"]))
         return cls(media, frames)
+       
                                  
-class VideoOcrResolution:
-    width = None
-    height = None
-    
-    def __init__(self, width = None, height = None):
-        self.width = width
-        self.height = height
-
-    @classmethod
-    def from_json(cls, json_data):
-        return cls(**json_data)
-
 class VideoOcrMedia:
     filename = ""
     duration = 0
-    frameRate = None
-    numFrames = None
+    frameRate = 0
+    numFrames = 0
     resolution = VideoOcrResolution()
 
-    def __init__(self, filename = "", duration = 0, frameRate = None, numFrames = None, resolution = None):
+    def __init__(self, filename = "", duration = 0, frameRate = 0, numFrames = 0, resolution = VideoOcrResolution()):
         self.filename = filename
         self.duration = duration
         self.frameRate = frameRate
@@ -75,25 +65,41 @@ class VideoOcrMedia:
     def from_json(cls, json_data):
         return cls(**json_data)
 
+
+class VideoOcrResolution:
+    width = 0
+    height = 0
+    
+    def __init__(self, width = 0, height = 0):
+        self.width = width
+        self.height = height
+
+    @classmethod
+    def from_json(cls, json_data):
+        return cls(**json_data)
+
+
 class VideoOcrFrame:
     start = 0
+    content = None    # the concatenation of all texts in the objects list, with a space in between each
     objects = []
     
-    def __init__(self, start = None, objects = None):
+    def __init__(self, start = 0, content = None, objects = []):
         self.start = start
+        self.content = content
         self.objects = objects
 
     # Return true if the given (previous) frame is a duplicate of this one.
-    # Frames are considered duplicate if they have the same texts and are consecutive within the given period.
-    def duplicate(self, frame, period):
+    # Frames are considered duplicate if they have the same texts and are consecutive within the given dup_gap.
+    def duplicate(self, frame, dup_gap):
         # if the given frame is None return false
         if frame == None:
             return False
         
         # the given frame is assumed to be prior to this one; 
-        # if the difference between frames start times is beyond the period, they are not considered consecutive, thus not duplicate
-#         print(f"self.start = {self.start}, frame.start = {frame.start}, period = {period}")
-        if self.start - frame.start >= period:
+        # if the difference between frames start times is beyond the dup_gap, they are not considered consecutive, thus not duplicate
+#         print(f"self.start = {self.start}, frame.start = {frame.start}, dup_gap = {dup_gap}")
+        if self.start - frame.start >= dup_gap:
             return False
         
         # if the frames contain different number of objects, return false
@@ -118,12 +124,14 @@ class VideoOcrFrame:
         objects = list(map(VideoOcrObject.from_json, json_data["objects"]))
         return cls(json_data["start"], objects)
     
+    
 class VideoOcrObject:
     text = ""
-    language = ""
+    language = None 
     score = None
-    vertices = None
-    def __init__(self, text = "", language = "", score = None, vertices = None):
+    vertices = VideoOcrObjectVertices()
+    
+    def __init__(self, text = "", language = None, score = None, vertices = VideoOcrObjectVertices()):
         self.text = text
         self.language = language
         self.score = score
@@ -147,8 +155,9 @@ class VideoOcrObject:
 
 class VideoOcrObjectScore:
     type = ""
-    value = None
-    def __init__(self, type = "", value = None):
+    value = 0
+    
+    def __init__(self, type = "", value = 0):
         self.type = type
         self.value = value
         
@@ -162,6 +171,7 @@ class VideoOcrObjectVertices:
     ymin = 0
     xmax = 0
     ymax = 0
+    
     def __init__(self, xmin = 0, ymin = 0, xmax = 0, ymax = 0):
         self.xmin = xmin
         self.ymin = ymin
