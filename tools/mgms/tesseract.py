@@ -66,7 +66,7 @@ def main():
 			for i in range(len(result["text"])): 
 				text = result["text"][i].strip()
 				if text: #if the text isn't empty/whitespace
-					content = content + text
+					content = content + text + " "
 					vertices = VideoOcrObjectVertices(						
 						result["left"][i] / resolution.width, 
 						result["top"][i] / resolution.height,
@@ -88,7 +88,9 @@ def main():
 		
 		# if dedupe, create and save the deduped AMP VOCR
 		if dedupe:
-			vocr_dedupe = vocr.dedupe(int(dup_gap))
+			# the duplicate gap should be at least vocr_interval
+			gap = int(max(dup_gap, vocr_interval))
+			vocr_dedupe = vocr.dedupe(gap)
 			logging.info(f"Successfully deduped AMP VOCR to {len(vocr_dedupe.frames)} frames.")
 			amp.utils.write_json_file(vocr_dedupe, amp_vocr_dedupe)
 		

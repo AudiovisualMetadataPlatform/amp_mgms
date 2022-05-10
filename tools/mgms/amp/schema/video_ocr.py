@@ -13,11 +13,17 @@ class VideoOcr:
     # Return a new VideoOcr instance with the duplicate frames removed. 
     def dedupe(self, dup_gap):
         frames = []
-        current = None
+        previous = None
         for frame in self.frames:
-            if not frame.duplicate(current, dup_gap):
-                current = frame
-                frames.append(current)
+            # content is optional and may not be populated, in which case use words for comparison
+            # note that compare by words are stricter as each correspond words pair in the lists must match
+            if self.content and frame.content:
+                duplicate = frame.duplicate_content(previous, dup_gap)
+            else:
+                duplicate = frame.duplicate_words(previous, dup_gap)
+            if not duplicate:
+                frames.append(frame)
+            previous = frame
         return VideoOcr(self.media, frames)
           
     def toCsv(self, csvFile):
@@ -89,23 +95,33 @@ class VideoOcrFrame:
         self.content = content
         self.objects = objects
 
-    # Return true if the given (previous) frame is a duplicate of this one.
-    # Frames are considered duplicate if they have the same texts and are consecutive within the given dup_gap.
-    def duplicate(self, frame, dup_gap):
+    # Return true if the given (previous) frame is a duplicate (by content) of this one.
+    # Frames are considered duplicate if they have the same content (words concatenated) and are consecutive within the given dup_gap.
+    def duplicate_content(self, frame, dup_gap):
+        # the given frame is assumed to be prior to this one
+        # if the given frame is not None, and
+        # if the difference between frames start times is within the dup_gap (i.e. considered consecutive), and
+        # the frames contain same content (i.e. the concatenation of all words in the frame)
+        # then they are duplicate
+        return (frame != None) and (self.start - frame.start < dup_gap) and (self.content == frame.content)
+    
+    # Return true if the given (previous) frame is a duplicate (by words) of this one.
+    # Frames are considered duplicate if they have the same list of words and are consecutive within the given dup_gap.
+    def duplicate_words(self, frame, dup_gap):
         # if the given frame is None return false
         if frame == None:
             return False
-        
+          
         # the given frame is assumed to be prior to this one; 
         # if the difference between frames start times is beyond the dup_gap, they are not considered consecutive, thus not duplicate
 #         print(f"self.start = {self.start}, frame.start = {frame.start}, dup_gap = {dup_gap}")
         if self.start - frame.start >= dup_gap:
             return False
-        
+          
         # if the frames contain different number of objects, return false
         if len(self.objects) != len(frame.objects):
             return False
-        
+          
         # otherwise compare the text in each object
         # TODO: In theory, the order of the objects could be random, in which case we can't compare by index, 
         # but need to match whole list for each object; an efficient way is to use hashmap.
@@ -115,7 +131,7 @@ class VideoOcrFrame:
             if not object.match(frame.objects[i]):
                 # if one doesn't match return false
                 return False
-            
+              
         # if all texts match return true
         return True
     
