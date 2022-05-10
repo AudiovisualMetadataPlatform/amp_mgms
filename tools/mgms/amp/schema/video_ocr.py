@@ -4,10 +4,12 @@ import csv
 
 class VideoOcr:
     media = VideoOcrMedia()
+    texts = []
     frames = []
     
-    def __init__(self, media = VideoOcrMedia(), frames = []):
+    def __init__(self, media = VideoOcrMedia(), texts = [], frames = []):
         self.media = media
+        self.texts = texts
         self.frames = frames
    
     # Return a new VideoOcr instance with the duplicate frames removed. 
@@ -48,9 +50,11 @@ class VideoOcr:
         
     @classmethod
     def from_json(cls, json_data: dict):
-        media = VideoOcrMedia.from_json(json_data["media"])                  
+        media = VideoOcrMedia.from_json(json_data["media"])   
+        if "texts" in json_data.keys(): 
+            texts = [] # TODO              
         frames = list(map(VideoOcrFrame.from_json, json_data["frames"]))
-        return cls(media, frames)
+        return cls(media, texts, frames)
        
                                  
 class VideoOcrMedia:
@@ -100,7 +104,7 @@ class VideoOcrFrame:
     def duplicate_content(self, frame, dup_gap):
         # the given frame is assumed to be prior to this one
         # if the given frame is not None, and
-        # if the difference between frames start times is within the dup_gap (i.e. considered consecutive), and
+        # the difference between frames start times is within the dup_gap (i.e. considered consecutive), and
         # the frames contain same content (i.e. the concatenation of all words in the frame)
         # then they are duplicate
         return (frame != None) and (self.start - frame.start < dup_gap) and (self.content == frame.content)
@@ -123,13 +127,13 @@ class VideoOcrFrame:
             return False
           
         # otherwise compare the text in each object
-        # TODO: In theory, the order of the objects could be random, in which case we can't compare by index, 
+        # TODO: In theory, the order of the objects could be random, in which case we can"t compare by index, 
         # but need to match whole list for each object; an efficient way is to use hashmap.
-        # For our use case, it's probably fine to assume that the VOCR tool will generate the list 
+        # For our use case, it"s probably fine to assume that the VOCR tool will generate the list 
         # in the same order for duplicate frames.
         for i, object in enumerate(self.objects):
             if not object.match(frame.objects[i]):
-                # if one doesn't match return false
+                # if one doesn"t match return false
                 return False
               
         # if all texts match return true
@@ -137,8 +141,11 @@ class VideoOcrFrame:
     
     @classmethod
     def from_json(cls, json_data: dict):                  
+        content = None
+        if "content" in json_data.keys():
+            content = json_data["content"]
         objects = list(map(VideoOcrObject.from_json, json_data["objects"]))
-        return cls(json_data["start"], objects)
+        return cls(json_data["start"], content, objects)
     
     
 class VideoOcrObject:
@@ -162,11 +169,11 @@ class VideoOcrObject:
     def from_json(cls, json_data: dict):
         language = None
         score = None
-        if 'language' in json_data.keys():
-            language = json_data['language']
-        if 'score' in json_data.keys():
-            score = VideoOcrObjectScore.from_json(json_data['score'])
-        return cls(json_data['text'], language, score, VideoOcrObjectVertices.from_json(json_data['vertices']))
+        if "language" in json_data.keys():
+            language = json_data["language"]
+        if "score" in json_data.keys():
+            score = VideoOcrObjectScore.from_json(json_data["score"])
+        return cls(json_data["text"], language, score, VideoOcrObjectVertices.from_json(json_data["vertices"]))
 
 
 class VideoOcrObjectScore:

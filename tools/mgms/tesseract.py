@@ -65,7 +65,7 @@ def main():
 			content = ""
 			for i in range(len(result["text"])): 
 				text = result["text"][i].strip()
-				if text: #if the text isn't empty/whitespace
+				if text: # if the text isn't empty/whitespace
 					content = content + text + " "
 					vertices = VideoOcrObjectVertices(						
 						result["left"][i] / resolution.width, 
@@ -79,22 +79,21 @@ def main():
 			# add frame if it had text
 			if len(objects) > 0:
 				start_time =+ (vocr_interval * num) 
-				frame = VideoOcrFrame(start_time, objects)
+				frame = VideoOcrFrame(start_time, content, objects)
 				frames.append(frame)
 		
 		# create and save the AMP VOCR instance
-		vocr = VideoOcr(amp_media, frames)					
+		vocr = VideoOcr(amp_media, [], frames)					
 		amp.utils.write_json_file(vocr, amp_vocr)
+		logging.info(f"Successfully generated AMP VOCR with {len(frames)} original frames.")
 		
 		# if dedupe, create and save the deduped AMP VOCR
 		if dedupe:
 			# the duplicate gap should be at least vocr_interval
 			gap = int(max(dup_gap, vocr_interval))
 			vocr_dedupe = vocr.dedupe(gap)
+			amp.utils.write_json_file(vocr_dedupe, amp_vocr_dedupe)		
 			logging.info(f"Successfully deduped AMP VOCR to {len(vocr_dedupe.frames)} frames.")
-			amp.utils.write_json_file(vocr_dedupe, amp_vocr_dedupe)
-		
-		logging.info(f"Successfully generated AMP VOCR with {len(frames)} original frames.")
 		
 
 # UTIL FUNCTIONS

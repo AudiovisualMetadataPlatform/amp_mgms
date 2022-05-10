@@ -25,7 +25,7 @@
 .. class:: infomark
 
 Optical Character Recognition using Tesseract on frames of a video extracted with FFMpeg. If "dedupe" option is checked, 
-also generate AMP OCRR JSON with duplicate frames removed, i.e. consecutive frames with same texts within the specified dup_gap.
+also generate AMP OCRR JSON with duplicate frames removed, i.e. consecutive frames with same texts within the specified duplicate gap.
 
   </help>
 </tool>

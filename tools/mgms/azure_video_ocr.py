@@ -17,7 +17,7 @@ def main():
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 	parser.add_argument("input_video", help="Video input file")
-	parser.add_argument("azure_video_index", help="Azure video index input file")
+	parser.add_argument("azure_video_index", help="Azure video indexer input file")
 	parser.add_argument("azure_artifact_ocr", help="Azure Artifact OCR input file")
 	parser.add_argument("dedupe", default=True, help="Whether to dedupe consecutive frames with same texts")
 	parser.add_argument("dup_gap", default=5, help="Gap in seconds within which adjacent VOCR frames with same text are considered duplicates")	
@@ -27,7 +27,7 @@ def main():
 	logging.info(f"Starting with args {args}")
 	(input_video, azure_video_index, azure_artifact_ocr, dedupe, dup_gap, amp_vocr, amp_vocr_dedupe) = (args.input_video, args.azure_video_index, args.azure_artifact_ocr, args.dedupe, args.dup_gap, args.amp_vocr, args.amp_vocr_dedupe)
 	
-	# Get Azure video index json
+	# Get Azure video indexer json
 	with open(azure_video_index, "r") as azure_index_file:
 		azure_index_json = json.load(azure_index_file)
 
@@ -36,24 +36,21 @@ def main():
 		azure_ocr_json = json.load(azure_ocr_file)
 
 	# Create AMP Video OCR object
-	amp_vocr_obj = create_amp_vocr(input_video, azure_index_json, azure_ocr_json)
+	vocr = create_amp_vocr(input_video, azure_index_json, azure_ocr_json)
 	
 	# write AMP Video OCR JSON file
-	amp.utils.write_json_file(amp_vocr_obj, amp_vocr)
+	amp.utils.write_json_file(vocr, amp_vocr)
+	logging.info(f"Successfully generated AMP VOCR with {len(vocr.frames)} original frames.")
 	
 	# if dedupe, create the deduped AMP VOCR
 	if dedupe:
-		vocr_dedupe = amp_vocr_obj.dedupe(int(dup_gap))
-		logging.info(f"Successfully deduped AMP VOCR to {len(vocr_dedupe.frames)} frames.")
+		vocr_dedupe = vocr.dedupe(int(dup_gap))
 		amp.utils.write_json_file(vocr_dedupe, amp_vocr_dedupe)
-			
-	logging.info(f"Successfully generated AMP VOCR with {len(amp_vocr_obj.frames)} original frames.")
+		logging.info(f"Successfully deduped AMP VOCR to {len(vocr_dedupe.frames)} frames.")			
 	
 	
-# Parse the results
+# Create AMP VOCR object from the given Azure indexer json and the OCR artifact json.
 def create_amp_vocr(input_video, azure_index_json, azure_ocr_json):
-	amp_ocr = VideoOcr()
-
 	# Create the resolution obj
 	# Recent versions of azure return the width/height for every frame.  
 	# Let"s assume that the data for the first image is indicative of the rest.
@@ -65,19 +62,20 @@ def create_amp_vocr(input_video, azure_index_json, azure_ocr_json):
 	frameRate = azure_ocr_json["Fps"]
 	duration = azure_index_json["summarizedInsights"]["duration"]["seconds"]
 	numFrames = int(frameRate * duration)
-	amp_media  = VideoOcrMedia(input_video, duration, frameRate, numFrames, resolution)
-	amp_ocr.media = amp_media
+	media  = VideoOcrMedia(input_video, duration, frameRate, numFrames, resolution)
 
-	# Create AMP VOCR texts from Azure index ocr insight
-	amp_ocr.texts = createVocrTexts(azure_index_json["videos"][0]["insights"]["ocr"])
+	# Create AMP VOCR texts from Azure indexer ocr insight
+	# we can assume that there is only one video in the Azure indexer json
+	texts = createVocrTexts(azure_index_json["videos"][0]["insights"]["ocr"])
 	
 	# Create AMP VOCR frames from Azure OCR artifact
-	amp_ocr.frames = createVocrFrames(azure_ocr_json["Results"], frameRate)
+	frames = createVocrFrames(azure_ocr_json["Results"], frameRate)
 
-	return amp_ocr
+	vocr = VideoOcr(media, texts, frames)
+	return vocr
 
 
-# Create a list of AMP VOCR texts from the texts list in the given Azure index ocr insight json.
+# Create a list of AMP VOCR texts from the texts list in the given Azure indexer ocr insight json.
 def createVocrTexts(ocr_json):
 	texts = []
 	for ocr in ocr_json:
@@ -107,12 +105,16 @@ def createVocrTexts(ocr_json):
 # 							frame_dict[frameIndex] = [newOcr]
 	return texts
 
+
 # Create a list of AMP VOCR frames from the given Azure OCR artifact results json and the given frame rate.
-def createVocrFrames(results_json, fps, language):
+def createVocrFrames(results_json, fps):
 	frames = []
+	
+	# for each result with text, generate an AMP VOCR frame
 	for result in results_json:
-		# skip this frame if there is no text in it
-		if len(result["content"]) == 0:
+		# skip this frame if there is no content (words/lines) in it
+		content = result["Ocr"]["content"]
+		if not content:
 			continue
 		
 		nframe = result["FrameIndex"]
@@ -120,7 +122,7 @@ def createVocrFrames(results_json, fps, language):
 		objects = []
 		
 		# for video there should only be one page, but we loop through the page list just in case
-		for page in result["Ocr"][pages]:
+		for page in result["Ocr"]["pages"]:
 			# we use words instead of lines, because the confidence is only available for each word
 			for word in page["words"]:
 			 	text = word["content"]
@@ -132,8 +134,9 @@ def createVocrFrames(results_json, fps, language):
 			 	# we could get the language by matching content with ocr text, but its computational expensive
 			 	# it's better just to add language in the texts list instead of frames list
 			 	object = VideoOcrObject(text, score, vertices)
-				objects.append(amp_object)
-		frame = VideoOcrFrame(start, objects)
+				objects.append(object)
+				
+		frame = VideoOcrFrame(start, content, objects)
 		frames.append(frame)
 	
 	return amp_frames

@@ -23,7 +23,7 @@ def main():
 	(input_video, azure_video_index, amp_shots) = (args.input_video, args.azure_video_index, args.amp_shots)
 
 
-	# Get Azure video index json
+	# Get Azure video indexer json
 	with open(azure_video_index, 'r') as azure_index_file:
 		azure_index_json = json.load(azure_index_file)
 
