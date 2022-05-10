@@ -63,7 +63,7 @@ def addShots(amp_shot_list, azure_shot_list, type):
 	for shot in azure_shot_list:
 		for instance in shot['instances']:
 			start = amp.utils.timestampToSecond(instance['start'])
-			end = convertTimestampToSeconds(instance['end'])
+			end = amp.utils.timestampToSecond(instance['end'])
 			shot = ShotDetectionShot(type, start, end)
 			amp_shot_list.append(shot)
 	# Note: 
