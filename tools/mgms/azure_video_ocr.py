@@ -26,6 +26,9 @@ def main():
 	logging.info(f"Starting with args {args}")
 	(input_video, azure_video_index, azure_artifact_ocr, dedupe, dup_gap, amp_vocr, amp_vocr_dedupe) = (args.input_video, args.azure_video_index, args.azure_artifact_ocr, args.dedupe, args.dup_gap, args.amp_vocr, args.amp_vocr_dedupe)
 	
+	# a workaround in case integer args are parsed as string
+	dup_gap = int(dup_gap)
+	
 	# Get Azure video indexer json
 	azure_index_json = amp.utils.read_json_file(azure_video_index)
 
@@ -41,7 +44,7 @@ def main():
 	
 	# if dedupe, create the deduped AMP VOCR
 	if dedupe:
-		vocr_dedupe = vocr.dedupe(int(dup_gap))
+		vocr_dedupe = vocr.dedupe(dup_gap)
 		amp.utils.write_json_file(vocr_dedupe, amp_vocr_dedupe)
 		logging.info(f"Successfully deduped AMP VOCR to {len(vocr_dedupe.frames)} frames.")			
 	
