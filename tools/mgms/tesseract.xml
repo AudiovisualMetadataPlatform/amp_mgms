@@ -7,12 +7,13 @@
     <requirement type="package" version="0.3">pytesseract</requirement>
   </requirements>
   <command detect_errors="exit_code">
-  	'$__tool_directory__/mgm_python.sif' '$__tool_directory__/tesseract.py' '$input_video' '$dedupe' '$period' '$amp_vocr' '$amp_vocr_dedupe'
+  	'$__tool_directory__/mgm_python.sif' '$__tool_directory__/tesseract.py' '$input_video' '$vocr_interval' '$dedupe' '$dup_gap' '$amp_vocr' '$amp_vocr_dedupe'
   </command>
   <inputs>
 	<param name="input_video" type="data" format="video" label="Input Video" help="An input video file"/>
+	<param name="vocr_interval" type="float" min=".5" max ="2" value ="1" label="VOCR Interval" help="Interval in seconds by which video frames are extracted for VOCR"/>
 	<param name="dedupe" type="boolean" value ="true" label="Dedupe" help="Whether to dedupe consecutive frames with same texts"/>
-	<param name="period" type="integer" optional="true" min="1" max ="60" value ="5" label="Period" help="Period in seconds to last as consecutive duplicate frames"/>
+	<param name="dup_gap" type="integer" optional="true" min="1" max ="60" value ="5" label="Duplicate Gap" help="Gap in seconds within which consecutive VOCR frames with same text are considered duplicates"/>
   </inputs>
   <outputs>
     <data name="amp_vocr" format="vocr" label="AMP Video OCR Original"/>
@@ -24,7 +25,7 @@
 .. class:: infomark
 
 Optical Character Recognition using Tesseract on frames of a video extracted with FFMpeg. If "dedupe" option is checked, 
-also generate AMP OCRR JSON with duplicate frames removed, i.e. consecutive frames with same texts within the specified period.
+also generate AMP OCRR JSON with duplicate frames removed, i.e. consecutive frames with same texts within the specified duplicate gap.
 
   </help>
 </tool>

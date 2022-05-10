@@ -4,14 +4,14 @@
 	<requirement type="package" version="3.8">python</requirement>
   </requirements>
   <command detect_errors="exit_code">
-  	'$__tool_directory__/azure_video_ocr.py' '$input_video' '$azure_video_index' '$azure_artifact_ocr' '$dedupe' '$period' '$amp_vocr' '$amp_vocr_dedupe'
+  	'$__tool_directory__/azure_video_ocr.py' '$input_video' '$azure_video_index' '$azure_artifact_ocr' '$dedupe' '$dup_gap' '$amp_vocr' '$amp_vocr_dedupe'
   </command>
   <inputs>
 	<param name="input_video" type="data" format="video" label="Input Video" help="Input video file used by Azure Video Indexer"/>
-	<param name="azure_video_index" type="data" format="json" label="Azure Video Index JSON" help="Azure Video Index JSON file from Azure Video Indexer"/>
-	<param name="azure_artifact_ocr" type="data" format="json" label="Azure Artifact OCR JSON" help="Azure Artifact OCR JSON file from Azure Video Indexer"/>
+	<param name="azure_video_index" type="data" format="json" label="Azure Video Index JSON" help="Video Index JSON file from Azure Video Indexer"/>
+	<param name="azure_artifact_ocr" type="data" format="json" label="Azure Artifact OCR JSON" help="Artifact OCR JSON file from Azure Video Indexer"/>
 	<param name="dedupe" type="boolean" value ="true" label="Dedupe" help="Whether to dedupe consecutive frames with same texts"/>
-	<param name="period" type="integer" optional="true" min="1" max ="60" value ="5" label="Period" help="Period in seconds to last as consecutive duplicate frames"/>
+	<param name="dup_gap" type="integer" optional="true" min="1" max ="60" value ="5" label="Duplicate Gap" help="Gap in seconds within which consecutive VOCR frames with same text are considered duplicates"/>
   </inputs>
   <outputs>
     <data name="amp_vocr" format="vocr" label="AMP Video OCR Original" />
@@ -23,6 +23,6 @@
 .. class:: infomark
 
   Generate AMP Video Optical Character Recognition output using results from Microsoft Azure Video Indexer. If "dedupe" option is checked, 
-  also generate AMP OCRR JSON with duplicate frames removed, i.e. consecutive frames with same texts within the specified period.
+  also generate AMP OCRR JSON with duplicate frames removed, i.e. consecutive frames with same texts within the specified duplicate gap.
   </help>
 </tool>

@@ -9,7 +9,7 @@
   	'$__tool_directory__/mgm_python.sif' '$__tool_directory__/azure_video_indexer.py' '$input_video' '$include_ocr' '$location' '$azure_video_index' '$azure_artifact_ocr'
   </command>
   <inputs>
-	<param name="input_video" type="data" format="video" label="Input Video" help="An input video file for Azure Video Indexer"/>
+	<param name="input_video" type="data" format="video" label="Input Video" help="An input video file"/>
 	<param name="include_ocr" type="boolean" label="Include Video OCR" help="A boolean value indicating whether to include video OCR artifact in the outputs"/>
     <param name="location" type="select" label="Azure Location" help="Region video indexer account is running in Azure">
       <option value="trial">Trial</option>
