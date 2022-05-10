@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import sys
 import logging
-import json
 import os
 from datetime import datetime
 import math
@@ -28,12 +27,10 @@ def main():
 	(input_video, azure_video_index, azure_artifact_ocr, dedupe, dup_gap, amp_vocr, amp_vocr_dedupe) = (args.input_video, args.azure_video_index, args.azure_artifact_ocr, args.dedupe, args.dup_gap, args.amp_vocr, args.amp_vocr_dedupe)
 	
 	# Get Azure video indexer json
-	with open(azure_video_index, "r") as azure_index_file:
-		azure_index_json = json.load(azure_index_file)
+	azure_index_json = amp.utils.read_json_file(azure_video_index)
 
 	# Get Azure artifact OCR json
-	with open(azure_artifact_ocr, "r") as azure_ocr_file:
-		azure_ocr_json = json.load(azure_ocr_file)
+	azure_ocr_json = amp.utils.read_json_file(azure_artifact_ocr)
 
 	# Create AMP Video OCR object
 	vocr = create_amp_vocr(input_video, azure_index_json, azure_ocr_json)
@@ -134,12 +131,12 @@ def createVocrFrames(results_json, fps):
 			 	# we could get the language by matching content with ocr text, but its computational expensive
 			 	# it's better just to add language in the texts list instead of frames list
 			 	object = VideoOcrObject(text, score, vertices)
-				objects.append(object)
+			 	objects.append(object)
 				
 		frame = VideoOcrFrame(start, content, objects)
 		frames.append(frame)
 	
-	return amp_frames
+	return frames
 
 
 if __name__ == "__main__":
