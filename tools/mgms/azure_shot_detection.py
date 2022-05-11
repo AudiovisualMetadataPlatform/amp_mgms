@@ -32,7 +32,7 @@ def main():
 	
 	# write AMP Video OCR JSON file
 	amp.utils.write_json_file(amp_shots_obj, amp_shots)
-	logging.info("Finished.")
+	logging.info(f"Successfully generated AMP Shot with {len(amp_shots_obj.shots)} shots.")
 
 
 # Parse the results
@@ -62,6 +62,7 @@ def create_amp_shots(input_video, azure_index_json):
 def addShots(amp_shot_list, azure_shot_list, type):
 	for shot in azure_shot_list:
 		for instance in shot['instances']:
+			logging.debug(f"start = {instance['start']}, end = {instance['end']}")
 			start = amp.utils.timestampToSecond(instance['start'])
 			end = amp.utils.timestampToSecond(instance['end'])
 			shot = ShotDetectionShot(type, start, end)
