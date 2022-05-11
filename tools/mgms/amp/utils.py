@@ -124,10 +124,19 @@ def get_aws_credentials():
 
 # Convert the given timestamp in the format of HH:MM:SS.fff to total seconds.
 def timestampToSecond(timestamp):
-    try:
-        t = datetime.strptime(timestamp, '%H:%M:%S.%f')
-    except ValueError:
-        t = datetime.strptime(timestamp, '%H:%M:%S')
+    ts = timestamp.split(".")
+    
+    # no microsecond section    
+    if len(ts) == 1: 
+        t = datetime.strptime(timestamp, "%H:%M:%S")
+    # handle microsecond
+    else: 
+        lms = len(ts[1])
+         # strptime can handle at most 6 digits on microsecond, stripe off the extra digits
+        if lms > 6:
+            timestamp = timestamp[:6-lms]
+        t = datetime.strptime(timestamp, "%H:%M:%S.%f")
+        
     delta = t - datetime(1900, 1, 1)
     second = delta.total_seconds()
     return second 

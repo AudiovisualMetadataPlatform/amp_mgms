@@ -37,10 +37,14 @@ def main():
 		logging.info(f"Starting with args={args}")
 		(input_video, vocr_interval, dedupe, dup_gap, amp_vocr, amp_vocr_dedupe) = (args.input_video, args.vocr_interval, args.dedupe, args.dup_gap, args.amp_vocr, args.amp_vocr_dedupe)
 
+		# a workaround in case integer/float args are parsed as string
+		vocr_interval = float(vocr_interval)
+		dup_gap = int(dup_gap)		
+	
 		# ffmpeg extracts the frames from the video input
 		dateTimeObj = datetime.now()
 		fps = 1 / vocr_interval;
-		command = "ffmpeg -i " + input_video + " -an -vf fps=" + fps + " '" + tmpdir + "/frame_%05d_" + str(dateTimeObj) + ".jpg'"
+		command = f"ffmpeg -i {input_video} -an -vf fps={fps} '{tmpdir}/frame_%05d_{dateTimeObj}.jpg'"
 		logging.info(f"Extracting frames for VOCR with command {command}")
 		subprocess.call(command, shell=True)
 		
@@ -90,7 +94,7 @@ def main():
 		# if dedupe, create and save the deduped AMP VOCR
 		if dedupe:
 			# the duplicate gap should be at least vocr_interval
-			gap = int(max(dup_gap, vocr_interval))
+			gap = max(dup_gap, vocr_interval)
 			vocr_dedupe = vocr.dedupe(gap)
 			amp.utils.write_json_file(vocr_dedupe, amp_vocr_dedupe)		
 			logging.info(f"Successfully deduped AMP VOCR to {len(vocr_dedupe.frames)} frames.")
