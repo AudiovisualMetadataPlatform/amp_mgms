@@ -77,7 +77,7 @@ def main():
 						(result["left"][i] + result["width"][i]) / resolution.width, 
 						(result["top"][i] + result["height"][i]) / resolution.height)
 					score = VideoOcrObjectScore("confidence", result["conf"][i])
-					object = VideoOcrObject(text, None, score, vertices)
+					object = VideoOcrObject(text, "", score, vertices)
 					objects.append(object)
 		
 			# add frame if it had text
