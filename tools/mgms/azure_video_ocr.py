@@ -133,7 +133,7 @@ def createVocrFrames(results_json, fps):
 			 	# language is not provided for words, but available in the ocr insight texts
 			 	# we could get the language by matching content with ocr text, but its computational expensive
 			 	# it's better just to add language in the texts list instead of frames list
-			 	object = VideoOcrObject(text, None, score, vertices)
+			 	object = VideoOcrObject(text, "", score, vertices)
 			 	objects.append(object)
 				
 		frame = VideoOcrFrame(start, content, objects)
