@@ -140,4 +140,4 @@ dmypy.json
 # Eclipse/PyDev
 .project
 .pydevproject
-tools/applause_detection/applause-detection
+
