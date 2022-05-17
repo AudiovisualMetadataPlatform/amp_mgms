@@ -1,4 +1,4 @@
-<tool id="aws_comprehend_ner" name="AWS Comprehend Entity Extraction" version="1.0.0">
+<tool id="aws_comprehend_ner" name="AWS Comprehend" version="1.0.0">
   <description>Named entity recognition with AWS Comprehend</description>
   <requirements>
 	<requirement type="package" version="3.8">python</requirement>

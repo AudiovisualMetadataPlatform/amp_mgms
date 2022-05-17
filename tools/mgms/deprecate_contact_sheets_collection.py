@@ -35,26 +35,26 @@ def main():
 	
 	c = ContactSheet(input_file, amp_contact_sheets, number_of_columns, photow, margin, padding)
 
-	video_length_seconds = c.get_length(input_file)
+	video_duration_seconds = c.get_duration(input_file)
 	logging.debug("Collection: " + collection_id)
-	logging.debug("Duration: " + str(video_length_seconds))
+	logging.debug("Duration: " + str(video_duration_seconds))
 	if int(collection_id) in (3, 4):
-		if video_length_seconds < 2000:
+		if video_duration_seconds < 2000:
 			logging.info("Creating a frame per 20 seconds")
-			c.create_time(20)
+			c.create_interval(20)
 		else:
-			logging.info("Creating a frame every 1%: " + str(video_length_seconds * .01) + " seconds")
-			c.create_time(int(video_length_seconds * .01))
+			logging.info("Creating a frame every 1%: " + str(video_duration_seconds * .01) + " seconds")
+			c.create_interval(int(video_duration_seconds * .01))
 	else:
-		if video_length_seconds < 300:
+		if video_duration_seconds < 300:
 			logging.info("Creating a frame per 10 seconds")
-			c.create_time(10)
-		elif video_length_seconds < 1800:
+			c.create_interval(10)
+		elif video_duration_seconds < 1800:
 			logging.info("Creating a frame per 60 seconds")
-			c.create_time(60)
+			c.create_interval(60)
 		else:
 			logging.info("Creating a frame per 120 seconds")
-			c.create_time(120)
+			c.create_interval(120)
 	logging.info("Finished.")
 
 

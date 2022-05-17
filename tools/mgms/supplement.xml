@@ -2,7 +2,7 @@
   <description>Specify a workflow input as a supplement file by its name plus type or file path </description>
   <requirements>
   </requirements>
-  <command>
+  <command detect_errors="exit_code">
 	<![CDATA[
 		rm -f '$supplement_file';
 		ln -s '$supplement_path' '$supplement_file'
