@@ -3,6 +3,7 @@ import sys
 import logging
 import os
 from datetime import datetime
+from distutils.util import strtobool
 import math
 import argparse
 import logging
@@ -18,7 +19,7 @@ def main():
 	parser.add_argument("input_video", help="Video input file")
 	parser.add_argument("azure_video_index", help="Azure Video Index input file")
 	parser.add_argument("azure_artifact_ocr", help="Azure Artifact OCRinput file")
-	parser.add_argument("dedupe", type=bool, default=True, help="Whether to dedupe consecutive frames with same texts")
+	parser.add_argument("dedupe", type=strtobool, default=True, help="Whether to dedupe consecutive frames with same texts")
 	parser.add_argument("dup_gap", type=int, default=5, help="Gap in seconds within which adjacent VOCR frames with same text are considered duplicates")	
 	parser.add_argument("amp_vocr", help="Original AMP Video OCR output file")
 	parser.add_argument("amp_vocr_dedupe", help="Deduped AMP Video OCR output file")

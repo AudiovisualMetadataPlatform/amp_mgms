@@ -8,25 +8,26 @@ import time
 import json
 import uuid
 import boto3
+from distutils.util import strtobool
+import logging
 
 import amp.utils
-import logging
 import amp.logger
 
 def main():
     apiUrl = "https://api.videoindexer.ai"
 
-    #(root_dir, input_file, include_ocr, location, index_file, ocr_file) = sys.argv[1:7]
+    #(root_dir, input_video, include_ocr, location, index_file, ocr_file) = sys.argv[1:7]
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
-    parser.add_argument("input_file", help="Input file")
-    parser.add_argument("include_ocr", help="Include OCR")
+    parser.add_argument("input_video", help="Input video file")
+    parser.add_argument("include_ocr", type=strtobool, default=True, help="Include OCR")
     parser.add_argument("location", help="Location")
     parser.add_argument("index_file", help="Index file")
     parser.add_argument("ocr_file", help="OCR File")
     args = parser.parse_args()
     logging.info(f"Starting with args {args}")
-    (input_file, include_ocr, location, index_file, ocr_file) = (args.input_file, args.include_ocr, args.location, args.index_file, args.ocr_file)
+    (input_video, include_ocr, location, index_file, ocr_file) = (args.input_video, args.include_ocr, args.location, args.index_file, args.ocr_file)
 
 
     try:
@@ -44,9 +45,9 @@ def main():
     # Turn on HTTP debugging here
     http_client.HTTPConnection.debuglevel = 1
 
-    s3_path = upload_to_s3(input_file, s3_bucket)
+    s3_path = upload_to_s3(input_video, s3_bucket)
     if not s3_path:
-        logging.error(f"Failed to upload {input_file} to AWS bucket {s3_bucket}")
+        logging.error(f"Failed to upload {input_video} to AWS bucket {s3_bucket}")
         exit(1)
     logging.debug("S3 path " + s3_path)
     
@@ -56,7 +57,7 @@ def main():
     video_url = "https://" + s3_bucket + ".s3.us-east-2.amazonaws.com/" + s3_path
 
     # Upload the video and get the ID to reference for indexing status and results
-    videoId = upload_video(apiUrl, location, accountId, auth_token, input_file, video_url)
+    videoId = upload_video(apiUrl, location, accountId, auth_token, input_video, video_url)
 
     # Get the auth token associated with this video    
     # video_auth_token = get_video_auth_token(apiUrl, location, accountId, apiKey, videoId)
@@ -84,7 +85,7 @@ def main():
     amp.utils.write_json_file(index_json, index_file)
 
     # Get the advanced OCR json via the artifact URL if requested
-    if include_ocr.lower() == 'true':
+    if include_ocr:
         artifacts_url = get_artifacts_url(apiUrl, location, accountId, videoId, auth_token, 'ocr')
         download_artifacts(artifacts_url, ocr_file)
     # TODO otherwise do we need to generate a dummy file so the output is not empty and cause error?
@@ -153,7 +154,7 @@ def get_video_auth_token(apiUrl, location, accountId, apiKey, videoId):
     return request_auth_token(token_url, apiKey)
 
 # Upload the video using multipart form upload
-def upload_video(apiUrl, location, accountId, auth_token, input_file, video_url):
+def upload_video(apiUrl, location, accountId, auth_token, input_video, video_url):
 
     # Create a unique file name 
     millis = int(round(time.time() * 1000))
@@ -161,7 +162,7 @@ def upload_video(apiUrl, location, accountId, auth_token, input_file, video_url)
     upload_url = apiUrl + "/" + location +  "/Accounts/" + accountId + "/Videos"
     
     data = {}
-    with open(input_file, 'rb') as f:
+    with open(input_video, 'rb') as f:
         params = {'accessToken':auth_token,
                 'name':'amp_video_' + str(millis),
                 'description':'AMP File Upload',
@@ -181,14 +182,14 @@ def upload_video(apiUrl, location, accountId, auth_token, input_file, video_url)
                 logging.error("no id in data")
                 exit(1)
 
-def upload_to_s3(input_file, bucket):
+def upload_to_s3(input_video, bucket):
     s3_client = boto3.client('s3', **amp.utils.get_aws_credentials())
     jobname = str(uuid.uuid1())
     try:
-        response = s3_client.upload_file(input_file, bucket, jobname, ExtraArgs={'ACL': 'public-read'})
-        logging.info("Uploaded file " + input_file + " to s3 bucket " + bucket)
+        response = s3_client.upload_file(input_video, bucket, jobname, ExtraArgs={'ACL': 'public-read'})
+        logging.info("Uploaded file " + input_video + " to s3 bucket " + bucket)
     except Exception as e:
-        logging.error("Failed to upload file " + input_file + " to s3 bucket " + bucket, e)
+        logging.error("Failed to upload file " + input_video + " to s3 bucket " + bucket, e)
         traceback.print_exc()
         return None
     return jobname

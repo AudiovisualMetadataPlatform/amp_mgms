@@ -12,7 +12,7 @@ import subprocess
 import sys
 import tempfile
 import time
-
+from distutils.util import strtobool
 import pytesseract
 from pytesseract import Output
 from PIL import Image
@@ -29,7 +29,7 @@ def main():
 		parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 		parser.add_argument("input_video", help="Video input file")
 		parser.add_argument("vocr_interval", type=float, default=1.0, help="Interval in seconds by which video frames are extracted for VOCR")
-		parser.add_argument("dedupe", type=bool, default=True, help="Whether to dedupe consecutive frames with same texts")
+		parser.add_argument("dedupe", type=strtobool, default=True, help="Whether to dedupe consecutive frames with same texts")
 		parser.add_argument("dup_gap", type=int, default=5, help="Gap in seconds within which adjacent VOCR frames with same text are considered duplicates")
 		parser.add_argument("amp_vocr", help="Original AMP Video OCR output file")
 		parser.add_argument("amp_vocr_dedupe", help="Deduped AMP Video OCR output file")
