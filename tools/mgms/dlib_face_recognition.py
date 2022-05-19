@@ -28,7 +28,7 @@ def main():
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("input_video", help="Input Video")
     parser.add_argument("training_photos", help="Training photos")
-    parser.add_argument("reuse_trained", type=strtobool, default=False, help="Reuse Training data")
+    parser.add_argument("reuse_trained", type=strtobool, default=True, help="Reuse Training data")
     parser.add_argument("tolerance", type=float, default=FR_DEFAULT_TOLERANCE, help="Recognition tolerance")
     parser.add_argument("amp_faces", help="Faces output file")
     args = parser.parse_args()
