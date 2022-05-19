@@ -4,6 +4,10 @@
 # ini files
 *.ini
 
+# working sub-directories next to MGM scripts
+facial_io
+hmgm_io
+
 # temporary directory
 temp/
 
