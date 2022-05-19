@@ -17,17 +17,17 @@ import amp.utils
 def main():
     apiUrl = "https://api.videoindexer.ai"
 
-    #(root_dir, input_video, include_ocr, location, index_file, ocr_file) = sys.argv[1:7]
+    #(root_dir, input_video, include_ocr, location, azure_video_index, azure_artifact_ocr) = sys.argv[1:7]
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("input_video", help="Input video file")
     parser.add_argument("include_ocr", type=strtobool, default=True, help="Include OCR")
     parser.add_argument("location", help="Azure account region")
-    parser.add_argument("index_file", help="Azure Video Index JSON")
-    parser.add_argument("ocr_file", help="Azure Artifact OCR JSON")
+    parser.add_argument("azure_video_index", help="Azure Video Index JSON")
+    parser.add_argument("azure_artifact_ocr", help="Azure Artifact OCR JSON")
     args = parser.parse_args()
     logging.info(f"Starting with args {args}")
-    (input_video, include_ocr, location, index_file, ocr_file) = (args.input_video, args.include_ocr, args.location, args.index_file, args.ocr_file)
+    (input_video, include_ocr, location, azure_video_index, azure_artifact_ocr) = (args.input_video, args.include_ocr, args.location, args.azure_video_index, args.azure_artifact_ocr)
 
 
     try:
@@ -82,12 +82,12 @@ def main():
     # Get the simple video index json
     auth_token = get_auth_token(apiUrl, location, accountId, apiKey)
     index_json = get_video_index_json(apiUrl, location, accountId, videoId, auth_token, apiKey)
-    amp.utils.write_json_file(index_json, index_file)
+    amp.utils.write_json_file(index_json, azure_video_index)
 
     # Get the advanced OCR json via the artifact URL if requested
     if include_ocr:
         artifacts_url = get_artifacts_url(apiUrl, location, accountId, videoId, auth_token, 'ocr')
-        download_artifacts(artifacts_url, ocr_file)
+        download_artifacts(artifacts_url, azure_artifact_ocr)
     # TODO otherwise do we need to generate a dummy file so the output is not empty and cause error?
     
     delete_from_s3(s3_path, s3_bucket)
