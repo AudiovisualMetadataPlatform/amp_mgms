@@ -26,22 +26,21 @@ def main():
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("input_video", help="Input Video")
     parser.add_argument("training_photos", help="Training photos")
-    parser.add_argument("reused_trained", help="Reuse Training data")
-    parser.add_argument("--tolerance", type=float, default=FR_DEFAULT_TOLERANCE, help="Recognition tolerance")
+    parser.add_argument("reuse_trained", type=bool, default=True, help="Reuse Training data")
+    parser.add_argument("tolerance", type=float, default=FR_DEFAULT_TOLERANCE, help="Recognition tolerance")
     parser.add_argument("amp_faces", help="Faces output file")
     args = parser.parse_args()
     logging.info(f"Starting with args {args}")
     (input_video, training_photos, reuse_trained, tolerance, amp_faces) = (args.input_video, args.training_photos, args.reuse_trained, args.tolerance, args.amp_faces)
 
     # using output instead of input filename as the latter is unique while the former could be used by multiple jobs 
-
     
     # initialize training results
     known_names = []
     known_faces = []
     
     # if reuse_trained is set to true, retrieve previous training results
-    if reuse_trained.lower() == "true":
+    if reuse_trained:
         known_names, known_faces = train.retrieve_trained_results(training_photos)
               
     # if no valid previous trained results is available, do the training
