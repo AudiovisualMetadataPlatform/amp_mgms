@@ -11,8 +11,8 @@ import boto3
 from distutils.util import strtobool
 import logging
 
-import amp.utils
 import amp.logger
+import amp.utils
 
 def main():
     apiUrl = "https://api.videoindexer.ai"
