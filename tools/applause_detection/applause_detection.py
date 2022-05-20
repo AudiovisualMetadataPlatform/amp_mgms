@@ -40,7 +40,7 @@ def main():
         sif = sys.path[0] + "/applause_detection.sif"
 
         # run singularity
-        subprocess.run([sif, tmpdir, min_segment_duration], check=True)
+        subprocess.run([sif, tmpdir, str(min_segment_duration)], check=True)
 
         # copy the corresponding temporary output file to the output AMP segments JSON
         logging.info("Temporary directory " + tmpdir + " after output file generated: " + str(os.listdir(tmpdir)))   
