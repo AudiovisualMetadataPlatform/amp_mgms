@@ -18,7 +18,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("input_audio")
-    parser.add_argument("min_segment_duration")
+    parser.add_argument("min_segment_duration", type=int, default=1000)
     parser.add_argument("amp_segments")
     args = parser.parse_args()
     logging.info(f"Starting with args={args}")
@@ -40,7 +40,7 @@ def main():
         sif = sys.path[0] + "/applause_detection.sif"
 
         # run singularity
-        subprocess.run([sif, tmpdir, min_segment_duration], check=True)
+        subprocess.run([sif, tmpdir, str(min_segment_duration)], check=True)
 
         # copy the corresponding temporary output file to the output AMP segments JSON
         logging.info("Temporary directory " + tmpdir + " after output file generated: " + str(os.listdir(tmpdir)))   
