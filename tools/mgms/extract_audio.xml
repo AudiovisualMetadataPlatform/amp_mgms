@@ -5,12 +5,12 @@
     <requirement type="package" version="3.4">ffmpeg</requirement>
   </requirements>
   <command detect_errors="exit_code">
-  	$__tool_directory__/mgm_python.sif $__tool_directory__/extract_audio.py '$input_av' '$rate' '$channels' '$sample_size' '$audio_extracted'    
+  	$__tool_directory__/mgm_python.sif $__tool_directory__/extract_audio.py '$input_av' '$rate' '$channels' '$sample_format' '$audio_extracted'    
   </command>
   <inputs>
-    <param name="input_av" type="data" format="av" label="Input Audio/Video" help="An audio/video file"/>
-    <param name="rate" type="select" label="Sample Rate">
-      <option value="8000">8KHz</option>
+    <param name="input_av" type="data" format="av" label="Input Audio/Video" help="Input audio/video file"/>
+    <param name="rate" type="select" label="Sample Rate of the output">
+      <option value="8000" selected="true">8KHz</option>
       <option value="16000">16KHz</option>
       <option value="22050">22.05KHz</option>
       <option value="44100">44.1KHz (CD Quality)</option>
@@ -18,11 +18,11 @@
       <option value="96000">96KHz (Archival Quality)</option>
     </param>
     <param name="channels" type="select" label="Channels" help="Number of channels in the output">   
-	  <option value="1">Mono</option>
+	  <option value="1" selected="true">Mono</option>
 	  <option value="2">Stereo</option>
     </param>
-    <param name="sample_size" type="select" label="Sample Size" help="Sample size of output in bits per sample">
-      <option value="pcm_s16le">16 Bits per Sample</option>
+    <param name="sample_format" type="select" label="Sample Format" help="Sample size fomrat of the output">
+      <option value="pcm_s16le" selected="true">16 Bits per Sample</option>
       <option value="pcm_s24le">24 Bits per Sample</option>
     </param>
   </inputs>
