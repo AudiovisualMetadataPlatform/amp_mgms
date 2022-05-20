@@ -22,22 +22,22 @@ import logging
 import amp.logger
 
 def main():
-    #(input_video, sensitivity, amp_shots, frame_stats) = sys.argv[1:5]
+    #(input_video, threshold, amp_shots, frame_stats) = sys.argv[1:5]
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("input_video", help="Input video file")
-    parser.add_argument("sensitivity", type=int, default=30, help="Detection sensitivity")
+    parser.add_argument("threshold", type=int, default=30, help="Detection sensitivity threshold")
     parser.add_argument("amp_shots", help="AMP Shots Generated")
     parser.add_argument("frame_stats", help="Frame Statistics")
     args = parser.parse_args()
     logging.info(f"Starting with args {args}")
-    (input_video, sensitivity, amp_shots, frame_stats) = (args.input_video, args.sensitivity, args.amp_shots, args.frame_stats)
+    (input_video, threshold, amp_shots, frame_stats) = (args.input_video, args.threshold, args.amp_shots, args.frame_stats)
 
     # Get a list of scenes as tuples (start, end) 
-#     if sensitivity is None or isinstance(sensitivity, int) == False:
-#         sensitivity = 30
-#         logging.info("Setting sensitivity to default because it wasn't a valid integer")
-    shots = find_shots(input_video, frame_stats, sensitivity)
+#     if threshold is None or isinstance(threshold, int) == False:
+#         threshold = 30
+#         logging.info("Setting threshold to default because it wasn't a valid integer")
+    shots = find_shots(input_video, frame_stats, threshold)
 
     # Print for debugging purposes
     for shot in shots:
@@ -56,15 +56,15 @@ def get_duration(shots):
     return get_seconds_from_timecode(tc)
 
 # Find a list of shots using pyscenedetect api
-def find_shots(video_path, stats_file, sensitivity):
+def find_shots(video_path, stats_file, threshold):
     video_manager = VideoManager([video_path])
     stats_manager = StatsManager()
     # Construct our SceneManager and pass it our StatsManager.
     scene_manager = SceneManager(stats_manager)
 
     # Add ContentDetector algorithm (each detector's constructor
-    # takes detector options, e.g. sensitivity).
-    scene_manager.add_detector(ContentDetector(sensitivity=sensitivity))
+    # takes detector options, e.g. threshold).
+    scene_manager.add_detector(ContentDetector(threshold=threshold))
     base_timecode = video_manager.get_base_timecode()
 
     scene_list = []
@@ -96,7 +96,7 @@ def find_shots(video_path, stats_file, sensitivity):
             with open(stats_file, 'w') as stats_file:
                 stats_manager.save_to_csv(stats_file, base_timecode)
     except Exception as err:
-        logging.error(f"Failed to find shots for: video: {video_path}, stats: {stats_file}, sensitivity: {sensitivity}", err)
+        logging.error(f"Failed to find shots for: video: {video_path}, stats: {stats_file}, threshold: {threshold}", err)
         traceback.print_exc()        
     finally:
         video_manager.release()
