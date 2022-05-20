@@ -18,7 +18,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("input_audio")
-    parser.add_argument("min_segment_duration")
+    parser.add_argument("min_segment_duration", type=int, default=1000)
     parser.add_argument("amp_segments")
     args = parser.parse_args()
     logging.info(f"Starting with args={args}")
