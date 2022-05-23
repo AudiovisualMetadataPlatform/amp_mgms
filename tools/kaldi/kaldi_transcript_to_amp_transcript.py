@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 
-import json
 import sys
 import os
 import argparse
 
 import amp.utils
-
 from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult
 
 
