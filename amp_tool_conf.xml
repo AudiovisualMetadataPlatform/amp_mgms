@@ -1,6 +1,12 @@
 <?xml version='1.0' encoding='utf-8'?>
 <toolbox monitor="true">
   <section id="getext" name="Get Data">
+  	<!-- 
+  		Upload Data tool is provided as a default feature above the Tool Panel; 
+  		while the Upload File link under Get Data appears to be not responding;
+  		however, we still need to include the upload tool below, as it's actually being called by the Upload Data link.
+  		This is a new change after Galaxy 19, and is effective in Galaxy 21.
+  	-->
     <tool file="data_source/upload.xml" />
     <!--  AMP MGMs START -->
     <tool file="amp_mgms/supplement.xml" />
@@ -13,7 +19,7 @@
   
 <!--  AMP MGMs START -->
 
-  <section id="audio_processing" name="Audio Extraction">
+  <section id="audio_extraction" name="Audio Extraction">
     <tool file="amp_mgms/extract_audio.xml"/>
     <tool file="amp_mgms/remove_trailing_silence.xml"/>
   </section>
@@ -46,8 +52,10 @@
 
   <section id="video_processing" name="Video Indexing">
     <tool file="amp_mgms/azure_video_indexer.xml"/>
-    <tool file="amp_mgms/contact_sheets.xml"/>
-    <tool file="amp_mgms/contact_sheets_collection.xml"/>
+    <tool file="amp_mgms/contact_sheet_frame.xml"/>
+    <tool file="amp_mgms/contact_sheet_face.xml"/>
+    <tool file="amp_mgms/contact_sheet_shot.xml"/>
+    <tool file="amp_mgms/contact_sheet_vocr.xml"/>
   </section>
 
   <section id="shot_detection" name="Shot Detection">
@@ -77,12 +85,15 @@
     <!--<tool file="amp_mgms/hmgm_segmentation.xml"/>-->
   </section>
   
-  <!--
-  <section id="obsolete_mgms" name="Obsolete MGMs">
+  <section id="deprecated_mgms" name="Deprecated MGMs">
+  	<tool file="amp_mgms/deprecate_contact_sheets.xml"/>
+    <tool file="amp_mgms/deprecate_contact_sheets_collection.xml"/>
+  	<!-- 
     <tool file="amp_mgms/remove_silence_music.xml"/>
     <tool file="amp_mgms/vtt_generator.xml"/>
+     -->
   </section>
-  -->
+
 <!-- AMP MGMs END -->
 
 </toolbox>
