@@ -18,8 +18,7 @@ def convert(media_file, kaldi_file, kaldi_transcript_file, output_json_file):
 	results = SpeechToTextResult()
 
 	# Open the kaldi json
-	with open(kaldi_file) as json_file:
-		data = json.load(json_file)
+	data = amp.utils.read_json_file(kaldi_file)
 
 	# Get the kaldi transcript
 	transcript = open(kaldi_transcript_file, "r")	
@@ -42,10 +41,10 @@ def convert(media_file, kaldi_file, kaldi_transcript_file, output_json_file):
 	media = SpeechToTextMedia(duration, media_file)
 
 	# Create the final object
-	outputFile = SpeechToText(media, results)
+	output = SpeechToText(media, results)
 
 	#write the output
-	amp.utils.write_json_file(outputFile, output_json_file)
+	amp.utils.write_json_file(output, output_json_file)
 
 def main():
 	#(media_file, kaldi_file, kaldi_transcript_file, output_json_file) = sys.argv[1:5]

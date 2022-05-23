@@ -4,11 +4,12 @@ import argparse
 from datetime import datetime
 import json
 from pathlib import Path
-import logging
 import sys
+import logging
 
+import amp.logger
+import amp.utils
 import hpc_submit
-import mgm_utils
 import kaldi_transcript_to_amp_transcript
 
 def main():
@@ -17,7 +18,7 @@ def main():
     """
     parser = argparse.ArgumentParser(description=main.__doc__)
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
-    parser.add_argument("root_dir", help="Galaxy root directory")
+#     parser.add_argument("root_dir", help="Galaxy root directory")
     parser.add_argument("input", help="input audio file")
     parser.add_argument("kaldi_transcript_json", help="Kaldi JSON output")
     parser.add_argument("kaldi_transcript_txt", help="Kalid TXT output")
@@ -26,14 +27,15 @@ def main():
     args = parser.parse_args()
 
     # get hpc dropbox dir path
-    dropbox = mgm_utils.get_work_dir(args.root_dir, "hpc_dropbox")
+    dropbox = amp.utils.get_work_dir("hpc_dropbox")
                                     
     # set up logging
-    logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO,
-                        stream=sys.stderr,
-                        format="%(asctime)s %(levelname)s %(message)s")
-    print("Preparing kaldi HPC job")
+#     logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO,
+#                         stream=sys.stderr,
+#                         format="%(asctime)s %(levelname)s %(message)s")
+    
     # job parameters    
+    logging.debug("Preparing kaldi HPC job")    
     job = {
         'script': 'kaldi',
         'input_map': {
@@ -45,18 +47,19 @@ def main():
             'amp_json': args.amp_transcript_json
         }
     }
-    print("Submitting HPC job")
+
+    logging.info("Submitting HPC job")
     job = hpc_submit.submit_and_wait(dropbox, job)
 
-    print("HPC job completed with status: " + job['job']['status'])
+    logging.info("HPC job completed with status: " + job['job']['status'])
     if job['job']['status'] != 'ok':
         exit(1)
         
-    print("Convering output to AMP Transcript JSON")
+    logging.info("Convering output to AMP Transcript JSON")
     kaldi_transcript_to_amp_transcript.convert(args.input, args.kaldi_transcript_json, args.kaldi_transcript_txt, args.amp_transcript_json)
     
-    print("Job output:")
-    print(job)
+    logging.info("Job output:")
+    logging.info(job)
 
     # Write the hpc timestamps output
     if "start" in job['job'].keys() and "end" in job['job'].keys():
@@ -65,8 +68,7 @@ def main():
             "end_time": job['job']["end"],
             "elapsed_time": (datetime.strptime(job['job']["end"], '%Y-%m-%d %H:%M:%S.%f') - datetime.strptime(job['job']["start"], '%Y-%m-%d %H:%M:%S.%f')).total_seconds() 
         }
-        with open(args.hpc_timestamps, 'w') as outfile:
-            json.dump(ts_output, outfile, default=lambda x: x.__dict__)
+        amp.utils.write_json_file(ts_output, args.hpc_timestamps)
 
     exit(0)
 
