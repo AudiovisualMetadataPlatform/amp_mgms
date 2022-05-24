@@ -15,7 +15,7 @@ import boto3
 from botocore.exceptions import ClientError
 from datetime import datetime
 import platform
-
+import time
 
 def main():
     parser = argparse.ArgumentParser()
@@ -26,7 +26,8 @@ def main():
     parser.add_argument("--audio_format", default="wav", help="Format for the audio input")
     parser.add_argument("--bucket", default='', help="S3 Bucket to use (defaults to value in config)")
     parser.add_argument("--directory", default='', help="S3 Directory to use in bucket") 
-    parser.add_argument("--lwlw", default=False, action="store_true", help="Use LWLW protocol")   
+    parser.add_argument("--lwlw", default=False, action="store_true", help="Use LWLW protocol")
+    parser.add_argument("--force", default=False, action="store_true", help="delete any existing jobs with this name and force a new job")
     args = parser.parse_args()
     logging.info(f"Starting args={args}")
 
@@ -58,6 +59,9 @@ def main():
     else:
         object_name = job_name
     
+    if args.force:
+        logging.info(f"Force cleanup of existing job")
+        cleanup_job(job_name, args.bucket, object_name)
 
     if args.lwlw:
         # if the job exists, check it.  Otherwise, submit a new job.
@@ -125,10 +129,10 @@ def check_job(job_name, bucket, object_name, output_file):
     logging.debug(f"Transcoding job status: {job_status}")
     if job_status == 'COMPLETED':
         transcription_uri = job['TranscriptionJob']['Transcript']['TranscriptFileUri']
-        logging.info(f"Result URI: {transcription_uri}")
-        s3_client.download_file(Bucket=bucket, Key=object_name + ".json", Filename=output_file)
+        logging.info(f"Result URI: {transcription_uri}.  Result bucket: {bucket}, Key: {job_name + '.json'}")
+        s3_client.download_file(Bucket=bucket, Key=job_name + ".json", Filename=output_file)
         cleanup_job(job_name, bucket, object_name)
-        logging.info("Job {job_name} completed in success!")
+        logging.info(f"Job {job_name} completed in success!")
         return 0
     elif job_status == 'FAILED':
         logging.error(f"Transcription failed: {job['TranscriptionJob']['FailureReason']}")
