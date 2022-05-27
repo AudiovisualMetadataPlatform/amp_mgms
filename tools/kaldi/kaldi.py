@@ -8,6 +8,10 @@ import tempfile
 import argparse
 import logging
 from pathlib import Path
+import math
+import atexit
+import os
+import time
 
 import amp.utils
 import amp.logger
@@ -27,11 +31,12 @@ def main():
     parser.add_argument("json_file")
     parser.add_argument("text_file")
     parser.add_argument("--gpu", default=False, action="store_true", help="Use GPU kaldi")
+    parser.add_argument("--overlay_dir", default=None, nargs=1, help="Directory for the overlay file (default to cwd)")
     args = parser.parse_args()
     logging.info(f"Starting with args {args}")
 
     # copy the input file to a temporary directory
-    with tempfile.TemporaryDirectory() as tmpdir:
+    with tempfile.TemporaryDirectory() as tmpdir:        
         shutil.copy(args.input_file, f"{tmpdir}/xxx.wav")
         tmp = Path(tmpdir)
         # find the right Kaldi SIF and set up things to make it work...
@@ -40,18 +45,62 @@ def main():
             logging.error(f"Kaldi SIF file {sif!s} doesn't exist!")
             exit(1)
 
+        # By default, singularity will map $HOME, /var/tmp and /tmp to somewhere outside
+        # the container.  That's good.  
+        # The authors of the kaldi docker image assumed that they could write anywhere
+        # they pleased on the container image.  That's bad.
+        # With the --writable-tmpfs, singularity will produce a 16M overlay filesystem that
+        # handles writes everywhere else.  That's good.
+        # BUT kaldi writes big files all over the place...and they will routinely exceed
+        # 16M.  That's bad.  
+        # The bottom line is that we have to create an overlay image that's big enough
+        # for what we're trying to do.  But how big?  No matter what size we use, it will
+        # never be enough for some cases.  For now, let's look at the size of the input file
+        # (which should be a high-bitrate wav) and use some multiple.  Empirically, it looks
+        # like 10x should do the trick. 
+        overlay_size = math.ceil((10 * Path(args.input_file).stat().st_size) / 1048576)
+        if overlay_size < 64:
+            overlay_size = 64
+        if args.overlay_dir is None:
+            args.overlay_dir = str(Path('.').absolute())
+        else:
+            args.overlay_dir = str(Path(args.overlay_dir[0]).absolute())
+        overlay_file = f"{args.overlay_dir}/kaldi-overlay-{os.getpid()}-{time.time()}.img"
+        
+        if not args.debug:
+            atexit.register(lambda: Path(overlay_file).unlink(missing_ok=True))
+        try:
+            subprocess.run(["singularity", "overlay", "create", "--size", str(overlay_size), overlay_file], check=True)
+            logging.debug(f"Created overlay file {overlay_file} {overlay_size}MB")
+        except subprocess.CalledProcessError as e:
+            logging.error(f"Cannot create the overlay image of {overlay_size} bytes as {overlay_file}: {e}")            
+            exit(1)
+
         # build the singularity command line
-        cmd = ['singularity', 'run', '-B', f"{tmpdir}:/audio_in", '--writable-tmpfs', str(sif) ]
+        #cmd = ['singularity', 'run', '-B', f"{tmpdir}:/audio_in", '--writable-tmpfs', str(sif) ]
+        cmd = ['singularity', 'run', '-B', f"{tmpdir}:/audio_in", '--overlay', overlay_file, str(sif) ]
         logging.debug(f"Singularity Command: {cmd}")
-        p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding='utf-8')
+        p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding='utf-8')        
         if p.returncode != 0:
             logging.error("KALDI failed")
             logging.error(p.stdout)
             exit(1)
-        shutil.copy(f"{tmpdir}/transcripts/txt/xxx_16kHz.txt", args.text_file)
-        shutil.copy(f"{tmpdir}/transcripts/json/xxx_16kHz.json", args.json_file)
+        copy_failed = False
+        for src, dst in ((f"{tmpdir}/transcripts/txt/xxx_16kHz.txt", args.text_file),
+                         (f"{tmpdir}/transcripts/json/xxx_16kHz.json", args.json_file)):
+            try:                
+                shutil.copy(src, dst)
+            except Exception as e:
+                logging.error(f'Cannot copy {src} to {dst}')
+                logging.exception(e)        
+                copy_failed = True
+        if copy_failed:
+            logging.error("Kaldi didn't actually produce the files on a 'successful' run")
+            logging.error(f"Kaldi's output:\n{p.stdout}")
+
+    logging.debug(f"Make sure to manually remove the overlay file: {overlay_file}")
     logging.info("Finished")
-    exit(0)
+    exit(0 if not copy_failed else 1)
 
 if __name__ == "__main__":
     main()
