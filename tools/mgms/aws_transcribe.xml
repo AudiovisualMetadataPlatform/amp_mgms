@@ -7,7 +7,8 @@
   </requirements>
   <command detect_errors="exit_code"><![CDATA[
 	'$__tool_directory__/mgm_python.sif' '$__tool_directory__/aws_transcribe.py' '$input_audio' '$aws_transcript' --audio_format '$audio_format' --bucket '$s3_bucket' --directory '$s3_directory' --lwlw &&
-	'$__tool_directory__/aws_transcript_to_amp_transcript.py' '$input_audio' '$aws_transcript' '$amp_transcript' '$amp_diarization'
+	'$__tool_directory__/aws_transcript_to_amp_transcript.py' '$input_audio' '$aws_transcript' '$amp_transcript' '$amp_diarization' 
+  #AMP_REQ(async=true)
   ]]></command>
   <inputs>
   	<!-- TODO 
