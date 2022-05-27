@@ -17,7 +17,7 @@ def initialize_amp_entities(amp_transcript, amp_entities, ignore_types):
     ignore_types_list = extract_ignore_types(ignore_types)
     logging.info(f"Ignore types: {ignore_types_list}")    
 
-    # parse input AMP Transcript JSON file into amp_entities object
+    # parse input AMP Transcript JSON file into amp_transcript object
     try:
         amp_transcript_obj = SpeechToText().from_json(amp.utils.read_json_file(amp_transcript))
     except Exception:

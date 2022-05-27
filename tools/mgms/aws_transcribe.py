@@ -24,28 +24,26 @@ def main():
     parser.add_argument("input_file")
     parser.add_argument("output_file")
     parser.add_argument("--audio_format", default="wav", help="Format for the audio input")
-    parser.add_argument("--bucket", default='', help="S3 Bucket to use (defaults to value in config)")
-    parser.add_argument("--directory", default='', help="S3 Directory to use in bucket") 
-    parser.add_argument("--lwlw", default=False, action="store_true", help="Use LWLW protocol")
+#     parser.add_argument("--bucket", default='', help="S3 Bucket to use (defaults to value in config)")
+#     parser.add_argument("--directory", default='', help="S3 Directory to use in bucket") 
+    parser.add_argument("--lwlw", default=True, action="store_true", help="Use LWLW protocol")
     parser.add_argument("--force", default=False, action="store_true", help="delete any existing jobs with this name and force a new job")
+    
     args = parser.parse_args()
     logging.info(f"Starting args={args}")
 
     config = amp.utils.get_config()
-    if args.bucket is None or args.bucket == '':        
-        args.bucket = config.get('aws_transcribe', 'default_bucket', fallback=None)
-        if args.bucket is None:
-            logging.error("--bucket not specified and aws_transcribe/default_bucket not set in config")
-            exit(1)
-    
-    if args.directory is None or args.directory == '':
-        args.directory = config.get('aws_transcribe', 'default_directory', fallback='')
-        if args.directory is None:
-            logging.error('--directory not specified and aws_transcribe/default_directory not set in config')
-            exit(1)
-        if args.directory.startswith("/") or args.directory.endswith("/"):
-            logging.error("Directory must not begin or end with '/'")
-            exit(1)
+#     if args.bucket is None or args.bucket == '':        
+    s3_bucket = config.get('aws_transcribe', 's3_bucket', fallback=None)
+    if s3_bucket is None:
+        logging.error("aws_transcribe/s3_bucket is not specified in the config file")
+        exit(1)    
+#     if args.directory is None or args.directory == '':
+    s3_directory = config.get('aws_transcribe', 's3_directory', fallback='')
+    if s3_directory is None:
+        logging.error('aws_transcribe/s3_directory is not specified in the config file')
+        exit(1)
+    s3_directory.strip('/')
 
     # create the s3 path
     args.input_file = Path(args.input_file)
@@ -54,27 +52,27 @@ def main():
     job_name = "AWST-" + platform.node().split('.')[0] + args.output_file.replace('/', '-')
     logging.debug(f"Generated job name {job_name}")
 
-    if args.directory != '':
-        object_name = f"{args.directory}/{job_name}"
+    if s3_directory != '':
+        object_name = f"{s3_directory}/{job_name}"
     else:
         object_name = job_name
     
     if args.force:
         logging.info(f"Force cleanup of existing job")
-        cleanup_job(job_name, args.bucket, object_name)
+        cleanup_job(job_name, s3_bucket, object_name)
 
     if args.lwlw:
         # if the job exists, check it.  Otherwise, submit a new job.
         if get_job(job_name):
-            rc = check_job(job_name, args.bucket, object_name, args.output_file)
+            rc = check_job(job_name, s3_bucket, object_name, args.output_file)
         else:
-            rc = submit_job(job_name, args.input_file, args.audio_format, args.bucket, object_name)
+            rc = submit_job(job_name, args.input_file, args.audio_format, s3_bucket, object_name)
         exit(rc)
     else:
         # synchronous operation (for testing)
-        rc = submit_job(job_name, args.input_file, args.audio_format, args.bucket, object_name)
+        rc = submit_job(job_name, args.input_file, args.audio_format, s3_bucket, object_name)
         while rc == 255:
-            rc = check_job(job_name, args.bucket, object_name, args.output_file)
+            rc = check_job(job_name, s3_bucket, object_name, args.output_file)
             sleep(10)
         exit(rc)
         

@@ -6,7 +6,7 @@
 	<requirement type="package" version="1.5">jq</requirement>
   </requirements>
   <command detect_errors="exit_code"><![CDATA[
-	'$__tool_directory__/mgm_python.sif' '$__tool_directory__/aws_transcribe.py' '$input_audio' '$aws_transcript' --audio_format '$audio_format' --bucket '$s3_bucket' --directory '$s3_directory' --lwlw &&
+	'$__tool_directory__/mgm_python.sif' '$__tool_directory__/aws_transcribe.py' '$input_audio' '$aws_transcript' --audio_format '$audio_format' --lwlw &&
 	'$__tool_directory__/aws_transcript_to_amp_transcript.py' '$input_audio' '$aws_transcript' '$amp_transcript' '$amp_diarization'
   ]]></command>
   <inputs>
@@ -16,7 +16,7 @@
   	-->
     <param name="input_audio" type="data" format="audio" label="Input Audio" help="Audio file to transcribe"/>
     <param name="audio_format" type="select" label="Audio Format" help="Format of the audio file. For best results use a lossless format such as FLAC or WAV with PCM 16-bit encoding.">
-      <option value="wav">WAV</option>
+      <option value="wav" selected="true">WAV</option>
       <option value="flac">FLAC</option>
       <option value="mp3">MP3</option>
       <option value="mp4">MP4</option>
@@ -29,8 +29,10 @@
       <option value="wma">AU</option>
       -->
     </param>
+    <!-- 
     <param name="s3_bucket" type="text" label="S3 Bucket Name" help="S3 bucket used for temporary storage of transcribe input/output files"/>
     <param name="s3_directory" type="text" label="S3 Directory Path" help="S3 directory inside S3 bucket for input files"/>
+    -->
   </inputs>
   <outputs>
     <data name="aws_transcript" format="json" label='AWS Transcript JSON' />
