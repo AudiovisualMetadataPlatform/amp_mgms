@@ -1,11 +1,6 @@
 ; general configuration properties shared across MGMs
 [general]
 
-; absolute paths of working directories for various modules/MGMs
-[workdir]
-; TODO move hpc_dropbox under galaxy_work 
-hpc_dropbox = /your_galaxy_parent_dir/hpc_batch/dropbox
-
 [amppd]
 server = https://amp-test.your.site.here
 
@@ -31,18 +26,20 @@ password = your_password
 project = YOUR_PROJECT
 
 [azure]
-accountId = your_account_id
-apiKey = your_api_key
-s3Bucket = your_s3_bucket
+account_id = your_account_id
+api_key = your_api_key
+s3_bucket = your_s3_bucket
 
 [aws]
-aws_access_key_id = your_aws_key_id
-aws_secret_access_key = your_aws_access_key
+aws_access_key_id = your_aws_access_key_id
+aws_secret_access_key = your_aws_secret_access_key
+region_name = your_region_name
 
 [aws_comprehend]
-default_bucket = your_default_bucket
-default_access_arn = arn:aws:iam::<SOMETHING>:role/AwsComprehend
+role_arn = arn:aws:iam::<your_arn_id>:role/AwsComprehend
+s3_bucket = your_comprehend_s3_bucket
+s3_directory =  your_comprehend_s3_directory
 
 [aws_transcribe]
-default_bucket = your_default_bucket
-default_directory = 
+s3_bucket = your_transcribe_s3_bucket
+s3_directory =  your_transcribe_s3_directory

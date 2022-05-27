@@ -10,12 +10,13 @@ import time
 from datetime import datetime
 import boto3
 import argparse
+import platform
+import tempfile
+import logging
 
+import amp.logger
 import amp.utils
 import amp.ner_helper
-import logging
-import amp.logger
-import tempfile
 
 def main():
     #(amp_transcript, aws_entities, amp_entities, ignore_types, bucket, dataAccessRoleArn) = sys.argv[1:7]
@@ -25,47 +26,60 @@ def main():
     parser.add_argument("aws_entities", help="Output aws entities file")
     parser.add_argument("amp_entities", help="Output amp entities file")
     parser.add_argument("--ignore_types", default="QUANTITY, DATE", help="Types of things to ignore")
-    parser.add_argument("--bucket", default='', help="S3 bucket to use")
-    parser.add_argument("--dataAccessRoleArn", default='', help="AWS ARN to use")
+#     parser.add_argument("--bucket", default='', help="S3 bucket to use")
+#     parser.add_argument("--dataAccessRoleArn", default='', help="AWS ARN to use")
+    parser.add_argument("--force", default=False, action="store_true", help="delete any existing jobs with this name and force a new job")
+
     args = parser.parse_args()
     logging.info(f"Starting with args {args}")
-    (amp_transcript, aws_entities, amp_entities, ignore_types, bucket, dataAccessRoleArn) = (args.amp_transcript, args.aws_entities, args.amp_entities, args.ignore_types, args.bucket, args.dataAccessRoleArn)
+    (amp_transcript, aws_entities, amp_entities, ignore_types) = (args.amp_transcript, args.aws_entities, args.amp_entities, args.ignore_types)
+#     (amp_transcript, aws_entities, amp_entities, ignore_types, bucket, dataAccessRoleArn) = (args.amp_transcript, args.aws_entities, args.amp_entities, args.ignore_types, args.bucket, args.dataAccessRoleArn)
 
     # fixup the default arguments...
     config = amp.utils.get_config()
-    if bucket == '':
-        bucket = config.get('aws_comprehend', 'default_bucket', fallback=None)
-        if bucket is None:
-            logging.error("No bucket defined on the command line or in the config file")
-            exit(1)
-    if dataAccessRoleArn == '':
-        dataAccessRoleArn = config.get('aws_comprehend', 'default_access_arn', fallback=None)
-        if dataAccessRoleArn is None:
-            logging.error('dataAccessRoleArn is not defined on the command line or config file')
-            exit(1)
-
-
-
+#     if dataAccessRoleArn == '':
+    role_arn = config.get('aws_comprehend', 'role_arn', fallback=None)
+    if role_arn is None:
+        logging.error('aws_comprehend/role_arn is not specified in the config file')
+        exit(1)
+#     if s3_bucket == '':
+    s3_bucket = config.get('aws_comprehend', 's3_bucket', fallback=None)
+    if s3_bucket is None:
+        logging.error("aws_comprehend/s3_bucket is not specified in the config file")
+        exit(1)
+    s3_directory = config.get('aws_comprehend', 's3_directory', fallback='')
+    if s3_directory is None:
+        logging.error('aws_comprehend/s3_directory is not specified in the config file')
+        exit(1)
+    s3_directory.strip('/')        
 
     # preprocess NER inputs and initialize AMP entities output
     [amp_transcript_obj, amp_entities_obj, ignore_types_list] = amp.ner_helper.initialize_amp_entities(amp_transcript, amp_entities, ignore_types)
 
     # if we reach here, further processing is needed, continue with preparation for AWS Comprehend job 
-    s3uri = 's3://' + bucket + '/'
+    # generate a job name, using the output filename as the basis.    
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
     # hostname + timestamp should ensure unique job name
-    jobname = 'AwsComprehend-' + socket.gethostname() + "-" + timestamp 
+    jobname = 'AWSC-' + socket.gethostname() + "-" + timestamp 
+#     job_name = "AWST-" + platform.node().split('.')[0] + args.output_file.replace('/', '-')
+#     logging.debug(f"Generated job name {job_name}")
+
+    if s3_directory != '':
+        object_name = f"{s3_directory}/{job_name}"
+    else:
+        object_name = job_name        
+    s3uri = 's3://' + s3_bucket + '/'
 
     with tempfile.TemporaryDirectory() as tmpdir:
         # write AMP Transcript text into the input file in a temp directory and upload it to S3
         #tmpdir = tempfile.mkdtemp(dir="/tmp")
-        upload_input_to_s3(amp_transcript_obj, tmpdir, bucket, jobname)
+        upload_input_to_s3(amp_transcript_obj, tmpdir, s3_bucket, jobname)
 
         # Make call to AWS Comprehend
-        outputuri = run_comprehend_job(jobname, s3uri, dataAccessRoleArn)
+        outputuri = run_comprehend_job(jobname, s3uri, role_arn)
 
         # download AWS Comprehend output from s3 to the tmp directory, uncompress and copy it to output aws_entities output file
-        download_output_from_s3(outputuri, s3uri, bucket, tmpdir, aws_entities)
+        download_output_from_s3(outputuri, s3uri, s3_bucket, tmpdir, aws_entities)
 
         # AWS Comprehend output should contain entities
         aws_entities_json = amp.utils.read_json_file(aws_entities)
