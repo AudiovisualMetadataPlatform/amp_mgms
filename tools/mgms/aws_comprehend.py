@@ -61,13 +61,13 @@ def main():
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
     # hostname + timestamp should ensure unique job name
     jobname = 'AWSC-' + socket.gethostname() + "-" + timestamp 
-#     job_name = "AWST-" + platform.node().split('.')[0] + args.output_file.replace('/', '-')
-#     logging.debug(f"Generated job name {job_name}")
+#     jobname = "AWST-" + platform.node().split('.')[0] + args.output_file.replace('/', '-')
+#     logging.debug(f"Generated job name {jobname}")
 
     if s3_directory != '':
-        object_name = f"{s3_directory}/{job_name}"
+        object_name = f"{s3_directory}/{jobname}"
     else:
-        object_name = job_name        
+        object_name = jobname        
     s3uri = 's3://' + s3_bucket + '/'
 
     with tempfile.TemporaryDirectory() as tmpdir:
