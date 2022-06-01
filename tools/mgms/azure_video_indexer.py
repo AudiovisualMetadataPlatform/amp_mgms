@@ -17,18 +17,18 @@ import amp.utils
 def main():
     apiUrl = "https://api.videoindexer.ai"
 
-    #(root_dir, input_video, include_ocr, location, azure_video_index, azure_artifact_ocr) = sys.argv[1:7]
+    #(root_dir, input_video, include_ocr, region_name, azure_video_index, azure_artifact_ocr) = sys.argv[1:7]
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("input_video", help="Input video file")
     parser.add_argument("include_ocr", type=strtobool, default=True, help="Include OCR")
-    parser.add_argument("location", help="Azure account region")
+#     parser.add_argument("region_name", help="Azure account region")
     parser.add_argument("azure_video_index", help="Azure Video Index JSON")
     parser.add_argument("azure_artifact_ocr", help="Azure Artifact OCR JSON")
     args = parser.parse_args()
     logging.info(f"Starting with args {args}")
-    (input_video, include_ocr, location, azure_video_index, azure_artifact_ocr) = (args.input_video, args.include_ocr, args.location, args.azure_video_index, args.azure_artifact_ocr)
-
+    (input_video, include_ocr, azure_video_index, azure_artifact_ocr) = (args.input_video, args.include_ocr, args.azure_video_index, args.azure_artifact_ocr)
+#     (input_video, include_ocr, region_name, azure_video_index, azure_artifact_ocr) = (args.input_video, args.include_ocr, args.region_name, args.azure_video_index, args.azure_artifact_ocr)
 
     try:
         import http.client as http_client
@@ -36,38 +36,37 @@ def main():
         # Python 2
         import httplib as http_client
 
-    config = amp.utils.get_config()
-    s3_bucket = config['azure']['s3_bucket']
-    account_id = config['azure']['account_id']
-    api_key = config['azure']['api_key']
-    logging.debug(f"Bucket: {s3_bucket}, account_id: {account_id}")
+    azure = amp.utils.get_azure_credentials()
+    account_id = azure['account_id']
+    api_key = azure['api_key']
+    region_name = azure['region_name']
+    s3_bucket = azure['s3_bucket']
 
     # Turn on HTTP debugging here
     http_client.HTTPConnection.debuglevel = 1
 
+    # upload video to S3
     s3_path = upload_to_s3(input_video, s3_bucket)
     if not s3_path:
-        logging.error(f"Failed to upload {input_video} to AWS bucket {s3_bucket}")
+#         logging.error(f"Failed to upload {input_video} to AWS bucket {s3_bucket}")
         exit(1)
-    logging.debug("S3 path " + s3_path)
+#     logging.info(f"Uploaded {input_video} to AWS S3 bucket {s3_path}")
     
     # Get an authorization token for subsequent requests
-    auth_token = get_auth_token(apiUrl, location, account_id, api_key)
+    auth_token = get_auth_token(apiUrl, region_name, account_id, api_key)
     
-    video_url = "https://" + s3_bucket + ".s3.us-east-2.amazonaws.com/" + s3_path
-
     # Upload the video and get the ID to reference for indexing status and results
-    videoId = upload_video(apiUrl, location, account_id, auth_token, input_video, video_url)
+    video_url = "https://" + s3_bucket + ".s3.us-east-2.amazonaws.com/" + s3_path
+    videoId = index_video(apiUrl, region_name, account_id, auth_token, input_video, video_url)
 
     # Get the auth token associated with this video    
-    # video_auth_token = get_video_auth_token(apiUrl, location, account_id, api_key, videoId)
+    # video_auth_token = get_video_auth_token(apiUrl, region_name, account_id, api_key, videoId)
 
     # Check on the indexing status
     while True:
         # The token expires after an hour.  Let's just refresh every iteration
-        video_auth_token = get_video_auth_token(apiUrl, location, account_id, api_key, videoId)
-
-        state = get_processing_status(apiUrl, location, account_id, videoId, video_auth_token)
+        video_auth_token = get_video_auth_token(apiUrl, region_name, account_id, api_key, videoId)
+        state = get_processing_status(apiUrl, region_name, account_id, videoId, video_auth_token)
         
         # We have a status other than uploaded or processing, it is complete
         if state != "Uploaded" and state != "Processing":
@@ -80,15 +79,23 @@ def main():
     http_client.HTTPConnection.debuglevel = 1
 
     # Get the simple video index json
-    auth_token = get_auth_token(apiUrl, location, account_id, api_key)
-    index_json = get_video_index_json(apiUrl, location, account_id, videoId, auth_token, api_key)
+    auth_token = get_auth_token(apiUrl, region_name, account_id, api_key)
+    index_json = get_video_index_json(apiUrl, region_name, account_id, videoId, auth_token, api_key)
     amp.utils.write_json_file(index_json, azure_video_index)
 
     # Get the advanced OCR json via the artifact URL if requested
     if include_ocr:
-        artifacts_url = get_artifacts_url(apiUrl, location, account_id, videoId, auth_token, 'ocr')
-        download_artifacts(artifacts_url, azure_artifact_ocr)
-    # TODO otherwise do we need to generate a dummy file so the output is not empty and cause error?
+        try:
+            artifacts_url = get_artifacts_url(apiUrl, region_name, account_id, videoId, auth_token, 'ocr')
+            download_artifacts(artifacts_url, azure_artifact_ocr)
+            log.info(f"Downloaded OCR artifact to {azure_artifact_ocr}")
+        # When the video doesn't contain OCR, no OCR artifact will be generated, and the above download will result in exception.
+        # Since we may not know before hand if a video contains OCR or not, this should be a normal case and not cause job failure;
+        # instead, we can generate an empty OCR output, and the next job should handle such case and generate empty AMP VOCR.
+        # However, the exception could also be caused by system errors, in which case job should fail.
+        # TODO should we fail the job or generate an empty OCR file ?
+        except:
+            logging.exception(f"Failed to download OCR artifact to {azure_artifact_ocr}", e)    
     
     delete_from_s3(s3_path, s3_bucket)
     logging.info("Finished.")
@@ -102,24 +109,23 @@ def download_artifacts(artifacts_url, output_name):
     return output_name
 
 # Get the url where the artifacts json is stored
-def get_artifacts_url(apiUrl, location, account_id, videoId, auth_token, type):
-    url = apiUrl + "/" + location + "/Accounts/" + account_id + "/Videos/" + videoId + "/ArtifactUrl"
-    params = {'accessToken':auth_token,
-                'type':type}
+def get_artifacts_url(apiUrl, region_name, account_id, videoId, auth_token, type):
+    url = apiUrl + "/" + region_name + "/Accounts/" + account_id + "/Videos/" + videoId + "/ArtifactUrl"
+    params = {'accessToken':auth_token, 'type':type}
     r = requests.get(url = url, params = params)
     return r.text.replace("\"", "")
 
 # Get the video index json, which contains OCR data
-def get_video_index_json(apiUrl, location, account_id, videoId, auth_token, api_key):
-    url = apiUrl + "/" + location + "/Accounts/" + account_id + "/Videos/" + videoId + "/Index"
+def get_video_index_json(apiUrl, region_name, account_id, videoId, auth_token, api_key):
+    url = apiUrl + "/" + region_name + "/Accounts/" + account_id + "/Videos/" + videoId + "/Index"
     params = {'accessToken':auth_token }
     headers = {"Ocp-Apim-Subscription-Key": api_key}
     r = requests.get(url = url, params=params, headers = headers) 
     return json.loads(r.text)
 
 # Get the processing status of the video
-def get_processing_status(apiUrl, location, account_id, videoId, video_auth_token):
-    video_url = apiUrl + "/" + location + "/Accounts/" + account_id + "/Videos/" + videoId + "/Index"
+def get_processing_status(apiUrl, region_name, account_id, videoId, video_auth_token):
+    video_url = apiUrl + "/" + region_name + "/Accounts/" + account_id + "/Videos/" + videoId + "/Index"
     params = {'accessToken':video_auth_token,
                 'language':'English'}
     r = requests.get(url = video_url, params = params)
@@ -144,24 +150,22 @@ def request_auth_token(url, api_key):
         exit(1)
 
 # Get general auth token
-def get_auth_token(apiUrl, location, account_id, api_key):
-    token_url = apiUrl + "/auth/" + location + "/Accounts/" + account_id + "/AccessToken"
+def get_auth_token(apiUrl, region_name, account_id, api_key):
+    token_url = apiUrl + "/auth/" + region_name + "/Accounts/" + account_id + "/AccessToken"
     return request_auth_token(token_url, api_key)
 
 # Get video auth token
-def get_video_auth_token(apiUrl, location, account_id, api_key, videoId):
-    token_url = apiUrl + "/auth/" + location + "/Accounts/" + account_id + "/Videos/" + videoId + "/AccessToken"
+def get_video_auth_token(apiUrl, region_name, account_id, api_key, videoId):
+    token_url = apiUrl + "/auth/" + region_name + "/Accounts/" + account_id + "/Videos/" + videoId + "/AccessToken"
     return request_auth_token(token_url, api_key)
 
-# Upload the video using multipart form upload
-def upload_video(apiUrl, location, account_id, auth_token, input_video, video_url):
-
+# Index the video using multipart form upload.
+def index_video(apiUrl, region_name, account_id, auth_token, input_video, video_url):
     # Create a unique file name 
     millis = int(round(time.time() * 1000))
-
-    upload_url = apiUrl + "/" + location +  "/Accounts/" + account_id + "/Videos"
-    
+    upload_url = apiUrl + "/" + region_name +  "/Accounts/" + account_id + "/Videos"    
     data = {}
+    
     with open(input_video, 'rb') as f:
         params = {'accessToken':auth_token,
                 'name':'amp_video_' + str(millis),

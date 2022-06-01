@@ -114,6 +114,14 @@ def get_work_dir(work_dir):
     return str(wd.absolute())
 
 
+# get the Azure credentials from the config file and return them as a dict.
+def get_azure_credentials():
+    config = get_config()
+    res = config._sections['azure']
+    logging.debug(f"Azure credentials: {res}")
+    return res
+
+
 # get the AWS credentials from the config file and return them as a dict.
 def get_aws_credentials():
     config = get_config()
