@@ -29,8 +29,8 @@ class SpeechToTextResult:
 		self.transcript = transcript
 		self.words = words
 	# TODO add offset to the param list below and update all references	
-	def addWord(self, type, start:float, end:float, text, scoreType, scoreValue):
-		newWord = SpeechToTextWord(type, text, start, end, None, scoreType, scoreValue)
+	def addWord(self, type, start:float, end:float, text, scoreType, value):
+		newWord = SpeechToTextWord(type, text, start, end, None, scoreType, value)
 		self.words.append(newWord)
 	@classmethod
 	def from_json(cls, json_data: dict):
@@ -46,9 +46,9 @@ class SpeechToTextWord:
 	offset = None # corresponding to the start offset of the word in the transcript, counting punctuations
 	text = ""
 	score = None
-	def __init__(self, type = None, text = None, start = None, end = None, offset = None, scoreType = None, scoreValue = None):
-		if scoreValue is not None:
-			self.score = SpeechToTextScore(scoreType, scoreValue)
+	def __init__(self, type = None, text = None, start = None, end = None, offset = None, scoreType = None, value = None):
+		if value is not None:
+			self.score = SpeechToTextScore(scoreType, value)
 		self.type = type
 		if start is not None and float(start) >= 0.00:
 			self.start = start
@@ -60,10 +60,10 @@ class SpeechToTextWord:
 	@classmethod
 	def from_json(cls, json_data: dict):
 		scoreType = None
-		scoreValue = None
+		value = None
 		if 'score' in json_data.keys():
 			score = json_data['score']
-			scoreValue = score['scoreValue']
+			value = score['value']
 			scoreType = score['type']
 		start = None
 		end = None
@@ -74,15 +74,15 @@ class SpeechToTextWord:
 			end = json_data['end']
 		if 'offset' in json_data.keys():
 			offset = json_data['offset']
-		return cls(json_data['type'], json_data['text'], start, end, offset, scoreType, scoreValue)
+		return cls(json_data['type'], json_data['text'], start, end, offset, scoreType, value)
 
 
 class SpeechToTextScore:
 	type = ""
-	scoreValue = 0.0
-	def __init__(self, type = None, scoreValue = None):
+	value = 0.0
+	def __init__(self, type = None, value = None):
 		self.type = type
-		self.scoreValue = scoreValue
+		self.value = value
 	@classmethod
 	def from_json(cls, json_data: dict):
 		return cls(**json_data)

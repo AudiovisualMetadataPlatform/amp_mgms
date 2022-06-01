@@ -118,7 +118,7 @@ def main():
 
 					# Create the word
 					# if score is present for word and score type is confidence, use the score value; otherwise default to 1.0
-					score_value = word['score']['scoreValue'] if 'score' in word and word['score']['type'] == 'confidence' else 1.0 
+					score_value = word['score']['value'] if 'score' in word and word['score']['type'] == 'confidence' else 1.0 
 					newWord = {
 						'start': start,
 						'end': word['end'],

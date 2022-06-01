@@ -127,7 +127,7 @@ def gentle_transcript_to_amp_transcript(gentle_transcript, amp_transcript_unalig
 				"offset": curoffset,
 				"score": {
 					"type": "confidence", 
-					"scoreValue": confidence,
+					"value": confidence,
 				},
 			})							
 			
@@ -211,7 +211,7 @@ def insert_punctuations(words, gwords, gi, preoffset, transcript):
 				"offset": i,
 				"score": {
 					"type": "confidence",
-					"scoreValue": 0.0,
+					"value": 0.0,
 				},
 			})
 			logging.info(f"Insert punctuation as AMP words[{len(words)-1}]={text} after Gentle words[{gi}]={gword}")
@@ -268,7 +268,7 @@ def update_confidence(words, uwords):
 		if text != stexts[si]:
 			logging.warning(f"Warning: Algined words[{i}] = {text} does not match unaligned words[{ui}][{si}] = {stexts[si]}, using default confidence for it.")
 		elif "score" in uwords[ui]:
-			word["score"]["scoreValue"] = uwords[ui]["score"]["scoreValue"]
+			word["score"]["value"] = uwords[ui]["score"]["value"]
 			updated = updated + 1
 			
 		# move on to the next word in both the unaligned multi-word sublist and the aligned words list

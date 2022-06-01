@@ -58,7 +58,7 @@ def populate_amp_entities(amp_transcript_obj, ner_entities_list, amp_entities_ob
                 beginOffset = entity["BeginOffset"]
                 endOffset = entity["EndOffset"]
                 scoreType = "relevance"
-                scoreValue = entity["Score"]
+                value = entity["Score"]
             else: 
                 mgm = "Spacy"
                 type = entity.label_
@@ -66,7 +66,7 @@ def populate_amp_entities(amp_transcript_obj, ner_entities_list, amp_entities_ob
                 beginOffset = entity.start_char
                 endOffset = entity.end_char
                 scoreType = None
-                scoreValue = None
+                value = None
             end = None
             
             # skip entity in the ignore categories
@@ -98,7 +98,7 @@ def populate_amp_entities(amp_transcript_obj, ner_entities_list, amp_entities_ob
             # otherwise a match is found, add a new entity for it to entities list
             else:               
                 start = words[last].start
-                amp_entities_obj.addEntity(type, text, beginOffset, endOffset, start, end, scoreType, scoreValue)
+                amp_entities_obj.addEntity(type, text, beginOffset, endOffset, start, end, scoreType, value)
         except Exception:
             # in case of exception, most likely due to missing fields, skip the entity in error and continue with the rest
             print("Error: Exception while processing {mgm} entity {text} at offset {begineOffset}")

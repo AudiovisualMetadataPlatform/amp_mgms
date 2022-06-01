@@ -95,7 +95,7 @@ def generate_ner_entities(iiif_data, entity_dict):
                 "start": time,
                 "score": {
                     "type": "relevance",
-                    "scoreValue": 1.0
+                    "value": 1.0
                 }
             }
         entities.append(entity)

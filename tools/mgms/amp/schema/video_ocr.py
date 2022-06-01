@@ -192,16 +192,16 @@ class VideoOcr:
                 for o in f.objects:
                     if o.score is not None:
                         scoreType = o.score.type
-                        scoreValue = o.score.value
+                        value = o.score.value
                     else:
                         scoreType = ''
-                        scoreValue = ''
+                        value = ''
                     if o.language is not None:
                         language = o.language
                     else:
                         language = ''
                     v = o.vertices
-                    csv_writer.writerow([f.start, o.text, language, v.xmin, v.ymin, v.xmax, v.ymax, scoreType, scoreValue])                    
+                    csv_writer.writerow([f.start, o.text, language, v.xmin, v.ymin, v.xmax, v.ymax, scoreType, value])                    
         
     @classmethod
     def from_json(cls, json_data: dict):

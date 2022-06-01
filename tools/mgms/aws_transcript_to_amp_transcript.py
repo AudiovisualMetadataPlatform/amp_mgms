@@ -3,12 +3,12 @@
 import json
 import sys
 import argparse
-import amp.utils
+import logging
 
+import amp.logger
+import amp.utils
 from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult
 from amp.schema.segmentation import Segmentation, SegmentationMedia
-import logging
-import amp.logger
 
 def main():
 	#(media_file, transcribe_file, output_stt_json_file, output_seg_json_file) = sys.argv[1:5]
@@ -21,7 +21,6 @@ def main():
 	args = parser.parse_args()
 	logging.info(f"Starting with args {args}")
 	(media_file, transcribe_file, output_stt_json_file, output_seg_json_file) = (args.media_file, args.transcribe_file, args.output_stt_json_file, args.output_seg_json_file)
-
 
 	amp.utils.exception_if_file_not_exist(transcribe_file)
 

@@ -112,13 +112,13 @@ def main():
             elif ele.startswith("- "):
                 i += 1
             elif len(ele) > 2 and ele[0:2] == "+ ":
-                words[j].score.scoreValue = 1.0
+                words[j].score.value = 1.0
                 j += 1
             elif ele[0:1] == " " and words[j].text == original_items[i]["text"]:
                 if ("score" in original_items[i]):
-                    words[j].score.scoreValue = float(original_items[i]["score"]["scoreValue"])
+                    words[j].score.value = float(original_items[i]["score"]["value"])
                 else:
-                    words[j].score.scoreValue = 1.0 # default score to 1.0 if not existing originally    
+                    words[j].score.value = 1.0 # default score to 1.0 if not existing originally    
                 i += 1
                 j += 1
             logging.debug("i: " + str(i) + " j:" + str(j))
