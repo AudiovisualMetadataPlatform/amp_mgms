@@ -29,8 +29,8 @@ class SpeechToTextResult:
 		self.transcript = transcript
 		self.words = words
 	# TODO add offset to the param list below and update all references	
-	def addWord(self, type, start:float, end:float, text, scoreType, value):
-		newWord = SpeechToTextWord(type, text, start, end, None, scoreType, value)
+	def addWord(self, type, start:float, end:float, text, scoreType, scoreValue):
+		newWord = SpeechToTextWord(type, text, start, end, None, scoreType, scoreValue)
 		self.words.append(newWord)
 	@classmethod
 	def from_json(cls, json_data: dict):
@@ -46,9 +46,9 @@ class SpeechToTextWord:
 	offset = None # corresponding to the start offset of the word in the transcript, counting punctuations
 	text = ""
 	score = None
-	def __init__(self, type = None, text = None, start = None, end = None, offset = None, scoreType = None, value = None):
-		if value is not None:
-			self.score = SpeechToTextScore(scoreType, value)
+	def __init__(self, type = None, text = None, start = None, end = None, offset = None, scoreType = None, scoreValue = None):
+		if scoreValue is not None:
+			self.score = SpeechToTextScore(scoreType, scoreValue)
 		self.type = type
 		if start is not None and float(start) >= 0.00:
 			self.start = start
@@ -60,10 +60,10 @@ class SpeechToTextWord:
 	@classmethod
 	def from_json(cls, json_data: dict):
 		scoreType = None
-		value = None
+		scoreValue = None
 		if 'score' in json_data.keys():
 			score = json_data['score']
-			value = score['value']
+			scoreValue = score['value']
 			scoreType = score['type']
 		start = None
 		end = None
@@ -74,7 +74,7 @@ class SpeechToTextWord:
 			end = json_data['end']
 		if 'offset' in json_data.keys():
 			offset = json_data['offset']
-		return cls(json_data['type'], json_data['text'], start, end, offset, scoreType, value)
+		return cls(json_data['type'], json_data['text'], start, end, offset, scoreType, scoreValue)
 
 
 class SpeechToTextScore:
