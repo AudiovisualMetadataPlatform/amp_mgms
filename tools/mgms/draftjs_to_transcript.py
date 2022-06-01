@@ -68,7 +68,8 @@ def main():
                     if text[-1] in string.punctuation: #[',','.','!','?']:
                         punctuation = text[-1]
                         text = text[0:-1]
-                        
+                if "offset" in entity["data"].keys():
+                    offset = entity["data"]["offset"]                    
                 if "type" in entity:
                     entity_type = entity["type"]
                     if entity_type == "WORD":
@@ -84,9 +85,9 @@ def main():
                     else:
                         word_type = entity_type
 
-            results.addWord(word_type, start_time, end_time, text, "confidence",confidence)   
+            results.addWord(word_type, text, offset, start_time, end_time, "confidence",confidence)   
             if len(punctuation) > 0:
-                results.addWord('punctuation', None, None, punctuation, "confidence",0.0)
+                results.addWord('punctuation', punctuation, offset, None, None, "confidence",0.0)
 
         results.transcript = transcript
         words = results.words
