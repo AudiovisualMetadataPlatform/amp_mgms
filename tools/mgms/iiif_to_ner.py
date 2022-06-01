@@ -4,10 +4,12 @@ import json
 import sys
 import traceback
 import argparse
-
-import amp.utils
 import logging
+
 import amp.logger
+import amp.utils
+from amp.schema.entity_extraction import EntityExtraction, EntityExtractionMedia, EntityExtractionEntity, EntityExtractionEntityScore
+
 
 # Convert IIIF manifest JSON file to standard NER output JSON file.
 # Usage: iiif_to_ner.py root_dir from_iiif original_ner to_ner
@@ -25,7 +27,6 @@ def main():
     args = parser.parse_args()
     logging.info(f"Starting with args {args}")
     (from_iiif, original_ner, to_ner) = (args.from_iiif, args.original_ner, args.to_ner)
-
 
     # using output instead of input filename as the latter is unique while the former could be used by multiple jobs 
 

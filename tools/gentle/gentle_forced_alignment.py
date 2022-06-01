@@ -10,9 +10,12 @@ import tempfile
 import uuid
 import traceback
 import argparse
-import amp.utils
-import amp.logger
 import logging
+
+import amp.logger
+import amp.utils
+from amp.schema.entity_extraction import EntityExtraction, EntityExtractionMedia, EntityExtractionEntity, EntityExtractionEntityScore
+
 
 def main():
 	#(root_dir, speech_audio, amp_transcript_unaligned, gentle_transcript, amp_transcript_aligned) = sys.argv[1:6]
