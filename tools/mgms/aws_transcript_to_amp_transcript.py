@@ -117,7 +117,7 @@ def main():
 		
 	# Write the output
 	amp.utils.write_json_file(segmentation, amp_diarization)
-	logging.info("Finished.")
+	logging.info(f"Successfully converted {aws_transcript} to {amp_transcript} and {amp_diarization}.")
 
 
 if __name__ == "__main__":

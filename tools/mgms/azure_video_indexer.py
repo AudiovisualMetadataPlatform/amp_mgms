@@ -88,7 +88,7 @@ def main():
         try:
             artifacts_url = get_artifacts_url(apiUrl, region_name, account_id, videoId, auth_token, 'ocr')
             download_artifacts(artifacts_url, azure_artifact_ocr)
-            log.info(f"Downloaded OCR artifact to {azure_artifact_ocr}")
+            logging.info(f"Downloaded OCR artifact to {azure_artifact_ocr}")
         # When the video doesn't contain OCR, no OCR artifact will be generated, and the above download will result in exception.
         # Since we may not know before hand if a video contains OCR or not, this should be a normal case and not cause job failure;
         # instead, we can generate an empty OCR output, and the next job should handle such case and generate empty AMP VOCR.
