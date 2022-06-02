@@ -43,7 +43,11 @@ def main():
 	for t in transcripts:
 		# assuming each transcript doesn't include space or newline at the end, to keep the format consistent with word list,
 		# we should separate transcripts with newline in between
-		amp_results.transcript = amp_results.transcript + "\n" + t["transcript"]
+		if not amp_results.transcript:
+			# for the first transcript
+			amp_results.transcript = t["transcript"]
+		else:
+			amp_results.transcript = amp_results.transcript + "\n" + t["transcript"]		
 
 	# Fail if we don't have any items
 	if "items" not in aws_results.keys():
