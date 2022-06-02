@@ -99,7 +99,7 @@ def main():
             logging.error(f"Kaldi's output:\n{p.stdout}")
 
     logging.debug(f"Make sure to manually remove the overlay file: {overlay_file}")
-    logging.info(f"Finished running Kaldi with output {kaldi_transcript_json} and {kaldi_transcript_text}")
+    logging.info(f"Finished running Kaldi with output {args.kaldi_transcript_json} and {args.kaldi_transcript_text}")
     exit(0 if not copy_failed else 1)
 
 if __name__ == "__main__":
