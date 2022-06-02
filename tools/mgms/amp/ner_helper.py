@@ -2,11 +2,12 @@
 
 import json
 import traceback
-
-from amp.schema.entity_extraction import EntityExtraction, EntityExtractionMedia
-from amp.schema.speech_to_text import SpeechToText
-import amp.utils
 import logging
+
+import amp.utils
+from amp.schema.entity_extraction import EntityExtraction, EntityExtractionMedia, EntityExtractionEntity, EntityExtractionEntityScore
+from amp.schema.speech_to_text import SpeechToText
+
 
 # Shared helper methods for NER MGMs
 

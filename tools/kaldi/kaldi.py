@@ -24,12 +24,12 @@ import amp.logger
 
 
 def main():
-    #(root_dir, input_file, json_file, text_file) = sys.argv[1:5]
+    #(root_dir, input_audio, kaldi_transcript_json, kaldi_transcript_text) = sys.argv[1:5]
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
-    parser.add_argument("input_file")
-    parser.add_argument("json_file")
-    parser.add_argument("text_file")
+    parser.add_argument("input_audio", help="Input audio file")
+    parser.add_argument("kaldi_transcript_json", help="Output Kaldi Transcript JSON file")
+    parser.add_argument("kaldi_transcript_text", help="Output Kaldi Transcript Text file")
     parser.add_argument("--gpu", default=False, action="store_true", help="Use GPU kaldi")
     parser.add_argument("--overlay_dir", default=None, nargs=1, help="Directory for the overlay file (default to cwd)")
     args = parser.parse_args()
@@ -37,7 +37,7 @@ def main():
 
     # copy the input file to a temporary directory
     with tempfile.TemporaryDirectory() as tmpdir:        
-        shutil.copy(args.input_file, f"{tmpdir}/xxx.wav")
+        shutil.copy(args.input_audio, f"{tmpdir}/xxx.wav")
         tmp = Path(tmpdir)
         # find the right Kaldi SIF and set up things to make it work...
         sif = Path(sys.path[0], f"kaldi-pua-{'gpu' if args.gpu else 'cpu'}.sif")
@@ -58,7 +58,7 @@ def main():
         # never be enough for some cases.  For now, let's look at the size of the input file
         # (which should be a high-bitrate wav) and use some multiple.  Empirically, it looks
         # like 10x should do the trick. 
-        overlay_size = math.ceil((10 * Path(args.input_file).stat().st_size) / 1048576)
+        overlay_size = math.ceil((10 * Path(args.input_audio).stat().st_size) / 1048576)
         if overlay_size < 64:
             overlay_size = 64
         if args.overlay_dir is None:
@@ -86,8 +86,8 @@ def main():
             logging.error(p.stdout)
             exit(1)
         copy_failed = False
-        for src, dst in ((f"{tmpdir}/transcripts/txt/xxx_16kHz.txt", args.text_file),
-                         (f"{tmpdir}/transcripts/json/xxx_16kHz.json", args.json_file)):
+        for src, dst in ((f"{tmpdir}/transcripts/txt/xxx_16kHz.txt", args.kaldi_transcript_text),
+                         (f"{tmpdir}/transcripts/json/xxx_16kHz.json", args.kaldi_transcript_json)):
             try:                
                 shutil.copy(src, dst)
             except Exception as e:

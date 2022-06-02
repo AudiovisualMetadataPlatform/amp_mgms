@@ -28,12 +28,13 @@ project = YOUR_PROJECT
 [azure]
 account_id = your_account_id
 api_key = your_api_key
+region_name = your_azure_region_name
 s3_bucket = your_s3_bucket
 
 [aws]
 aws_access_key_id = your_aws_access_key_id
 aws_secret_access_key = your_aws_secret_access_key
-region_name = your_region_name
+region_name = your_aws_region_name
 
 [aws_comprehend]
 role_arn = arn:aws:iam::<your_arn_id>:role/AwsComprehend

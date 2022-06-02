@@ -21,8 +21,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     # job_directory is really a temporary directory, we don't need that.
-    parser.add_argument("input_file")
-    parser.add_argument("output_file")
+    parser.add_argument("input_audio", help="Input audio file")
+    parser.add_argument("aws_transcript", help="Output AWS Transcript JSON")
     parser.add_argument("--audio_format", default="wav", help="Format for the audio input")
 #     parser.add_argument("--bucket", default='', help="S3 Bucket to use (defaults to value in config)")
 #     parser.add_argument("--directory", default='', help="S3 Directory to use in bucket") 
@@ -46,10 +46,10 @@ def main():
     s3_directory.strip('/')
 
     # create the s3 path
-    args.input_file = Path(args.input_file)
+    args.input_audio = Path(args.input_audio)
     
     # generate a job name, using the output filename as the basis.    
-    job_name = "AWST-" + platform.node().split('.')[0] + args.output_file.replace('/', '-')
+    job_name = "AWST-" + platform.node().split('.')[0] + args.aws_transcript.replace('/', '-')
     logging.debug(f"Generated job name {job_name}")
 
     if s3_directory != '':
@@ -64,15 +64,15 @@ def main():
     if args.lwlw:
         # if the job exists, check it.  Otherwise, submit a new job.
         if get_job(job_name):
-            rc = check_job(job_name, s3_bucket, object_name, args.output_file)
+            rc = check_job(job_name, s3_bucket, object_name, args.aws_transcript)
         else:
-            rc = submit_job(job_name, args.input_file, args.audio_format, s3_bucket, object_name)
+            rc = submit_job(job_name, args.input_audio, args.audio_format, s3_bucket, object_name)
         exit(rc)
     else:
         # synchronous operation (for testing)
-        rc = submit_job(job_name, args.input_file, args.audio_format, s3_bucket, object_name)
+        rc = submit_job(job_name, args.input_audio, args.audio_format, s3_bucket, object_name)
         while rc == 255:
-            rc = check_job(job_name, s3_bucket, object_name, args.output_file)
+            rc = check_job(job_name, s3_bucket, object_name, args.aws_transcript)
             sleep(10)
         exit(rc)
         
@@ -87,15 +87,15 @@ def get_job(job_name):
             return None
         raise e
 
-def submit_job(job_name, input_file, audio_format, bucket, object_name):
+def submit_job(job_name, input_audio, audio_format, bucket, object_name):
     # upload the file to S3
     s3_uri = f"s3://{bucket}/{object_name}"
     s3_client = boto3.client('s3', **amp.utils.get_aws_credentials())    
     try:
-        logging.info(f"Uploading file {str(input_file)} to {s3_uri}")
-        response = s3_client.upload_file(str(input_file), bucket, object_name) #, ExtraArgs={'ACL': 'public-read'})        
+        logging.info(f"Uploading file {str(input_audio)} to {s3_uri}")
+        response = s3_client.upload_file(str(input_audio), bucket, object_name) #, ExtraArgs={'ACL': 'public-read'})        
     except Exception as e:
-        logging.error(f"Uploading file {input_file} failed: {e}")
+        logging.error(f"Uploading file {input_audio} failed: {e}")
         return 1
     
     # transcribe the file
@@ -118,7 +118,7 @@ def submit_job(job_name, input_file, audio_format, bucket, object_name):
         return 1
 
 
-def check_job(job_name, bucket, object_name, output_file):
+def check_job(job_name, bucket, object_name, aws_transcript):
     "Check on the status of the running job"
     transcribe_client = boto3.client('transcribe', **amp.utils.get_aws_credentials())
     s3_client = boto3.client('s3', **amp.utils.get_aws_credentials()) 
@@ -128,7 +128,7 @@ def check_job(job_name, bucket, object_name, output_file):
     if job_status == 'COMPLETED':
         transcription_uri = job['TranscriptionJob']['Transcript']['TranscriptFileUri']
         logging.info(f"Result URI: {transcription_uri}.  Result bucket: {bucket}, Key: {job_name + '.json'}")
-        s3_client.download_file(Bucket=bucket, Key=job_name + ".json", Filename=output_file)
+        s3_client.download_file(Bucket=bucket, Key=job_name + ".json", Filename=aws_transcript)
         cleanup_job(job_name, bucket, object_name)
         logging.info(f"Job {job_name} completed in success!")
         return 0
