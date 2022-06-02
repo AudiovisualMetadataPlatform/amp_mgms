@@ -93,35 +93,34 @@ class SpeechToTextWord:
 			self.start = start
 		if end is not None and float(end) >= 0.00:
 			self.end = end
-		if scoreType is not None and scoreValue is not None:
+		if scoreValue is not None:
 			self.score = SpeechToTextScore(scoreType, scoreValue)
 		
 	@classmethod
 	def from_json(cls, json_data: dict):
+		start = None
+		end = None
+		if 'start' in json_data.keys():
+			start = json_data['start']
+		if 'end' in json_data.keys():
+			end = json_data['end']
 		scoreType = None
 		scoreValue = None
 		if 'score' in json_data.keys():
 			score = json_data['score']
 			scoreValue = score['value']
 			scoreType = score['type']
-		start = None
-		end = None
-		offset = None
-		if 'start' in json_data.keys():
-			start = json_data['start']
-		if 'end' in json_data.keys():
-			end = json_data['end']
-		if 'offset' in json_data.keys():
-			offset = json_data['offset']
-		return cls(json_data['type'], json_data['text'], start, end, offset, scoreType, scoreValue)
+		return cls(json_data['type'], json_data['text'], offset, start, end, scoreType, scoreValue)
 
 
 class SpeechToTextScore:
 	type = ""
 	value = 0.0
+	
 	def __init__(self, type = None, value = None):
 		self.type = type
 		self.value = value
+		
 	@classmethod
 	def from_json(cls, json_data: dict):
 		return cls(**json_data)

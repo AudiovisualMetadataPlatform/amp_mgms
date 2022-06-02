@@ -23,6 +23,7 @@ def main():
 # Convert kaldi output to standardized json
 def convert(input_audio, kaldi_transcript_json, kaldi_transcript_text, amp_transcript):
 	amp.utils.exception_if_file_not_exist(kaldi_transcript_json)
+	# don't fail the job is transcript text is empty, which could be due to no speech in the audio
 	if not os.path.exists(kaldi_transcript_text):
 		raise Exception("Exception: File " + kaldi_transcript_text + " doesn't exist, the previous command generating it must have failed.")
 	results = SpeechToTextResult()
