@@ -110,7 +110,7 @@ def submit_job(job_name, input_audio, audio_format, bucket, object_name):
             OutputBucketName=bucket,
             Settings={"ShowSpeakerLabels": True, "MaxSpeakerLabels": 10 }
         )
-        logging.debug(f"Waiting for transcription job {job_name} to complete")
+        logging.info(f"Waiting for transcription job {job_name} to complete")
         return 255
     except Exception as e:
         logging.error(f"Failed to submit transcription job: {e}")
@@ -146,8 +146,9 @@ def cleanup_job(job_name, bucket, object_name):
     try:
         s3_client = boto3.client('s3', **amp.utils.get_aws_credentials())        
         s3_client.delete_object(Bucket=bucket, Key=object_name)
+        logging.info(f"Removed {object_name} from S3 bucket {bucket}")
     except Exception as e:
-        logging.warning(f"Cannot remove source file {bucket}/{object_name} for job {job_name}: {e}")
+        logging.warning(f"Cannot remove source file {bucket}/{object_name} for job {job_name}:\n{e}")
         
     # remove the job (and generated data) from AWS
     job = get_job(job_name)
@@ -155,8 +156,9 @@ def cleanup_job(job_name, bucket, object_name):
         try:
             transcribe_client = boto3.client('transcribe', **amp.utils.get_aws_credentials())
             transcribe_client.delete_transcription_job(TranscriptionJobName=job_name)
+            logging.info(f"Removed AWS Transcribe job {job_name}")
         except Exception as e:
-            logging.warning(f"Cannot remove transcribe job {job_name}: {e}")
+            logging.warning(f"Cannot remove AWS Transcribe job {job_name}:\n{e}")
             pass
 
 

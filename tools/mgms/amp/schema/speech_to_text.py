@@ -1,3 +1,5 @@
+import logging
+
 class SpeechToText:
 	def __init__(self, media=None, results=None):
 		if media is None:
@@ -36,7 +38,7 @@ class SpeechToTextResult:
 		self.words = words
 		
 	# Add new word to the word list.
-	def addWord(self, type, text, offset:integer, start:float, end:float, scoreType, scoreValue:float):
+	def addWord(self, type, text, offset:int, start:float, end:float, scoreType, scoreValue:float):
 		newWord = SpeechToTextWord(type, text, offset, start, end, scoreType, scoreValue)
 		self.words.append(newWord)
 		
@@ -52,21 +54,23 @@ class SpeechToTextResult:
 			if offset > 0 and word.type == "pronunciation":
 				offset = offset + 1
 			
-			# point offset to the next char after the current word
+			# populate word offset and point offset to the next char after the current word
 			word.offset = offset
-			length = len(word)						
-			tword = self.transcript[offset : offset + len];
-			offset = offset + len
+			length = len(word.text)
+			offset = offset + length				
+			tword = self.transcript[word.offset : offset];			
 			
 			# give a warning for invalid word type
 			# TODO alternatively, we could fail the job
 			if word.type != "pronunciation" and word.type != "punctuation":
-				log.warning(f"Word {word.text} at offset {offset} is of invalid type {word.type}")
+				logging.warning(f"Word {word.text} at offset {offset} is of invalid type {word.type}")
 
 			# give a warning if the word doesn't match the transcript
 			# TODO alternatively, we could fail the job, or search the word in the transcript starting from the offset
 			if word.text != tword:
-				log.warning(f"Word {word.text} at offset {word.offset} doesn't match the content {tword} in the transcript")
+				logging.warning(f"Word {word.text} at offset {word.offset} doesn't match the content {tword} in the transcript")
+				
+		logging.info(f"Computed offset for {len(self.words)} words with ending offset {offset}.")
 	
 	@classmethod
 	def from_json(cls, json_data: dict):

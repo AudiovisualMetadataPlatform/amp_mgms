@@ -191,9 +191,9 @@ def upload_to_s3(input_video, bucket):
     jobname = str(uuid.uuid1())
     try:
         response = s3_client.upload_file(input_video, bucket, jobname, ExtraArgs={'ACL': 'public-read'})
-        logging.info("Uploaded file " + input_video + " to s3 bucket " + bucket)
+        logging.info(f"Uploaded file {input_video} to S3 bucket {bucket}")
     except Exception as e:
-        logging.error("Failed to upload file " + input_video + " to s3 bucket " + bucket, e)
+        logging.error(f"Failed to upload file {input_video} to S3 bucket {bucket}:\n{e}")
         traceback.print_exc()
         return None
     return jobname
@@ -203,10 +203,9 @@ def delete_from_s3(s3_path, bucket):
     try:
         obj = s3_client.Object(bucket, s3_path)
         obj.delete()
-        logging.info("Deleted file " + s3_path + " from s3 bucket " + bucket)
+        logging.info(f"Deleted file {s3_path} from S3 bucket {bucket}")
     except Exception as e:
-        logging.error("Failed to delete file " + s3_path + " from s3 bucket " + bucket, e)
-        traceback.print_exc()
+        logging.warning(f"Failed to delete file {s3_path} from S3 bucket {bucket}:\n{e}")
 
 
 if __name__ == "__main__":

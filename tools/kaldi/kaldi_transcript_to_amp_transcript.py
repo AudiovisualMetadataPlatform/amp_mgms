@@ -18,7 +18,7 @@ def main():
 	parser.add_argument("amp_transcript", help="Output AMP Transcript file")
 	args = parser.parse_args()
 	convert(args.input_audio, args.kaldi_transcript_json, args.kaldi_transcript_text, args.amp_transcript)
-
+	log.info(f"Successfully converted {args.kaldi_transcript_json} and {args.kaldi_transcript_text} to {args.amp_transcript}.")
 
 # Convert kaldi output to standardized json
 def convert(input_audio, kaldi_transcript_json, kaldi_transcript_text, amp_transcript):
