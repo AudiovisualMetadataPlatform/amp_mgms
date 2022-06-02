@@ -158,7 +158,7 @@ def cleanup_job(job_name, bucket, object_name):
             transcribe_client.delete_transcription_job(TranscriptionJobName=job_name)
             logging.info(f"Removed AWS Transcribe job {job_name}")
         except Exception as e:
-            logging.warning(f"Cannot remove transcribe job {job_name}:\n{e}")
+            logging.warning(f"Cannot remove AWS Transcribe job {job_name}:\n{e}")
             pass
 
 
