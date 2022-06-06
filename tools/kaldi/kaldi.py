@@ -73,7 +73,7 @@ def main():
             subprocess.run(["singularity", "overlay", "create", "--size", str(overlay_size), overlay_file], check=True)
             logging.debug(f"Created overlay file {overlay_file} {overlay_size}MB")
         except subprocess.CalledProcessError as e:
-            logging.error(f"Cannot create the overlay image of {overlay_size} bytes as {overlay_file}: {e}")            
+            logging.exception(f"Cannot create the overlay image of {overlay_size} bytes as {overlay_file}!")            
             exit(1)
 
         # build the singularity command line
@@ -91,8 +91,7 @@ def main():
             try:                
                 shutil.copy(src, dst)
             except Exception as e:
-                logging.error(f'Cannot copy {src} to {dst}')
-                logging.exception(e)        
+                logging.exception(f'Cannot copy {src} to {dst}')     
                 copy_failed = True
         if copy_failed:
             logging.error("Kaldi didn't actually produce the files on a 'successful' run")
