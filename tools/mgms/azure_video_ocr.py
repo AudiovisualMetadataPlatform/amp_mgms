@@ -28,11 +28,11 @@ def main():
 	(input_video, azure_video_index, azure_artifact_ocr, dedupe, dup_gap, amp_vocr, amp_vocr_dedupe) = (args.input_video, args.azure_video_index, args.azure_artifact_ocr, args.dedupe, args.dup_gap, args.amp_vocr, args.amp_vocr_dedupe)
 	
 	# get Azure video indexer json
-	# in case Azure Indexer didn't produce OCR artifact, pass in empty json
-	azure_index_json = amp.utils.read_json_file(azure_video_index) if amp.utils.file_exists(azure_video_index) else None
+	azure_index_json = amp.utils.read_json_file(azure_video_index)
 
 	# get Azure artifact OCR json
-	azure_ocr_json = amp.utils.read_json_file(azure_artifact_ocr)
+	# in case Azure Indexer didn't produce OCR artifact, pass in empty json
+	azure_ocr_json = amp.utils.read_json_file(azure_artifact_ocr) if amp.utils.file_exists(azure_artifact_ocr) else None
 
 	# create AMP Video OCR object
 	vocr = create_amp_vocr(input_video, azure_index_json, azure_ocr_json)
@@ -53,12 +53,12 @@ def create_amp_vocr(input_video, azure_index_json, azure_ocr_json):
 	# create the resolution object
 	# Recent versions of azure return the width/height for every frame.  
 	# Let"s assume that the data for the first image is indicative of the rest.
-	width = azure_ocr_json["Results"][0]["Ocr"]["pages"][0]["width"]
-	height = azure_ocr_json["Results"][0]["Ocr"]["pages"][0]["height"]
+	width = azure_ocr_json["Results"][0]["Ocr"]["pages"][0]["width"] if azure_ocr_json else 0
+	height = azure_ocr_json["Results"][0]["Ocr"]["pages"][0]["height"] if azure_ocr_json else 0
 	resolution = VideoOcrResolution(width, height)
 
 	# create the media object
-	frameRate = azure_ocr_json["Fps"]
+	frameRate = azure_ocr_json["Fps"] if azure_ocr_json else 0
 	duration = azure_index_json["summarizedInsights"]["duration"]["seconds"]
 	numFrames = int(frameRate * duration)
 	media  = VideoOcrMedia(input_video, duration, frameRate, numFrames, resolution)
@@ -67,8 +67,8 @@ def create_amp_vocr(input_video, azure_index_json, azure_ocr_json):
 	# we can assume that there is only one video in the Azure indexer json
 	# in case Azure Indexer didn't include OCR insight, generate empty texts
 	insights = azure_index_json["videos"][0]["insights"]
-	ocr_json = insights["ocr"] if insight.has_key("ocr") else None
-	texts = createVocrTexts(ocr_json) if ocr else []
+	ocr_json = insights["ocr"] if insights and "ocr" in insights.keys() else None
+	texts = createVocrTexts(ocr_json) if ocr_json else []
 	
 	# Create AMP VOCR frames from Azure OCR artifact
 	# in case Azure Indexer didn't produce OCR artifact, generate empty frames
