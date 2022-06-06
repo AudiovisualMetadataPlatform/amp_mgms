@@ -95,7 +95,7 @@ def main():
         # However, the exception could also be caused by system errors, in which case job should fail.
         # TODO should we fail the job or generate an empty OCR file ?
         except:
-            logging.exception(f"Failed to download OCR artifact to {azure_artifact_ocr}", e)    
+            logging.exception(f"Failed to download OCR artifact to {azure_artifact_ocr}!")    
     
     delete_from_s3(s3_path, s3_bucket)
     logging.info("Finished.")
@@ -193,7 +193,7 @@ def upload_to_s3(input_video, bucket):
         response = s3_client.upload_file(input_video, bucket, jobname, ExtraArgs={'ACL': 'public-read'})
         logging.info(f"Uploaded file {input_video} to S3 bucket {bucket}")
     except Exception as e:
-        logging.error(f"Failed to upload file {input_video} to S3 bucket {bucket}:\n{e}")
+        logging.exception(f"Failed to upload file {input_video} to S3 bucket {bucket}!")
         traceback.print_exc()
         return None
     return jobname
