@@ -95,7 +95,7 @@ def submit_job(job_name, input_audio, audio_format, bucket, object_name):
         logging.info(f"Uploading file {str(input_audio)} to {s3_uri}")
         response = s3_client.upload_file(str(input_audio), bucket, object_name) #, ExtraArgs={'ACL': 'public-read'})        
     except Exception as e:
-        logging.exception(f"Failed to uploading file {input_audio}!")
+        logging.exception(f"Failed to upload file {input_audio}!")
         return 1
     
     # transcribe the file
