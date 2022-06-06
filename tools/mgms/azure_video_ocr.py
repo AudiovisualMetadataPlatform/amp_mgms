@@ -67,8 +67,8 @@ def create_amp_vocr(input_video, azure_index_json, azure_ocr_json):
 	# we can assume that there is only one video in the Azure indexer json
 	# in case Azure Indexer didn't include OCR insight, generate empty texts
 	insights = azure_index_json["videos"][0]["insights"]
-	ocr = insights["ocr"] if insight.has_key("ocr") else None
-	texts = createVocrTexts(ocr) if ocr else []
+	ocr_json = insights["ocr"] if insight.has_key("ocr") else None
+	texts = createVocrTexts(ocr_json) if ocr else []
 	
 	# Create AMP VOCR frames from Azure OCR artifact
 	# in case Azure Indexer didn't produce OCR artifact, generate empty frames
