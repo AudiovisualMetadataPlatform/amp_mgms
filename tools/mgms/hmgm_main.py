@@ -7,16 +7,15 @@ import sys
 import traceback
 import shutil
 import argparse
+import logging
 
+import amp.logger
 import amp.utils
-
 from amp.task.jira import TaskJira
 from amp.task.openproject import TaskOpenproject 
 from amp.task.redmine import TaskRedmine
 from amp.task.manager import TaskManager
 
-import logging
-import amp.logger
 
 # It's assumed that all HMGMs generate the output file in the same directory as the input file with ".completed" suffix added to the original filename
 HMGM_OUTPUT_SUFFIX = ".complete"
@@ -46,7 +45,6 @@ def main():
 	args = parser.parse_args()
 	logging.info(f"Starting with args {args}")
 	(task_type, input_json, output_json, task_json, context_json) = (args.task_type, args.input_json, args.output_json, args.task_json, args.context_json)
-
 
 	# using output instead of input filename as the latter is unique while the former could be used by multiple jobs 
 

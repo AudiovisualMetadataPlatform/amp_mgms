@@ -6,8 +6,8 @@
     <requirement type="package" version="3.4">ffmpeg</requirement>
   </requirements>
   <command detect_errors="exit_code">
-  	<!-- '$__tool_directory__/mgm_python.sif' '$__tool_directory__/contact_sheets.py' '$input_video' '$type' '$frame_interval' '$frame_quantity' '$amp_shots' '$amp_faces' '$contact_sheet' '$number_of_columns' '$photo_width' '$margin' '$padding' -->
-    '$__tool_directory__/mgm_python.sif' '$__tool_directory__/deprecate_contact_sheets.py' '$input_video' '$type' '$contact_sheet' --frame_interval '$frame_interval' --frame_quantity '$frame_quantity' --amp_shots '$amp_shots' --amp_facial_recognition '$amp_faces' --number_of_columns '$number_of_columns' --photow '$photo_width' --margin '$margin' --padding '$padding'
+  	<!-- '$__tool_directory__/contact_sheets.py' '$input_video' '$type' '$frame_interval' '$frame_quantity' '$amp_shots' '$amp_faces' '$contact_sheet' '$number_of_columns' '$photo_width' '$margin' '$padding' -->
+    '$__tool_directory__/deprecate_contact_sheets.py' '$input_video' '$type' '$contact_sheet' --frame_interval '$frame_interval' --frame_quantity '$frame_quantity' --amp_shots '$amp_shots' --amp_facial_recognition '$amp_faces' --number_of_columns '$number_of_columns' --photow '$photo_width' --margin '$margin' --padding '$padding'
   </command>
   <inputs>
 	<param name="input_video" type="data" format="video" label="Input Video" help="An input video file for OCR"/>

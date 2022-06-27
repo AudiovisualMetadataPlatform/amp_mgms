@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env mgm_python.sif
 import sys
 import logging
 import os
