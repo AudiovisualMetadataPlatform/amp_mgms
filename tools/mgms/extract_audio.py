@@ -1,4 +1,4 @@
-#!/usr/bin/env mgm_python.sif
+#!/bin/env mco_python.sif
 # 
 # Extract audio from a media file
 #

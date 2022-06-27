@@ -8,7 +8,7 @@
     <!-- <requirement type="package" version="4.53.0">tqdm</requirement>  -->
   </requirements>
   <command detect_errors="exit_code"> 
-  	$__tool_directory__/dlib_face_recognition.py '$input_video' '$training_photos' '$reuse_trained' '$tolerance' '$amp_faces' 
+  	$__tool_directory__/mgm_python.sif $__tool_directory__/dlib_face_recognition.py '$input_video' '$training_photos' '$reuse_trained' '$tolerance' '$amp_faces' 
   </command>
   <inputs>
 	<param name="input_video" type="data" format="video" label="Input Video" help="An input video file for facial recognition"/>

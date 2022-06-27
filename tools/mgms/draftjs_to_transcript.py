@@ -1,4 +1,4 @@
-#!/usr/bin/env mgm_python.sif
+#!/usr/bin/env python3
 import difflib
 #from difflib_data import *
 

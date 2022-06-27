@@ -6,7 +6,7 @@
   </requirements>
   <command detect_errors="exit_code">
     '$__tool_directory__/transcript_to_draftjs.py' '$amp_transcript_uncorrected' '$amp_diarization' '$draftjs_uncorrected';
-    '$__tool_directory__/hmgm_main.py' 'Transcript' '$draftjs_uncorrected' '$draftjs_corrected' '$task_info' '$context_json';
+    '$__tool_directory__/mgm_python.sif' '$__tool_directory__/hmgm_main.py' 'Transcript' '$draftjs_uncorrected' '$draftjs_corrected' '$task_info' '$context_json';
     '$__tool_directory__/draftjs_to_transcript.py' '$draftjs_corrected' '$amp_transcript_uncorrected' '$amp_transcript_corrected'
   </command>
   <inputs>

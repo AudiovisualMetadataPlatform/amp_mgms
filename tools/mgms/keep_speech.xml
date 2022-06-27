@@ -4,7 +4,7 @@
 		<requirement type="package" version="3.8">python</requirement>
     </requirements>
   <command detect_errors="exit_code">
-  	'$__tool_directory__/keep_speech.py' '$original_audio' '$amp_segments' 'music' '$speech_audio' '$kept_segments'
+  	'$__tool_directory__/mgm_python.sif' '$__tool_directory__/keep_speech.py' '$original_audio' '$amp_segments' 'music' '$speech_audio' '$kept_segments'
   </command>
   <inputs>
     <!-- should be wave data type -->

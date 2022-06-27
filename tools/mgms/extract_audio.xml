@@ -5,7 +5,7 @@
     <requirement type="package" version="3.4">ffmpeg</requirement>
   </requirements>
   <command detect_errors="exit_code">
-  	$__tool_directory__/extract_audio.py '$input_av' '$rate' '$channels' '$sample_format' '$audio_extracted'    
+  	$__tool_directory__/mgm_python.sif $__tool_directory__/extract_audio.py '$input_av' '$rate' '$channels' '$sample_format' '$audio_extracted'    
   </command>
   <inputs>
     <param name="input_av" type="data" format="av" label="Input Audio/Video" help="Input audio/video file"/>
