@@ -69,7 +69,7 @@ def main():
 		# otherwise, if HMGM task hasn't been created, create one, exit 1 to get requeued	
 		elif not task_created(task_json):
 			task = create_task(config, task_type, context, input_json, output_json, task_json)
-			logging.info(f"Successfully created HMGM task {task.key}, uncorrected: {input_json}, corrected: {output_json}, task: {task_json}")
+			logging.info(f"Successfully created HMGM task {task.key}... uncorrected: {input_json}, corrected: {output_json}, task: {task_json}")
 			sys.stdout.flush()
 			exit(255) 
 		# otherwise, check if HMGM task is completed
@@ -78,18 +78,18 @@ def main():
 			# if HMGM task is completed, close the task and move editor output to output file, and done
 			if (editor_output):
 				task = close_task(config, context, editor_output, output_json, task_json)
-				logging.info(f"Successfully closed HMGM task {task.key}, uncorrected: {input_json}, corrected: {output_json}, task: {task_json}")
+				logging.info(f"Successfully closed HMGM task {task.key}. uncorrected: {input_json}, corrected: {output_json}, task: {task_json}")
 				sys.stdout.flush()
 				# implicitly exit 0 as the current command completes
 			# otherwise exit 255 to get requeued
 			else:
-				logging.info(f"Waiting for HMGM task {task.key} ...  uncorrected: {input_json}, corrected: {output_json}, task: {task_json}")
+				logging.info(f"Waiting for HMGM task {task.key}... uncorrected: {input_json}, corrected: {output_json}, task: {task_json}")
 				sys.stdout.flush()
 				exit(255)        
 	# upon exception, create error file to notify the following conversion command to fail, and exit 1 (error) to avoid requene
 	except Exception as e:
 		amp.utils.create_err_file(output_json)
-		logging.error("Failed to handle HMGM task: uncorrected JSON: " + input_json + ", corrected JSON: " + output_json, e)
+		logging.error(f"Failed to handle HMGM task {task.key}. uncorrected: {input_json}, corrected: {output_json}, task: {task_json}", e)
 		traceback.print_exc()
 		sys.stdout.flush()
 		exit(1)
