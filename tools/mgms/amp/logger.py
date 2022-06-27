@@ -100,11 +100,13 @@ def setup_logging():
 
     # set up the file logger (if the logs directory exists next to the script)
     log_path = Path(sys.path[0], "logs")
-    if log_path.exists():
-        file = TimedRotatingFileHandler(log_path / "mgms.log", when='midnight', encoding='utf-8')
-        file.setLevel(logging_level)
-        file.setFormatter(formatter)
-        logger.addHandler(file)
+    if not log_path.exists():
+        log_path.mkdir()
+
+    file = TimedRotatingFileHandler(log_path / "mgms.log", when='midnight', encoding='utf-8')
+    file.setLevel(logging_level)
+    file.setFormatter(formatter)
+    logger.addHandler(file)
 
 
 setup_logging()
