@@ -25,7 +25,7 @@ def main():
     parser.add_argument("original_transcript")
     parser.add_argument("to_transcript")
     args = parser.parse_args()
-    logging.info(f"Starting with args {args}")
+    logging.debug(f"Starting with args {args}")
     (from_draftjs, original_transcript, to_transcript) = (args.from_draftjs, args.original_transcript, args.to_transcript)
 
     # using output instead of input filename as the latter is unique while the former could be used by multiple jobs     
@@ -33,7 +33,7 @@ def main():
         # if from_draftjs is in error raise exception to notify HMGM job runner to fail the job
          # otherwise if from_draftjs doesn't exist yet, exit to requeue (keep waiting)
         amp.utils.exit_if_file_not_ready(from_draftjs)
-        logging.info("Converting DraftJs " + from_draftjs + " to Transcript " + to_transcript)
+        logging.info(f"Converting DraftJs {from_draftjs} to Transcript {to_transcript}")
 
         with open(from_draftjs) as json_file:
             d = json.load(json_file)
@@ -132,12 +132,11 @@ def main():
     
         # Write the output
         amp.utils.write_json_file(stt, to_transcript)
-        logging.info("Successfully converted from DraftJs " + from_draftjs + " to Transcript " + to_transcript)
-        logging.info("Finished.")
+        logging.info(f"Successfully converted from DraftJs {from_draftjs} to Transcript {to_transcript}")
         # as the last command in HMGM, implicitly exit 0 here to let the whole job complete in success
     except Exception as e:
         # as the last command in HMGM, exit in error to let the whole job fail
-        logging.error("Failed to convert from DraftJs " + from_draftjs + " to Transcript " + to_transcript, e)
+        logging.error(f"Failed to convert from DraftJs {from_draftjs} to Transcript {to_transcript}", e)
         traceback.print_exc()
         sys.stdout.flush()
         exit(1)            

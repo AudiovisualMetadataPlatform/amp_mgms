@@ -23,15 +23,12 @@ def main():
     parser.add_argument("to_iiif", help="json file fed to HMGM NER editor in IIIF format to convert to")
     parser.add_argument("context_json", help="context info as json string needed for creating HMGM tasks")
     args = parser.parse_args()
-    logging.info(f"Starting with args {args}")
+    logging.debug(f"Starting with args {args}")
     (from_ner, to_iiif, context_json) = (args.from_ner, args.to_iiif, args.context_json)
-
-
 
 #     context_json = '{ "submittedBy": "yingfeng", "unitId": "1", "unitName": "Test Unit", "collectionId": "2", "collectionName": "Test Collection", "taskManager": "Jira", "itemId": "3", "itemName": "Test Item", "primaryfileId": "4", "primaryfileName": "Test primaryfile", "primaryfileUrl": "http://techslides.com/demos/sample-videos/small.mp4", "primaryfileMediaInfo": "/tmp/hmgm/mediaInfo.json", "workflowId": "123456789", "workflowName": "Test Workflow" }'
         
     # using output instead of input filename as the latter is unique while the former could be used by multiple jobs 
-
     try:
         # exit to requeue here if NER->IIIF conversion already done
         amp.utils.exit_if_file_generated(to_iiif)
@@ -50,14 +47,13 @@ def main():
         with open(to_iiif, "w") as iiif_file: 
             json.dump(iiif_data, iiif_file) 
         
-        logging.info("Successfully converted from NER " + from_ner + " to IIIF: " + to_iiif)
+        logging.info(f"Successfully converted from NER {from_ner} to IIIF {to_iiif}")
         sys.stdout.flush()
         # implicitly exit 0 as the current command completes
-        logging.info("Finished.")
     except Exception as e:
         # empty out to_iiif to tell the following HMGM task command to fail
         amp.utils.empty_file(to_iiif)
-        logging.error("Error: Failed to convert from NER " + from_ner + " to IIIF: " + to_iiif, e)
+        logging.error(f"Failed to convert from NER {from_ner} to IIIF {to_iiif}", e)
         traceback.print_exc()
         sys.stdout.flush()
         exit(1)
