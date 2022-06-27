@@ -43,11 +43,10 @@ def main():
 	parser.add_argument("task_json", help="json file storing information about the HMGM task, such as ticket # etc")
 	parser.add_argument("context_json", help="context info as json string needed for creating HMGM tasks")
 	args = parser.parse_args()
-	logging.info(f"Starting with args {args}")
+	logging.debug(f"Starting with args {args}")
 	(task_type, input_json, output_json, task_json, context_json) = (args.task_type, args.input_json, args.output_json, args.task_json, args.context_json)
 
 	# using output instead of input filename as the latter is unique while the former could be used by multiple jobs 
-
 	try:
 		# clean up previous error file as needed in case this is a rerun of a failed job
 		amp.utils.cleanup_err_file(output_json)
@@ -56,7 +55,7 @@ def main():
 		# (this means the conversion command failed before hmgm task command)
 		amp.utils.exception_if_file_not_exist(input_json)
 		
-		logging.info("Handling HMGM task: uncorrected JSON: " + input_json + ", corrected JSON: " + output_json + ", task JSON: " + task_json)				
+		logging.debug(f"Handling HMGM task: uncorrected JSON: {input_json}, corrected JSON: {output_json}, task JSON: {task_json}")				
         # Load basic HMGM configuration based from the property file under the given root directory
 		config = amp.utils.get_config()
 		context = json.loads(context_json)
@@ -64,13 +63,13 @@ def main():
 		
 		# if input_json has empty data (not empty file), no need to go through HMGM task, just copy it to the output file, and done
 		if empty_input(input_json, task_type):
-			logging.info("Input file " + input_json + " for HMGM " + task_type + " editor contains empty data, skipping HMGM task and copy the input to the output")
+			logging.info(f"Input file {input_json} for HMGM {task_type} editor contains empty data, skipping HMGM task and copy the input to the output")
 			shutil.copy(input_json, output_json)
             # implicitly exit 0 as the current command completes
 		# otherwise, if HMGM task hasn't been created, create one, exit 1 to get requeued	
 		elif not task_created(task_json):
 			task = create_task(config, task_type, context, input_json, output_json, task_json)
-			logging.info("Successfully created HMGM task " + task.key + ", exit 255 to requeue")
+			logging.info(f"Successfully created HMGM task {task.key}, uncorrected: {input_json}, corrected: {output_json}, task: {task_json}")
 			sys.stdout.flush()
 			exit(255) 
 		# otherwise, check if HMGM task is completed
@@ -79,13 +78,12 @@ def main():
 			# if HMGM task is completed, close the task and move editor output to output file, and done
 			if (editor_output):
 				task = close_task(config, context, editor_output, output_json, task_json)
-				logging.info("Successfully closed HMGM task " + task.key)
-				logging.info("Finished.")
+				logging.info(f"Successfully closed HMGM task {task.key}, uncorrected: {input_json}, corrected: {output_json}, task: {task_json}")
 				sys.stdout.flush()
 				# implicitly exit 0 as the current command completes
 			# otherwise exit 255 to get requeued
 			else:
-				logging.debug("Waiting for HMGM task to complete ... exit 255 to requeue")
+				logging.info(f"Waiting for HMGM task {task.key} ...  uncorrected: {input_json}, corrected: {output_json}, task: {task_json}")
 				sys.stdout.flush()
 				exit(255)        
 	# upon exception, create error file to notify the following conversion command to fail, and exit 1 (error) to avoid requene
