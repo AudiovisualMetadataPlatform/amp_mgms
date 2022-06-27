@@ -1,4 +1,4 @@
-#!/bin/env python3
+#!/usr/bin/env mgm_python.sif
 #
 # Extract the audio stream from an a/v file as a wav file.
 
