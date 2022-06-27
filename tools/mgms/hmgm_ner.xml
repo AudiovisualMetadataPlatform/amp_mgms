@@ -6,7 +6,7 @@
   </requirements>
   <command detect_errors="exit_code">
 	'$__tool_directory__/ner_to_iiif.py' '$amp_entities_uncorrected' '$iiif_uncorrected' '$context_json';
-	'$__tool_directory__/hmgm_main.py' 'NER' '$iiif_uncorrected' '$iiif_corrected' '$task_info' '$context_json';
+	'$__tool_directory__/mgm_python.sif' '$__tool_directory__/hmgm_main.py' 'NER' '$iiif_uncorrected' '$iiif_corrected' '$task_info' '$context_json';
 	'$__tool_directory__/iiif_to_ner.py' '$iiif_corrected' '$amp_entities_uncorrected' '$amp_entities_corrected'
   </command>                                    
   <inputs>

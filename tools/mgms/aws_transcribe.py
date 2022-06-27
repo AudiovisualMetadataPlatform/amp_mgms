@@ -1,4 +1,4 @@
-#!/usr/bin/env mgm_python.sif
+#!/bin/env mgm_python.sif
 
 # Script to run a aws transcribe job
 # Using https://docs.aws.amazon.com/code-samples/latest/catalog/python-transcribe-transcribe_basics.py.html

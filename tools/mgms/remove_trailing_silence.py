@@ -1,4 +1,4 @@
-#!/usr/bin/env mgm_python.sif
+#!/bin/env mco_python.sif
 #
 # Simple singularity container to extract an audio stream from an a/v file.
 #
