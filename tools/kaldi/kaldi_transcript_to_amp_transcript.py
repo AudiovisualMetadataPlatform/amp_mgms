@@ -1,29 +1,39 @@
 #!/usr/bin/env python3
 
-import json
 import sys
 import os
 import argparse
 
 import amp.utils
+from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult, SpeechToTextWord, SpeechToTextScore
 
-from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult
 
+def main():
+	#(input_audio, kaldi_transcript_json, kaldi_transcript_text, amp_transcript) = sys.argv[1:5]
+	parser = argparse.ArgumentParser()
+	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
+	parser.add_argument("input_audio", help="Input audio file")
+	parser.add_argument("kaldi_transcript_json", help="Input Kaldi Transcript JSON file")
+	parser.add_argument("kaldi_transcript_text", help="Input Kaldi Transcript Text file")
+	parser.add_argument("amp_transcript", help="Output AMP Transcript file")
+	args = parser.parse_args()
+	convert(args.input_audio, args.kaldi_transcript_json, args.kaldi_transcript_text, args.amp_transcript)
+	logging.info(f"Successfully converted {args.kaldi_transcript_json} and {args.kaldi_transcript_text} to {args.amp_transcript}.")
 
 # Convert kaldi output to standardized json
-def convert(media_file, kaldi_file, kaldi_transcript_file, output_json_file):
-	amp.utils.exception_if_file_not_exist(kaldi_file)
-	if not os.path.exists(kaldi_transcript_file):
-		raise Exception("Exception: File " + kaldi_transcript_file + " doesn't exist, the previous command generating it must have failed.")
+def convert(input_audio, kaldi_transcript_json, kaldi_transcript_text, amp_transcript):
+	amp.utils.exception_if_file_not_exist(kaldi_transcript_json)
+	# don't fail the job is transcript text is empty, which could be due to no speech in the audio
+	if not os.path.exists(kaldi_transcript_text):
+		raise Exception("Exception: File " + kaldi_transcript_text + " doesn't exist, the previous command generating it must have failed.")
 	results = SpeechToTextResult()
 
 	# Open the kaldi json
-	with open(kaldi_file) as json_file:
-		data = json.load(json_file)
+	data = amp.utils.read_json_file(kaldi_transcript_json)
 
 	# Get the kaldi transcript
-	transcript = open(kaldi_transcript_file, "r")	
-	results.transcript = transcript.read()
+	transcript_file = open(kaldi_transcript_text, "r")	
+	results.transcript = transcript_file.read()
 
 	# Get a list of words
 	words = data["words"]
@@ -31,31 +41,24 @@ def convert(media_file, kaldi_file, kaldi_transcript_file, output_json_file):
 
 	# For each word, add a word to our results
 	for w in words:
-		time = float(w["time"])
-		end = time + float(w["duration"])
+		start = float(w["time"])
+		end = start + float(w["duration"])
 		# Keep track of the last time and use it as the duration
 		if end > duration:
 			duration = end
-		results.addWord("", time, end, w["word"], None, None)
+		results.addWord("pronunciation", w["word"], None, start, end, None, None)
 
-	# Create the media objeect
-	media = SpeechToTextMedia(duration, media_file)
+	# compute offset for all words in the list
+	results.compute_offset();
+	
+	# Create the media object
+	media = SpeechToTextMedia(duration, input_audio)
 
 	# Create the final object
-	outputFile = SpeechToText(media, results)
+	stt = SpeechToText(media, results)
 
 	#write the output
-	amp.utils.write_json_file(outputFile, output_json_file)
-
-def main():
-	#(media_file, kaldi_file, kaldi_transcript_file, output_json_file) = sys.argv[1:5]
-	parser = argparse.ArgumentParser()
-	parser.add_argument("media_file")
-	parser.add_argument("kaldi_file")
-	parser.add_argument("kaldi_transcript_file")
-	parser.add_argument("output_json_file")
-	args = parser.parse_args()
-	convert(args.media_file, args.kaldi_file, args.kaldi_transcript_file, args.output_json_file)
+	amp.utils.write_json_file(stt, amp_transcript)
 
 
 if __name__ == "__main__":

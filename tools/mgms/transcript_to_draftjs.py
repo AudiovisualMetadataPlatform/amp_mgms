@@ -20,14 +20,14 @@ def main():
 	parser.add_argument("diarization_json")
 	parser.add_argument("to_draftjs")
 	args = parser.parse_args()
-	logging.info(f"Starting with args {args}")
+	logging.debug(f"Starting with args {args}")
 	(from_transcript, diarization_json, to_draftjs) = (args.from_transcript, args.diarization_json, args.to_draftjs)
 
 	# using output instead of input filename as the latter is unique while the former could be used by multiple jobs 
 	try:
 		# exit to requeue here if Transcript->DraftJs conversion already done
 		amp.utils.exit_if_file_generated(to_draftjs)
-		logging.info("Converting from Transcript " + from_transcript + " to DraftJs: " + to_draftjs)	   	
+		logging.info(f"Converting from Transcript {from_transcript} to DraftJs {to_draftjs}")
 		
 		if diarization_json is not None and diarization_json!='None':
 			fill_speakers(diarization_json)
@@ -118,7 +118,7 @@ def main():
 
 					# Create the word
 					# if score is present for word and score type is confidence, use the score value; otherwise default to 1.0
-					score_value = word['score']['scoreValue'] if 'score' in word and word['score']['type'] == 'confidence' else 1.0 
+					score_value = word['score']['value'] if 'score' in word and word['score']['type'] == 'confidence' else 1.0 
 					newWord = {
 						'start': start,
 						'end': word['end'],
@@ -165,16 +165,13 @@ def main():
 			# Write the json
 			write_to_draftjs(out_json, to_draftjs)
 				
-		logging.info("Successfully converted from Transcript " + from_transcript + " to DraftJs: " + to_draftjs)
+		logging.info(f"Successfully converted from Transcript {from_transcript} to DraftJs {to_draftjs}")
 		# implicitly exit 0 as the current command completes
 	except Exception as e:
 		# empty out to_draftjs to tell the following HMGM task command to fail
 		amp.utils.empty_file(to_draftjs)
-		logging.error("Error: Failed to convert from Transcript " + from_transcript + " to DraftJs: " + to_draftjs, e)
-		traceback.print_exc()
-		sys.stdout.flush()		
+		logging.exception(f"Failed to convert from Transcript {from_transcript} to DraftJs {to_draftjs}")	
 		exit(1)
-	logging.info("Finished.")
 	
 def createBlock(depth, data, entityRanges, transcript):
 	return {
@@ -228,6 +225,7 @@ def write_to_draftjs(input_json, json_file):
 	# Serialize the segmentation object
 	with open(json_file, 'w') as outfile:
 		json.dump(input_json, outfile, default=lambda x: x.__dict__)
+
 
 if __name__ == "__main__":
 	main()

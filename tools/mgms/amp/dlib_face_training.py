@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import os
 import os.path
 import traceback
@@ -100,8 +98,7 @@ def retrieve_trained_results(training_photos):
         else:
             logging.warning("Warning: Could not find previously trained model " + model_file + " for training photos " + training_photos + ", will retrain")
     except Exception as e:
-        logging.error("Failed to read previously trained model from " + model_file + " for training photos " + training_photos + ", will retrain", e)
-        traceback.print_exc()
+        logging.exception("Failed to read previously trained model from " + model_file + " for training photos " + training_photos + ", will retrain")
     return known_names, known_faces
     
     
@@ -134,8 +131,7 @@ def unzip_training_photos(training_photos, facial_dir):
         logging.info("Successfully unziped training photos " + training_photos + " into directory " + dirpath)
         return dirpath
     except Exception as e:
-        logging.error("Failed to unzip training photos " + training_photos + "into directory " + dirpath, e)
-        traceback.print_exc()
+        logging.exception("Failed to unzip training photos " + training_photos + "into directory " + dirpath)
         exit(1)
         # if training photos can't be unzipped, FR process can't continue, exit in error 
     
@@ -147,8 +143,7 @@ def save_trained_model(model, training_photos):
         pickle.dump(model, open(model_file, "wb"))        
         logging.info("Successfully saved model trained from training photos " + training_photos + " to file " + model_file)
     except Exception as e:
-        logging.error("Failed to save model trained from training photos " + training_photos + " to file " + model_file, e)
-        traceback.print_exc()
+        logging.exception("Failed to save model trained from training photos " + training_photos + " to file " + model_file)
         # do not exit since FR process can still continue even if trained model fails to be saved
             
 
@@ -158,8 +153,7 @@ def cleanup_training_photos(photos_dir):
         shutil.rmtree(photos_dir)
         logging.info("Successfully cleaned up training photos directory " + photos_dir)
     except Exception as e:
-        logging.error("Failed to clean up training photos directory " + photos_dir, e)  
-        traceback.print_exc()
+        logging.exception("Failed to clean up training photos directory " + photos_dir)  
         # do not exit since FR process can still continue even if unzipped training photos fails to be cleaned up   
         
         

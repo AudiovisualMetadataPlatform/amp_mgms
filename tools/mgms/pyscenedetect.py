@@ -22,33 +22,32 @@ import logging
 import amp.logger
 
 def main():
-    #(input_file, threshold, output_json, output_csv) = sys.argv[1:5]
+    #(input_video, threshold, amp_shots, frame_stats) = sys.argv[1:5]
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
-    parser.add_argument("input_file")
-    parser.add_argument("threshold")
-    parser.add_argument("output_json")
-    parser.add_argument("output_csv")
+    parser.add_argument("input_video", help="Input video file")
+    parser.add_argument("threshold", type=int, default=30, help="Detection sensitivity threshold")
+    parser.add_argument("amp_shots", help="AMP Shots Generated")
+    parser.add_argument("frame_stats", help="Frame Statistics")
     args = parser.parse_args()
     logging.info(f"Starting with args {args}")
-    (input_file, threshold, output_json, output_csv) = (args.input_file, args.threshold, args.output_json, args.output_csv)
+    (input_video, threshold, amp_shots, frame_stats) = (args.input_video, args.threshold, args.amp_shots, args.frame_stats)
 
     # Get a list of scenes as tuples (start, end) 
-    if threshold is None or isinstance(threshold, int) == False:
-        threshold = 30
-        logging.info("Setting threshold to default because it wasn't a valid integer")
-
-    shots = find_shots(input_file, output_csv, threshold)
+#     if threshold is None or isinstance(threshold, int) == False:
+#         threshold = 30
+#         logging.info("Setting threshold to default because it wasn't a valid integer")
+    shots = find_shots(input_video, frame_stats, threshold)
 
     # Print for debugging purposes
     for shot in shots:
         logging.debug("start: " + str(shot[0]) + "  end: " + str(shot[1]))
     
     # Convert the result to json,
-    shots_dict = convert_to_json(shots, input_file)
+    shots_dict = convert_to_json(shots, input_video)
     
     # save the output json file    
-    amp.utils.write_json_file(shots_dict, output_json)
+    amp.utils.write_json_file(shots_dict, amp_shots)
     logging.info("Finished.")
 
 # Get the duration based on the last output
@@ -97,8 +96,7 @@ def find_shots(video_path, stats_file, threshold):
             with open(stats_file, 'w') as stats_file:
                 stats_manager.save_to_csv(stats_file, base_timecode)
     except Exception as err:
-        logging.error("Failed to find shots for: video: " + video_path + ", stats: " + stats_file + ", threshold: " + threshold, err)
-        traceback.print_exc()        
+        logging.exception(f"Failed to find shots for: video: {video_path}, stats: {stats_file}, threshold: {threshold}")   
     finally:
         video_manager.release()
 
@@ -109,11 +107,11 @@ def get_seconds_from_timecode(time_string):
     a_timedelta = dt - datetime.datetime(1900, 1, 1)
     return a_timedelta.total_seconds()
 
-def convert_to_json(shots, input_file):
+def convert_to_json(shots, input_video):
     duration = get_duration(shots)
     outputDict = {
         "media": {
-            "filename": input_file,
+            "filename": input_video,
             "duration": duration
         },
         "shots": []

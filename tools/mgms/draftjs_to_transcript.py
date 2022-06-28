@@ -25,7 +25,7 @@ def main():
     parser.add_argument("original_transcript")
     parser.add_argument("to_transcript")
     args = parser.parse_args()
-    logging.info(f"Starting with args {args}")
+    logging.debug(f"Starting with args {args}")
     (from_draftjs, original_transcript, to_transcript) = (args.from_draftjs, args.original_transcript, args.to_transcript)
 
     # using output instead of input filename as the latter is unique while the former could be used by multiple jobs     
@@ -33,7 +33,7 @@ def main():
         # if from_draftjs is in error raise exception to notify HMGM job runner to fail the job
          # otherwise if from_draftjs doesn't exist yet, exit to requeue (keep waiting)
         amp.utils.exit_if_file_not_ready(from_draftjs)
-        logging.info("Converting DraftJs " + from_draftjs + " to Transcript " + to_transcript)
+        logging.info(f"Converting DraftJs {from_draftjs} to Transcript {to_transcript}")
 
         with open(from_draftjs) as json_file:
             d = json.load(json_file)
@@ -68,7 +68,8 @@ def main():
                     if text[-1] in string.punctuation: #[',','.','!','?']:
                         punctuation = text[-1]
                         text = text[0:-1]
-                        
+                if "offset" in entity["data"].keys():
+                    offset = entity["data"]["offset"]                    
                 if "type" in entity:
                     entity_type = entity["type"]
                     if entity_type == "WORD":
@@ -84,9 +85,9 @@ def main():
                     else:
                         word_type = entity_type
 
-            results.addWord(word_type, start_time, end_time, text, "confidence",confidence)   
+            results.addWord(word_type, text, offset, start_time, end_time, "confidence",confidence)   
             if len(punctuation) > 0:
-                results.addWord('punctuation', None, None, punctuation, "confidence",0.0)
+                results.addWord('punctuation', punctuation, offset, None, None, "confidence",0.0)
 
         results.transcript = transcript
         words = results.words
@@ -112,13 +113,13 @@ def main():
             elif ele.startswith("- "):
                 i += 1
             elif len(ele) > 2 and ele[0:2] == "+ ":
-                words[j].score.scoreValue = 1.0
+                words[j].score.value = 1.0
                 j += 1
             elif ele[0:1] == " " and words[j].text == original_items[i]["text"]:
                 if ("score" in original_items[i]):
-                    words[j].score.scoreValue = float(original_items[i]["score"]["scoreValue"])
+                    words[j].score.value = float(original_items[i]["score"]["value"])
                 else:
-                    words[j].score.scoreValue = 1.0 # default score to 1.0 if not existing originally    
+                    words[j].score.value = 1.0 # default score to 1.0 if not existing originally    
                 i += 1
                 j += 1
             logging.debug("i: " + str(i) + " j:" + str(j))
@@ -131,14 +132,11 @@ def main():
     
         # Write the output
         amp.utils.write_json_file(stt, to_transcript)
-        logging.info("Successfully converted from DraftJs " + from_draftjs + " to Transcript " + to_transcript)
-        logging.info("Finished.")
+        logging.info(f"Successfully converted from DraftJs {from_draftjs} to Transcript {to_transcript}")
         # as the last command in HMGM, implicitly exit 0 here to let the whole job complete in success
     except Exception as e:
         # as the last command in HMGM, exit in error to let the whole job fail
-        logging.error("Failed to convert from DraftJs " + from_draftjs + " to Transcript " + to_transcript, e)
-        traceback.print_exc()
-        sys.stdout.flush()
+        logging.exception(f"Failed to convert from DraftJs {from_draftjs} to Transcript {to_transcript}")
         exit(1)            
 
 

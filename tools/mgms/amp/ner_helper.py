@@ -1,12 +1,11 @@
-#!/usr/bin/env python3
-
 import json
 import traceback
-
-from amp.schema.entity_extraction import EntityExtraction, EntityExtractionMedia
-from amp.schema.speech_to_text import SpeechToText
-import amp.utils
 import logging
+
+import amp.utils
+from amp.schema.entity_extraction import EntityExtraction, EntityExtractionMedia, EntityExtractionEntity, EntityExtractionEntityScore
+from amp.schema.speech_to_text import SpeechToText
+
 
 # Shared helper methods for NER MGMs
 
@@ -17,11 +16,11 @@ def initialize_amp_entities(amp_transcript, amp_entities, ignore_types):
     ignore_types_list = extract_ignore_types(ignore_types)
     logging.info(f"Ignore types: {ignore_types_list}")    
 
-    # parse input AMP Transcript JSON file into amp_entities object
+    # parse input AMP Transcript JSON file into amp_transcript object
     try:
         amp_transcript_obj = SpeechToText().from_json(amp.utils.read_json_file(amp_transcript))
     except Exception:
-        logging.error(f"Error: Exception while parsing AMP Transcript {amp_transcript}:")
+        logging.exception(f"Exception while parsing AMP Transcript {amp_transcript}:")
         raise
         
     # initialize the amp_entities object with media information

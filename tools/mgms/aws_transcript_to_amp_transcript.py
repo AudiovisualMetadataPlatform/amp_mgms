@@ -3,40 +3,36 @@
 import json
 import sys
 import argparse
-import amp.utils
-
-from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult
-from amp.schema.segmentation import Segmentation, SegmentationMedia
 import logging
+
 import amp.logger
+import amp.utils
+from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult, SpeechToTextWord, SpeechToTextScore
+from amp.schema.segmentation import Segmentation, SegmentationMedia
 
 def main():
-	#(media_file, transcribe_file, output_stt_json_file, output_seg_json_file) = sys.argv[1:5]
+	#(input_audio, aws_transcript, amp_transcript, amp_diarization) = sys.argv[1:5]
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
-	parser.add_argument("media_file")
-	parser.add_argument("transcribe_file")
-	parser.add_argument("output_stt_json_file")
-	parser.add_argument("output_seg_json_file")
+	parser.add_argument("input_audio", help="Input audio file")
+	parser.add_argument("aws_transcript", help="Input AWS Transcript JSON file")
+	parser.add_argument("amp_transcript", help="Output AMP Transcript file")
+	parser.add_argument("amp_diarization", help="Output AMP Diarization file")
 	args = parser.parse_args()
 	logging.info(f"Starting with args {args}")
-	(media_file, transcribe_file, output_stt_json_file, output_seg_json_file) = (args.media_file, args.transcribe_file, args.output_stt_json_file, args.output_seg_json_file)
+	(input_audio, aws_transcript, amp_transcript, amp_diarization) = (args.input_audio, args.aws_transcript, args.amp_transcript, args.amp_diarization)
 
-
-	amp.utils.exception_if_file_not_exist(transcribe_file)
-
-	# Open the transcribe output
-	with open(transcribe_file) as json_file:
-		data = json.load(json_file)
-		
-	amp_results = SpeechToTextResult()
+	# read the AWS transcribe json file
+	amp.utils.exception_if_file_not_exist(aws_transcript)
+	aws = amp.utils.read_json_file(aws_transcript)		
 
 	# Fail if we don't have results
-	if "results" not in data.keys():
+	if "results" not in aws.keys():
 		logging.error("no results in keys")
 		exit(1)
 
-	aws_results = data["results"]
+	amp_results = SpeechToTextResult()
+	aws_results = aws["results"]
 
 	if "transcripts" not in aws_results.keys():
 		logging.error("no transcripts in aws_results")
@@ -45,9 +41,15 @@ def main():
 	# Parse transcript
 	transcripts = aws_results["transcripts"]
 	for t in transcripts:
-		amp_results.transcript = amp_results.transcript + t["transcript"]
+		# assuming each transcript doesn't include space or newline at the end, to keep the format consistent with word list,
+		# we should separate transcripts with newline in between
+		if not amp_results.transcript:
+			# for the first transcript
+			amp_results.transcript = t["transcript"]
+		else:
+			amp_results.transcript = amp_results.transcript + "\n" + t["transcript"]		
 
-	# Fail if we don't have any keys
+	# Fail if we don't have any items
 	if "items" not in aws_results.keys():
 		logging.error("no items in aws_results")
 		exit(1)
@@ -57,8 +59,8 @@ def main():
 	duration = 0.00
 	
 	# For each item, get the necessary parts and store as a word
-	for i in items:
-		alternatives = i["alternatives"]
+	for item in items:
+		alternatives = item["alternatives"]
 		# Choose an alternative
 		max_confidence = 0.00
 		text = ""
@@ -73,45 +75,49 @@ def main():
 		start_time = -1
 
 		# Two types (punctionation, pronunciation).  Only keep times for pronunciation
-		if i["type"] == "pronunciation":
-			end_time = float(i["end_time"])
-			start_time = float(i["start_time"])
+		if item["type"] == "pronunciation":
+			end_time = float(item["end_time"])
+			start_time = float(item["start_time"])
 
 			# If this is the greatest end time, store it as duration
 			if end_time > duration:
 				duration = end_time
+		
 		# Add the word to the results
-		amp_results.addWord(i["type"], start_time, end_time, text, "confidence", max_confidence)
+		amp_results.addWord(item["type"], text, None, start_time, end_time, "confidence", max_confidence)
+		
+	# compute offset for all words in the list
+	amp_results.compute_offset();
 	
 	# Create the media object
-	media = SpeechToTextMedia(duration, media_file)
+	media = SpeechToTextMedia(duration, input_audio)
 
 	# Create the final object
 	outputFile = SpeechToText(media, amp_results)
 
 	# Write the output
-	amp.utils.write_json_file(outputFile, output_stt_json_file)
+	amp.utils.write_json_file(outputFile, amp_transcript)
 
 	# Start segmentation schema with diarization data
 	# Create a segmentation object to serialize
-	seg_schema = Segmentation()
+	segmentation = Segmentation()
 
 	# Create the media object
-	segMedia = SegmentationMedia(duration, media_file)
-	seg_schema.media = segMedia
+	segMedia = SegmentationMedia(duration, input_audio)
+	segmentation.media = segMedia
 	
 	if "speaker_labels" in aws_results.keys():
 		speakerLabels = aws_results["speaker_labels"]
-		seg_schema.numSpeakers = speakerLabels["speakers"]
+		segmentation.numSpeakers = speakerLabels["speakers"]
 
 		# For each segment, get the start time, end time and speaker label
 		segments = speakerLabels["segments"]
 		for segment in segments:
-			seg_schema.addDiarizationSegment(float(segment["start_time"]), float(segment["end_time"]), segment["speaker_label"])
+			segmentation.addDiarizationSegment(float(segment["start_time"]), float(segment["end_time"]), segment["speaker_label"])
 		
 	# Write the output
-	amp.utils.write_json_file(seg_schema, output_seg_json_file)
-	logging.info("Finished.")
+	amp.utils.write_json_file(segmentation, amp_diarization)
+	logging.info(f"Successfully converted {aws_transcript} to {amp_transcript} and {amp_diarization}.")
 
 
 if __name__ == "__main__":

@@ -25,7 +25,7 @@ class EntityExtraction:
 			for e in self.entities:
 				if e.score is not None:
 					scoreType = e.score.type
-					scoreValue = e.score.scoreValue
+					scoreValue = e.score.value
 				else:
 					scoreType = ''
 					scoreValue = ''
@@ -85,10 +85,10 @@ class EntityExtractionEntity:
 
 class EntityExtractionEntityScore:
 	type = ""
-	scoreValue = 0.00
-	def __init__(self, type = None, scoreValue = None):
+	value = 0.00
+	def __init__(self, type = None, value = None):
 		self.type = type
-		self.scoreValue = scoreValue
+		self.value = value
 	@classmethod
 	def from_json(cls, json_data: dict):
 		return cls(**json_data)

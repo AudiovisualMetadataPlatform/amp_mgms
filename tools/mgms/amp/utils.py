@@ -15,6 +15,11 @@ ERR_SUFFIX = ".err"
 # to decide if the output has been created; rather, we can use its file size and/or content as the criteria.
 
 
+# Return true if the specified file exists and has contents; false otherwise.
+def file_exists(file):
+    return os.path.exists(file) and os.stat(file).st_size > 0
+
+
 # Exit with code 255 if the given (output) file already generated previously.
 # This method is typically called by a command with following command depending on it, both called repeatedly, such as in HMGM. 
 def exit_if_file_generated(file):        
@@ -112,6 +117,14 @@ def get_work_dir(work_dir):
     wd.mkdir(parents=True, exist_ok=True)
     logging.debug(f"Getting/Creating workdir: {wd!s}")
     return str(wd.absolute())
+
+
+# get the Azure credentials from the config file and return them as a dict.
+def get_azure_credentials():
+    config = get_config()
+    res = config._sections['azure']
+    logging.debug(f"Azure credentials: {res}")
+    return res
 
 
 # get the AWS credentials from the config file and return them as a dict.

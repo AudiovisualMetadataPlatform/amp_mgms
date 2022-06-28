@@ -3,6 +3,7 @@ import sys
 import logging
 import os
 from datetime import datetime
+from distutils.util import strtobool
 import math
 import argparse
 import logging
@@ -18,24 +19,22 @@ def main():
 	parser.add_argument("input_video", help="Video input file")
 	parser.add_argument("azure_video_index", help="Azure Video Index input file")
 	parser.add_argument("azure_artifact_ocr", help="Azure Artifact OCRinput file")
-	parser.add_argument("dedupe", default=True, help="Whether to dedupe consecutive frames with same texts")
-	parser.add_argument("dup_gap", default=5, help="Gap in seconds within which adjacent VOCR frames with same text are considered duplicates")	
+	parser.add_argument("dedupe", type=strtobool, default=True, help="Whether to dedupe consecutive frames with same texts")
+	parser.add_argument("dup_gap", type=int, default=5, help="Gap in seconds within which adjacent VOCR frames with same text are considered duplicates")	
 	parser.add_argument("amp_vocr", help="Original AMP Video OCR output file")
 	parser.add_argument("amp_vocr_dedupe", help="Deduped AMP Video OCR output file")
 	args = parser.parse_args()
 	logging.info(f"Starting with args {args}")
 	(input_video, azure_video_index, azure_artifact_ocr, dedupe, dup_gap, amp_vocr, amp_vocr_dedupe) = (args.input_video, args.azure_video_index, args.azure_artifact_ocr, args.dedupe, args.dup_gap, args.amp_vocr, args.amp_vocr_dedupe)
 	
-	# a workaround in case integer args are parsed as string
-	dup_gap = int(dup_gap)
-	
-	# Get Azure video indexer json
+	# get Azure video indexer json
 	azure_index_json = amp.utils.read_json_file(azure_video_index)
 
-	# Get Azure artifact OCR json
-	azure_ocr_json = amp.utils.read_json_file(azure_artifact_ocr)
+	# get Azure artifact OCR json
+	# in case Azure Indexer didn't produce OCR artifact, pass in empty json
+	azure_ocr_json = amp.utils.read_json_file(azure_artifact_ocr) if amp.utils.file_exists(azure_artifact_ocr) else None
 
-	# Create AMP Video OCR object
+	# create AMP Video OCR object
 	vocr = create_amp_vocr(input_video, azure_index_json, azure_ocr_json)
 	
 	# write AMP Video OCR JSON file
@@ -51,25 +50,29 @@ def main():
 	
 # Create AMP VOCR object from the given Azure indexer json and the OCR artifact json.
 def create_amp_vocr(input_video, azure_index_json, azure_ocr_json):
-	# Create the resolution obj
+	# create the resolution object
 	# Recent versions of azure return the width/height for every frame.  
 	# Let"s assume that the data for the first image is indicative of the rest.
-	width = azure_ocr_json["Results"][0]["Ocr"]["pages"][0]["width"]
-	height = azure_ocr_json["Results"][0]["Ocr"]["pages"][0]["height"]
+	width = azure_ocr_json["Results"][0]["Ocr"]["pages"][0]["width"] if azure_ocr_json else 0
+	height = azure_ocr_json["Results"][0]["Ocr"]["pages"][0]["height"] if azure_ocr_json else 0
 	resolution = VideoOcrResolution(width, height)
 
-	# Create the media object
-	frameRate = azure_ocr_json["Fps"]
+	# create the media object
+	frameRate = azure_ocr_json["Fps"] if azure_ocr_json else 0
 	duration = azure_index_json["summarizedInsights"]["duration"]["seconds"]
 	numFrames = int(frameRate * duration)
 	media  = VideoOcrMedia(input_video, duration, frameRate, numFrames, resolution)
 
-	# Create AMP VOCR texts from Azure indexer ocr insight
+	# create AMP VOCR texts from Azure indexer ocr insight
 	# we can assume that there is only one video in the Azure indexer json
-	texts = createVocrTexts(azure_index_json["videos"][0]["insights"]["ocr"])
+	# in case Azure Indexer didn't include OCR insight, generate empty texts
+	insights = azure_index_json["videos"][0]["insights"]
+	ocr_json = insights["ocr"] if insights and "ocr" in insights.keys() else None
+	texts = createVocrTexts(ocr_json) if ocr_json else []
 	
 	# Create AMP VOCR frames from Azure OCR artifact
-	frames = createVocrFrames(azure_ocr_json["Results"], frameRate)
+	# in case Azure Indexer didn't produce OCR artifact, generate empty frames
+	frames = createVocrFrames(azure_ocr_json["Results"], frameRate) if azure_ocr_json else []
 
 	vocr = VideoOcr(media, texts, frames)
 	return vocr

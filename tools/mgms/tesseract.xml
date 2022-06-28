@@ -11,9 +11,9 @@
   </command>
   <inputs>
 	<param name="input_video" type="data" format="video" label="Input Video" help="An input video file"/>
-	<param name="vocr_interval" type="float" min=".5" max ="2" value ="1" label="VOCR Interval" help="Interval in seconds by which video frames are extracted for VOCR"/>
-	<param name="dedupe" type="boolean" value ="true" label="Dedupe" help="Whether to dedupe consecutive frames with same texts"/>
-	<param name="dup_gap" type="integer" optional="true" min="1" max ="60" value ="5" label="Duplicate Gap" help="Gap in seconds within which consecutive VOCR frames with same text are considered duplicates"/>
+	<param name="vocr_interval" type="float" value ="1.0" min=".5" max ="2" label="VOCR Interval" help="Interval in seconds by which video frames are extracted for VOCR"/>
+	<param name="dedupe" type="boolean" checked="true" label="Dedupe" help="Whether to dedupe consecutive frames with same texts"/>
+	<param name="dup_gap" type="integer" optional="true" value ="5" min="1" max ="60" label="Duplicate Gap" help="Gap in seconds within which consecutive VOCR frames with same text are considered duplicates"/>
   </inputs>
   <outputs>
     <data name="amp_vocr" format="vocr" label="AMP Video OCR Original"/>

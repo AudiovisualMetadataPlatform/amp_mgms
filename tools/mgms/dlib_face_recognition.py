@@ -7,6 +7,8 @@ import os.path
 import sys
 import face_recognition
 import cv2
+from distutils.util import strtobool
+
 import amp.dlib_face_training as train
 from amp.schema.facial_recognition import FaceRecognition, FaceRecognitionMedia, FaceRecognitionMediaResolution, FaceRecognitionFrame, FaceRecognitionFrameObject, FaceRecognitionFrameObjectScore, FaceRecognitionFrameObjectVertices
 
@@ -26,28 +28,30 @@ def main():
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("input_video", help="Input Video")
     parser.add_argument("training_photos", help="Training photos")
-    parser.add_argument("reused_trained", help="Reuse Training data")
-    parser.add_argument("--tolerance", type=float, default=FR_DEFAULT_TOLERANCE, help="Recognition tolerance")
+    parser.add_argument("reuse_trained", type=strtobool, default=True, help="Reuse Training data")
+    parser.add_argument("tolerance", type=float, default=FR_DEFAULT_TOLERANCE, help="Recognition tolerance")
     parser.add_argument("amp_faces", help="Faces output file")
     args = parser.parse_args()
     logging.info(f"Starting with args {args}")
     (input_video, training_photos, reuse_trained, tolerance, amp_faces) = (args.input_video, args.training_photos, args.reuse_trained, args.tolerance, args.amp_faces)
 
     # using output instead of input filename as the latter is unique while the former could be used by multiple jobs 
-
     
     # initialize training results
     known_names = []
     known_faces = []
     
     # if reuse_trained is set to true, retrieve previous training results
-    if reuse_trained.lower() == "true":
+    if reuse_trained:
         known_names, known_faces = train.retrieve_trained_results(training_photos)
               
     # if no valid previous trained results is available, do the training
     if (known_names == [] or known_faces == []):
         known_names, known_faces = train.train_faces(training_photos)
               
+    logging.debug(f"known_names: {known_names}")
+    logging.debug(f"known_faces: {known_faces}")
+                  
     # run face recognition on the given video using the trained results at the given tolerance level
     fr_result = recognize_faces(input_video, known_names, known_faces, tolerance)
     
@@ -99,8 +103,13 @@ def recognize_faces(input_video, known_names, known_faces, tolerance):
         face_locations = face_recognition.face_locations(rgb_frame)
         face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
 
+        logging.debug(f"rgb_frame: {rgb_frame}")
+        logging.debug(f"face_locations: {face_locations}")
+        logging.debug(f"face_encodings: {face_encodings}")
+                
         # if no face found in the current frame, skip it and move on to the next one
         if (not face_encodings or len(face_encodings) == 0):
+            logging.debug(f"Didn't find any face in frame # {frame_number}")
             continue
 
         # otherwise, initialize an AMP FR frame object list

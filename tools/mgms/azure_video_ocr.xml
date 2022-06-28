@@ -10,7 +10,7 @@
 	<param name="input_video" type="data" format="video" label="Input Video" help="Input video file used by Azure Video Indexer"/>
 	<param name="azure_video_index" type="data" format="json" label="Azure Video Index JSON" help="Video Index JSON file from Azure Video Indexer"/>
 	<param name="azure_artifact_ocr" type="data" format="json" label="Azure Artifact OCR JSON" help="Artifact OCR JSON file from Azure Video Indexer"/>
-	<param name="dedupe" type="boolean" value ="true" label="Dedupe" help="Whether to dedupe consecutive frames with same texts"/>
+	<param name="dedupe" type="boolean" checked="true" label="Dedupe" help="Whether to dedupe consecutive frames with same texts"/>
 	<param name="dup_gap" type="integer" optional="true" min="1" max ="60" value ="5" label="Duplicate Gap" help="Gap in seconds within which consecutive VOCR frames with same text are considered duplicates"/>
   </inputs>
   <outputs>
