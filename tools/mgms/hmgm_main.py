@@ -114,7 +114,7 @@ def empty_input(input_json, task_type):
 	with open(input_json, 'r') as file:
 		data = json.load(file)		
 	if task_type == TaskManager.TRANSCRIPT:
-		return not ('entityMap' in data and 'blocks' in data['entityMap'])
+		return not ('entityMap' in data and len(data['entityMap']) > 0 and 'blocks' in data and len(data['blocks']) > 0)
 	elif task_type == TaskManager.NER:
 		return not ('annotations' in data and len(data['annotations']) > 0 and 'items' in data['annotations'][0])
 	# TODO update below logic	
