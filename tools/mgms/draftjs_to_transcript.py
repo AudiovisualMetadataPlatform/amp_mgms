@@ -136,9 +136,7 @@ def main():
         # as the last command in HMGM, implicitly exit 0 here to let the whole job complete in success
     except Exception as e:
         # as the last command in HMGM, exit in error to let the whole job fail
-        logging.error(f"Failed to convert from DraftJs {from_draftjs} to Transcript {to_transcript}", e)
-        traceback.print_exc()
-        sys.stdout.flush()
+        logging.exception(f"Failed to convert from DraftJs {from_draftjs} to Transcript {to_transcript}")
         exit(1)            
 
 
