@@ -53,9 +53,7 @@ def main():
     except Exception as e:
         # empty out to_iiif to tell the following HMGM task command to fail
         amp.utils.empty_file(to_iiif)
-        logging.error(f"Failed to convert from NER {from_ner} to IIIF {to_iiif}", e)
-        traceback.print_exc()
-        sys.stdout.flush()
+        logging.exception(f"Failed to convert from NER {from_ner} to IIIF {to_iiif}")
         exit(1)
 
 

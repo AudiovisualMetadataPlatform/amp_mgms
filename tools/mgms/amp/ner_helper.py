@@ -20,7 +20,7 @@ def initialize_amp_entities(amp_transcript, amp_entities, ignore_types):
     try:
         amp_transcript_obj = SpeechToText().from_json(amp.utils.read_json_file(amp_transcript))
     except Exception:
-        logging.error(f"Error: Exception while parsing AMP Transcript {amp_transcript}:")
+        logging.exception(f"Error: Exception while parsing AMP Transcript {amp_transcript}:")
         raise
         
     # initialize the amp_entities object with media information

@@ -47,10 +47,6 @@ def main():
 
     # upload video to S3
     s3_path = upload_to_s3(input_video, s3_bucket)
-    if not s3_path:
-#         logging.error(f"Failed to upload {input_video} to AWS bucket {s3_bucket}")
-        exit(1)
-#     logging.info(f"Uploaded {input_video} to AWS S3 bucket {s3_path}")
     
     # Get an authorization token for subsequent requests
     auth_token = get_auth_token(apiUrl, region_name, account_id, api_key)
@@ -145,8 +141,7 @@ def request_auth_token(url, api_key):
     if r.status_code == 200:
         return r.text.replace("\"", "")
     else:
-        logging.error("Auth failure")
-        logging.error(r)
+        logging.error(f"Auth failure: {r}")
         exit(1)
 
 # Get general auth token
@@ -183,7 +178,7 @@ def index_video(apiUrl, region_name, account_id, auth_token, input_video, video_
             if 'id' in data.keys():
                 return data['id']
             else:
-                logging.error("no id in data")
+                logging.error("No id in data")
                 exit(1)
 
 def upload_to_s3(input_video, bucket):
@@ -192,11 +187,10 @@ def upload_to_s3(input_video, bucket):
     try:
         response = s3_client.upload_file(input_video, bucket, jobname, ExtraArgs={'ACL': 'public-read'})
         logging.info(f"Uploaded file {input_video} to S3 bucket {bucket}")
+        return jobname
     except Exception as e:
         logging.exception(f"Failed to upload file {input_video} to S3 bucket {bucket}!")
-        traceback.print_exc()
-        return None
-    return jobname
+        exit(1)
 
 def delete_from_s3(s3_path, bucket):
     s3_client = boto3.resource('s3', **amp.utils.get_aws_credentials())

@@ -96,8 +96,7 @@ def find_shots(video_path, stats_file, threshold):
             with open(stats_file, 'w') as stats_file:
                 stats_manager.save_to_csv(stats_file, base_timecode)
     except Exception as err:
-        logging.error(f"Failed to find shots for: video: {video_path}, stats: {stats_file}, threshold: {threshold}", err)
-        traceback.print_exc()        
+        logging.exception(f"Failed to find shots for: video: {video_path}, stats: {stats_file}, threshold: {threshold}")   
     finally:
         video_manager.release()
 

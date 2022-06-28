@@ -170,8 +170,7 @@ def main():
 	except Exception as e:
 		# empty out to_draftjs to tell the following HMGM task command to fail
 		amp.utils.empty_file(to_draftjs)
-		logging.error(f"Failed to convert from Transcript {from_transcript} to DraftJs {to_draftjs}", e)
-		sys.stdout.flush()		
+		logging.exception(f"Failed to convert from Transcript {from_transcript} to DraftJs {to_draftjs}")	
 		exit(1)
 	
 def createBlock(depth, data, entityRanges, transcript):

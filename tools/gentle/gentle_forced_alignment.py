@@ -74,8 +74,7 @@ def main():
 			logging.info("Finished")
 			exit(r.returncode)
 	except Exception as e:
-		logging.error("Exception while running Gentle:")
-		traceback.print_exc()
+		logging.exception("Exception while running Gentle.")
 		exit(1)
 
 
