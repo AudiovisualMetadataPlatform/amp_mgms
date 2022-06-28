@@ -105,7 +105,7 @@ def upload_input_to_s3(amp_transcript_obj, tmpdir, bucket, jobname):
             infile.write(amp_transcript_obj.results.transcript)
             logging.info(f"Successfully created input file {input} containing transcript for AWS Comprehend job.")
     except Exception as e:
-        logging.exception(f"Error: Exception while creating input file {input} containing transcript for AWS Comprehend job.")
+        logging.exception(f"Exception while creating input file {input} containing transcript for AWS Comprehend job.")
         raise
     
     # upload the tmp file to s3
@@ -114,7 +114,7 @@ def upload_input_to_s3(amp_transcript_obj, tmpdir, bucket, jobname):
         response = s3_client.upload_file(input, bucket, jobname)
         logging.info(f"Successfully uploaded input file {input} to S3 bucket {bucket} for AWS Comprehend job.")
     except Exception as e:
-        logging.exception(f"Error: Exception while uploading input file {input} to S3 bucket {bucket} for AWS Comprehend job.")
+        logging.exception(f"Exception while uploading input file {input} to S3 bucket {bucket} for AWS Comprehend job.")
         raise
 
 # Download AWS Comprehend output from the given URL in the given S3 bucket to the tmpdir and extract it to aws_entities.
@@ -128,7 +128,7 @@ def download_output_from_s3(outputuri, s3uri, bucket, tmpdir, aws_entities):
         s3_client.download_file(bucket, outkey, output)
         logging.info(f"Successfully downloaded AWS Comprehend output {outputuri} to compressed output file {output}.")
     except Exception as e:
-        logging.exception(f"Error: Exception while downloading AWS Comprehend output {outputuri} to compressed output file {output}.")
+        logging.exception(f"Exception while downloading AWS Comprehend output {outputuri} to compressed output file {output}.")
         raise
     
     # extract the contents of the output.tar.gz file and move the uncompressed file to galaxy output
@@ -145,7 +145,7 @@ def download_output_from_s3(outputuri, s3uri, bucket, tmpdir, aws_entities):
         else:
             raise Exception(f"Error: Compressed output file {output} does not contain any member.")
     except Exception as e:
-        logging.exception(f"Error: Exception while uncompressing/moving {output} to {aws_entities}.")
+        logging.exception(f"Exception while uncompressing/moving {output} to {aws_entities}.")
         raise     
 
 # Run AWS Comprehend job with the given jobname, using the input at the given S3 URL with the given dataAccessRoleArn.
@@ -170,7 +170,7 @@ def run_comprehend_job(jobname, s3uri, dataAccessRoleArn):
         )
         logging.info(f"Successfully submitted AWS Comprehend job with input {inputs3uri}.")
     except Exception as e:
-        logging.exception(f"Error: Exception while submitting AWS Comprehend job with input {inputs3uri}")
+        logging.exception(f"Exception while submitting AWS Comprehend job with input {inputs3uri}")
         raise
 
     # wait for AWS Comprehend job to end
@@ -185,7 +185,7 @@ def run_comprehend_job(jobname, s3uri, dataAccessRoleArn):
             logging.debug(f"Waiting for AWS Comprehend job {jobname} to complete: status = {status}.")              
             time.sleep(60)        
     except Exception as e:
-        logging.exception(f"Error: Exception while running AWS Comprehend job {jobname}")
+        logging.exception(f"Exception while running AWS Comprehend job {jobname}")
         raise
     
     # check status of job upon ending
