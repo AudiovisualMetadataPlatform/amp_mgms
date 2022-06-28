@@ -1,20 +1,20 @@
 #!/usr/bin/env mgm_python.sif
 
+import argparse
 import json
+import logging
 import os
 import os.path
+import shutil
 import sys
 import traceback
-import shutil
-import argparse
-import logging
 
 import amp.logger
-import amp.utils
 from amp.task.jira import TaskJira
+from amp.task.manager import TaskManager
 from amp.task.openproject import TaskOpenproject 
 from amp.task.redmine import TaskRedmine
-from amp.task.manager import TaskManager
+import amp.utils
 
 
 # It's assumed that all HMGMs generate the output file in the same directory as the input file with ".completed" suffix added to the original filename
@@ -70,7 +70,6 @@ def main():
 		elif not task_created(task_json):
 			task = create_task(config, task_type, context, input_json, output_json, task_json)
 			logging.info(f"Successfully created HMGM task {task.key}... uncorrected: {input_json}, corrected: {output_json}, task: {task_json}")
-			sys.stdout.flush()
 			exit(255) 
 		# otherwise, check if HMGM task is completed
 		else:
@@ -79,19 +78,15 @@ def main():
 			if (editor_output):
 				task = close_task(config, context, editor_output, output_json, task_json)
 				logging.info(f"Successfully closed HMGM task {task.key}. uncorrected: {input_json}, corrected: {output_json}, task: {task_json}")
-				sys.stdout.flush()
 				# implicitly exit 0 as the current command completes
 			# otherwise exit 255 to get requeued
 			else:
-				logging.info(f"Waiting for HMGM task {task.key}... uncorrected: {input_json}, corrected: {output_json}, task: {task_json}")
-				sys.stdout.flush()
+				logging.info(f"Waiting for HMGM task to complete ... uncorrected: {input_json}, corrected: {output_json}, task: {task_json}")
 				exit(255)        
 	# upon exception, create error file to notify the following conversion command to fail, and exit 1 (error) to avoid requene
 	except Exception as e:
 		amp.utils.create_err_file(output_json)
-		logging.error(f"Failed to handle HMGM task {task.key}. uncorrected: {input_json}, corrected: {output_json}, task: {task_json}", e)
-		traceback.print_exc()
-		sys.stdout.flush()
+		logging.exception(f"Failed to handle HMGM task: uncorrected: {input_json}, corrected: {output_json}, task: {task_json}")
 		exit(1)
 
 
@@ -119,9 +114,9 @@ def empty_input(input_json, task_type):
 	with open(input_json, 'r') as file:
 		data = json.load(file)		
 	if task_type == TaskManager.TRANSCRIPT:
-		return not data['entityMap'] and not data['blocks']
+		return not ('entityMap' in data and 'blocks' in data['entityMap'])
 	elif task_type == TaskManager.NER:
-		return not data['annotations'][0]['items']
+		return not ('annotations' in data and len(data['annotations']) > 0 and 'items' in data['annotations'][0])
 	# TODO update below logic	
 	elif task_type == TaskManager.SEGMENTATION:
 		return True
