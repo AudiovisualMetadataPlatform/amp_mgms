@@ -10,10 +10,15 @@
   </command>
   <inputs>
     <param name="supplement_name" type="text" label="Supplement Name" help="Name of the supplement"/>
-    <param name="supplement_type" type="select" label="Supplement Type" help="Type of the parent data entity associated with the supplement">   
+    <param name="supplement_type" type="select" label="Supplement Type" help="Type/level of the parent data entity associated with the supplement">   
 	  <option value="C">Collection</option>
 	  <option value="I">Item</option>
 	  <option value="P">Primaryfile</option>
+    </param>
+    <param name="supplement_category" type="select" label="Supplement Category" help="Category/purpose of the supplement">   
+	  <option value="C">Face Recognition Training Photos</option>
+	  <option value="I">Groundtruth</option>
+	  <option value="P">Program</option>
     </param>
     <param name="supplement_format" type="select" label="Supplement Format" help="File format/extension of the supplement">   
 	  <option value="txt">txt</option>
