@@ -17,7 +17,7 @@
 	  <option value="P">Primaryfile</option>
     </param>
     <param name="supplement_category" type="select" label="Supplement Category" help="Category/purpose of the supplement">  
-    <!-- amppd.supplementCategories --> 
+    <!-- value set must match amppd.supplementCategories --> 
 	  <option value="F">FacePhoto</option>
 	  <option value="G">Groundtruth</option>
 	  <option value="R">RecitalProgram</option>
