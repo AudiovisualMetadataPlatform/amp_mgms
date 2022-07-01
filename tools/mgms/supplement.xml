@@ -16,7 +16,7 @@
 	  <option value="P">Primaryfile</option>
     </param>
     <param name="supplement_category" type="select" label="Supplement Category" help="Category/purpose of the supplement">   
-	  <option value="C">Face Recognition Training Photos</option>
+	  <option value="C">FacePhotos</option>
 	  <option value="I">Groundtruth</option>
 	  <option value="P">Program</option>
     </param>
