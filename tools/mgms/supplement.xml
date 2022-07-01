@@ -16,9 +16,10 @@
 	  <option value="P">Primaryfile</option>
     </param>
     <param name="supplement_category" type="select" label="Supplement Category" help="Category/purpose of the supplement">   
-	  <option value="C">FacePhotos</option>
-	  <option value="I">Groundtruth</option>
-	  <option value="P">Program</option>
+	  <option value="F">FacePhoto</option>
+	  <option value="G">Groundtruth</option>
+	  <option value="R">RecitalProgram</option>
+	  <option value="O">Other</option>
     </param>
     <param name="supplement_format" type="select" label="Supplement Format" help="File format/extension of the supplement">   
 	  <option value="txt">txt</option>
