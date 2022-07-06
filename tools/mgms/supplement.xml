@@ -26,20 +26,22 @@
 	  <option value="O">Other</option>
     </param>
     <param name="format" type="select" label="Format" help="File format/extension of the supplement">   
+	  <option value="zip">zip</option>
+	  <option value="json">json</option>
 	  <option value="txt">txt</option>
 	  <option value="csv">csv</option>
 	  <option value="pdf">pdf</option>
-	  <option value="zip">zip</option>
     </param>
     <param name="path" type="text" label="Path" help="Absolute file path of the supplement (inferred by AMP from name plus type)"/>   
   </inputs>
   <outputs>
     <data name="file" format="data" label="File" help="A soft link pointing to the absolute path of the supplement">
       <change_format>
+        <when input="format" value="zip" format="zip" />
+        <when input="format" value="json" format="json" />
         <when input="format" value="txt" format="txt" />
         <when input="format" value="csv" format="csv" />
         <when input="format" value="pdf" format="pdf" />
-        <when input="format" value="zip" format="zip" />
       </change_format>
     </data>
   </outputs>
