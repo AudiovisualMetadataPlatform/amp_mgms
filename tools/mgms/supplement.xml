@@ -20,10 +20,11 @@
     -->
     <param name="category" type="select" label="Category" help="Category/purpose of the supplement">  
     <!-- value set must match amppd.supplementCategories --> 
-	  <option value="F">FacePhoto</option>
-	  <option value="G">Groundtruth</option>
-	  <option value="R">RecitalProgram</option>
-	  <option value="O">Other</option>
+	  <option value="Face">Face Recognition Training Photos</option>
+	  <option value="Transcript">Unaligned Transcript</option>
+	  <option value="Groundtruth">Ground-truth</option>
+	  <option value="Program">Recital Program</option>
+	  <option value="Other">Other</option>
     </param>
     <param name="format" type="select" label="Format" help="File format/extension of the supplement">   
 	  <option value="zip">zip</option>
