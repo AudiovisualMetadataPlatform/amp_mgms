@@ -29,9 +29,9 @@
     </param>
     <param name="format" type="select" label="Format" help="File format/extension of the supplement">   
 	  <option value="zip">zip</option>
-	  <option value="json">json</option>
 	  <option value="txt">txt</option>
 	  <option value="csv">csv</option>
+	  <option value="json">json</option>
 	  <option value="pdf">pdf</option>
     </param>
     <param name="path" type="text" label="Path" help="Absolute file path of the supplement (inferred by AMP from name plus type)"/>   
