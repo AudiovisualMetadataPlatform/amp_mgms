@@ -22,15 +22,16 @@
     <!-- value set must match amppd.supplementCategories --> 
 	  <option value="Face">Face Recognition Training Photos</option>
 	  <option value="Transcript">Unaligned Transcript</option>
+	  <option value="Vocabulary">Vocabulary List for Tagging</option>
 	  <option value="Program">Recital Program</option>
 	  <option value="Groundtruth">Ground-truth</option>
 	  <option value="Other">Other</option>
     </param>
     <param name="format" type="select" label="Format" help="File format/extension of the supplement">   
 	  <option value="zip">zip</option>
-	  <option value="json">json</option>
 	  <option value="txt">txt</option>
 	  <option value="csv">csv</option>
+	  <option value="json">json</option>
 	  <option value="pdf">pdf</option>
     </param>
     <param name="path" type="text" label="Path" help="Absolute file path of the supplement (inferred by AMP from name plus type)"/>   
