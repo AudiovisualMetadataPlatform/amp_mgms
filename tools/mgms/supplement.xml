@@ -22,6 +22,7 @@
     <!-- value set must match amppd.supplementCategories --> 
 	  <option value="Face">Face Recognition Training Photos</option>
 	  <option value="Transcript">Unaligned Transcript</option>
+	  <option value="Vocabulary">Vocabulary List for Tagging</option>
 	  <option value="Program">Recital Program</option>
 	  <option value="Groundtruth">Ground-truth</option>
 	  <option value="Other">Other</option>
