@@ -34,7 +34,7 @@
 	  <option value="json">json</option>
 	  <option value="pdf">pdf</option>
     </param>
-    <param name="path" type="text" label="Path" help="Absolute file path of the supplement (inferred by AMP from name plus type)"/>   
+    <param name="path" type="text" label="Path" help="Absolute file path of the supplement (inferred by AMP from name plus type, user provided value will be overwritten.)"/>   
   </inputs>
   <outputs>
     <data name="file" format="data" label="File" help="A soft link pointing to the absolute path of the supplement">
