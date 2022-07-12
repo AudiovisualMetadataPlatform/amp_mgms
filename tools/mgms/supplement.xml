@@ -9,7 +9,7 @@
 	]]>
   </command>
   <inputs>
-    <param name="name" type="text" label="Name" help="Name of the supplement"/>
+    <param name="name" type="text" label="Name" optional = "true" help="Name of the supplement (optional)"/>
     <!-- 
     <param name="type" type="select" label="Type" help="Type/level of the parent data entity associated with the supplement">   
 	  <option value="U">Unit</option>
