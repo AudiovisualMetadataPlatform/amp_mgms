@@ -11,7 +11,7 @@
   </command>                                    
   <inputs>
     <param name="amp_entities_uncorrected" type="data" format="ner" label="AMP Named Entities Uncorrected" help="Original AMP NER file to be corrected" />
-    <param name="context_json" type="text" label="HMGM Task Context" help="JSON string containing context information needed for creating Human MGM task. Note: This field is populated by AMP, user provided value will be ignored." />
+    <param name="context_json" type="text" label="HMGM Task Context" help="JSON string containing context information needed for creating Human MGM task" >
     	<sanitizer sanitize="false">
     	</sanitizer>
 	</param>
