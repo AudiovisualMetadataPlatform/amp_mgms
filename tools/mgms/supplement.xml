@@ -18,7 +18,7 @@
 	  <option value="P">Primaryfile</option>
     </param>
     -->
-    <param name="category" type="select" label="Category" help="Category/purpose of the supplement">  
+    <param name="category" type="select" label="Category" help="Category/purpose of the supplement (required)">  
     <!-- value set must match amppd.supplementCategories --> 
 	  <option value="Face">Face Recognition Training Photos</option>
 	  <option value="Transcript">Unaligned Transcript</option>
@@ -27,7 +27,7 @@
 	  <option value="Groundtruth">Ground-truth</option>
 	  <option value="Other">Other</option>
     </param>
-    <param name="format" type="select" label="Format" help="File format/extension of the supplement">   
+    <param name="format" type="select" label="Format" help="File format/extension of the supplement (required)">   
 	  <option value="zip">zip</option>
 	  <option value="txt">txt</option>
 	  <option value="csv">csv</option>
