@@ -24,18 +24,21 @@
     <tool file="amp_mgms/remove_trailing_silence.xml"/>
   </section>
 
-  <section id="segmentation" name="Segmentation">
+  <section id="audio_segmentation" name="Audio Segmentation">
     <tool file="amp_mgms/ina_speech_segmenter.xml"/>
     <tool file="amp_mgms/ina_speech_segmenter_hpc.xml"/>
     <tool file="amp_mgms/keep_speech.xml"/>
     <tool file="amp_mgms/remove_silence_speech.xml"/>
     <tool file="amp_mgms/adjust_transcript_timestamps.xml"/>
     <tool file="amp_mgms/adjust_diarization_timestamps.xml"/>
+  </section>
+
+  <section id="applause_detection" name="Applause Detection">
     <tool file="amp_mgms/applause_detection.xml"/>
     <tool file="amp_mgms/applause_detection_to_avalon_xml.xml"/>
   </section>
 
-  <section id="speech_to_text" name="Speech to Text">
+  <section id="speech_to_text" name="Speech to Text (STT)">
     <tool file="amp_mgms/aws_transcribe.xml"/>
     <tool file="amp_mgms/gentle_forced_alignment.xml"/>
     <tool file="amp_mgms/kaldi.xml"/>
@@ -44,13 +47,13 @@
     <tool file="amp_mgms/vocabulary_tagging.xml"/>
   </section>
 
-  <section id="named_entity_recognition" name="Named Entity Recognition">
+  <section id="named_entity_recognition" name="Named Entity Recognition (NER)">
     <tool file="amp_mgms/spacy.xml"/>
     <tool file="amp_mgms/aws_comprehend.xml"/>
     <tool file="amp_mgms/ner_to_csv.xml"/>
   </section>
 
-  <section id="video_processing" name="Video Indexing">
+  <section id="video_indexing" name="Video Indexing">
     <tool file="amp_mgms/azure_video_indexer.xml"/>
     <tool file="amp_mgms/contact_sheet_frame.xml"/>
     <tool file="amp_mgms/contact_sheet_face.xml"/>
@@ -67,7 +70,7 @@
     <tool file="amp_mgms/dlib_face_recognition.xml"/>  
   </section>
 
-  <section id="video_ocr" name="Video Optical Charater Recognition">
+  <section id="video_ocr" name="Video Optical Charater Recognition (OCR)">
     <tool file="amp_mgms/tesseract.xml"/>
     <tool file="amp_mgms/azure_video_ocr.xml"/>
     <tool file="amp_mgms/vocr_to_csv.xml"/>
@@ -86,8 +89,8 @@
   </section>
   
   <section id="deprecated_mgms" name="Deprecated MGMs">
-  	<tool file="amp_mgms/deprecate_contact_sheets.xml"/>
-    <tool file="amp_mgms/deprecate_contact_sheets_collection.xml"/>
+  	<tool file="amp_mgms/deprecated/deprecate_contact_sheets.xml"/>
+    <tool file="amp_mgms/deprecated/deprecate_contact_sheets_collection.xml"/>
   	<!-- 
     <tool file="amp_mgms/remove_silence_music.xml"/>
     <tool file="amp_mgms/vtt_generator.xml"/>
