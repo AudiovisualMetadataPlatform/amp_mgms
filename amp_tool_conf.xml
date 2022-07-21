@@ -26,7 +26,6 @@
 
   <section id="audio_segmentation" name="Audio Segmentation">
     <tool file="amp_mgms/ina_speech_segmenter.xml"/>
-    <tool file="amp_mgms/ina_speech_segmenter_hpc.xml"/>
     <tool file="amp_mgms/keep_speech.xml"/>
     <tool file="amp_mgms/remove_silence_speech.xml"/>
     <tool file="amp_mgms/adjust_transcript_timestamps.xml"/>
@@ -42,7 +41,6 @@
     <tool file="amp_mgms/aws_transcribe.xml"/>
     <tool file="amp_mgms/gentle_forced_alignment.xml"/>
     <tool file="amp_mgms/kaldi.xml"/>
-    <tool file="amp_mgms/kaldi_hpc.xml"/>
     <tool file="amp_mgms/transcript_to_webvtt.xml"/>
     <tool file="amp_mgms/vocabulary_tagging.xml"/>
   </section>
@@ -89,6 +87,8 @@
   </section>
   
   <section id="deprecated_mgms" name="Deprecated MGMs">
+    <tool file="amp_mgms/deprecated/ina_speech_segmenter_hpc.xml"/>
+    <tool file="amp_mgmsdeprecated//kaldi_hpc.xml"/>
   	<tool file="amp_mgms/deprecated/deprecate_contact_sheets.xml"/>
     <tool file="amp_mgms/deprecated/deprecate_contact_sheets_collection.xml"/>
   	<!-- 
