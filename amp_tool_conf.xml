@@ -88,9 +88,9 @@
   
   <section id="deprecated_mgms" name="Deprecated MGMs">
     <tool file="amp_mgms/deprecated/ina_speech_segmenter_hpc.xml"/>
-    <tool file="amp_mgmsdeprecated//kaldi_hpc.xml"/>
-  	<tool file="amp_mgms/deprecated/deprecate_contact_sheets.xml"/>
-    <tool file="amp_mgms/deprecated/deprecate_contact_sheets_collection.xml"/>
+    <tool file="amp_mgms/deprecated/kaldi_hpc.xml"/>
+  	<tool file="amp_mgms/deprecated/contact_sheets.xml"/>
+    <tool file="amp_mgms/deprecated/contact_sheets_collection.xml"/>
   	<!-- 
     <tool file="amp_mgms/remove_silence_music.xml"/>
     <tool file="amp_mgms/vtt_generator.xml"/>
