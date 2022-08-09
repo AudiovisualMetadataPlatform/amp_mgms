@@ -1,0 +1,55 @@
+# Based on the upstream https://github.com/lowerquality/gentle/blob/master/Dockerfile
+# to minimize the changes needed.
+
+Bootstrap: docker
+From: ubuntu:18.04
+
+%files
+
+%post
+    # install all of the dependencies
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get install -y \
+        gcc g++ gfortran \
+        libc++-dev libstdc++-6-dev zlib1g-dev \
+        automake autoconf libtool \
+        git subversion \
+        libatlas3-base nvidia-cuda-dev \
+        ffmpeg \
+        python3 python3-dev python3-pip \
+        python python-dev python-pip \
+        wget unzip \
+        sox 
+    apt-get clean
+
+    # checkout the upstream repository into /gentle
+    cd /
+    git clone --recursive https://github.com/lowerquality/gentle.git
+
+    # compile more than one thing at a time..
+    export MAKEFLAGS=' -j4'
+
+    # openBLAS won't build on an architecture it doesn't recognize.  Since
+    # the source is several years old, building on new machines will fail.
+    # explicitly setting the target to HASWELL (released in 2013) should cover
+    # 99%+ of the machines out there.  Not sure what that would mean for an
+    # AMD-based system, but it's old enough I assume that AMD CPUs will have all
+    # of the features needed to work.
+    export TARGET=HASWELL  
+
+    # build kaldi
+    cd /gentle/ext
+    ./install_kaldi.sh
+    make depend
+    make
+    rm -rf kaldi *.o
+
+    # build gentle
+    cd /gentle
+    python3 setup.py develop
+    ./install_models.sh
+
+
+%runscript
+    python3 /gentle/align.py "$@"
