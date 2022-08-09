@@ -28,7 +28,7 @@ From: ubuntu:18.04
     git clone --recursive https://github.com/lowerquality/gentle.git
 
     # compile more than one thing at a time..
-    export MAKEFLAGS=' -j8'
+    export MAKEFLAGS=' -j4'
 
     # openBLAS won't build on an architecture it doesn't recognize.  Since
     # the source is several years old, building on new machines will fail.
