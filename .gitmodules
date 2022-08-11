@@ -10,7 +10,7 @@
 #	path = tools/gentle/gentle-singularity
 #	url = https://github.com/AudiovisualMetadataPlatform/gentle-singularity.git
 #	ignore = all
-[submodule "tools/kaldi/kaldi-pua-singularity"]
-	path = tools/kaldi/kaldi-pua-singularity
-	url = https://github.com/AudiovisualMetadataPlatform/kaldi-pua-singularity.git
-	ignore = all
+#[submodule "tools/kaldi.old/kaldi-pua-singularity"]
+#	path = tools/kaldi/kaldi-pua-singularity
+#	url = https://github.com/AudiovisualMetadataPlatform/kaldi-pua-singularity.git
+#	ignore = all
