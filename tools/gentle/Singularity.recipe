@@ -20,17 +20,13 @@ From: ubuntu:18.04
         # AMD-based system, but it's old enough I assume that AMD CPUs will have all
         # of the features needed to work.
         export TARGET=HASWELL  
-
-        # compile more than one thing at a time...
-        export MAKEFLAGS=' -j4'
-
     else
         CUDA=
-
-        # compile more than one thing at a time...
-        export MAKEFLAGS=' -j2'
-        
     fi
+
+    # compile more than one thing at a time, leaving
+    # 1 cpu free
+    export MAKEFLAGS=" -j$(nproc --ignore 1)"
 
     apt-get update
     apt-get install -y \

@@ -50,12 +50,16 @@ export LC_ALL=en_US
     
     # kaldi build
     cd /opt/kaldi/tools
-    ./extras/install_mkl.sh 
-    make -j $(nproc)
+    if [ arch == 'x86_64' ]; then
+        ./extras/install_mkl.sh 
+    else
+        ./extras/install_openblas.sh
+    fi
+    make -j $(nproc --ignore 1)
     cd /opt/kaldi/src
     ./configure --shared
-    make depend -j $(nproc)
-    make -j $(nproc)
+    make depend -j $(nproc --ignore 1)
+    make -j $(nproc --ignore 1)
     find /opt/kaldi -type f \( -name "*.o" -o -name "*.la" -o -name "*.a" \) -exec rm {} \; && \
     find /opt/intel -type f -name "*.a" -exec rm {} \; && \
     find /opt/intel -type f -regex '.*\(_mc.?\|_mic\|_thread\|_ilp64\)\.so' -exec rm {} \; && \
