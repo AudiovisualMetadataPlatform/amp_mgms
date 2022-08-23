@@ -50,7 +50,7 @@ export LC_ALL=en_US
     
     # kaldi build
     cd /opt/kaldi/tools
-    if [ arch == 'x86_64' ]; then
+    if [ `arch` = 'x86_64' ]; then
         ./extras/install_mkl.sh 
     else
         ./extras/install_openblas.sh
