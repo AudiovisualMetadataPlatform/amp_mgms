@@ -10,7 +10,8 @@ From: ubuntu:18.04
     # install all of the dependencies
     export DEBIAN_FRONTEND=noninteractive
     # Handle non x86_64 architectures
-    if [ arch == 'x86_64' ]; then
+    if test `arch` = 'x86_64' ; then
+        echo "Setting for x86_64 target"
         CUDA=nvidia-cuda-dev
 
         # openBLAS won't build on an architecture it doesn't recognize.  Since
@@ -21,12 +22,19 @@ From: ubuntu:18.04
         # of the features needed to work.
         export TARGET=HASWELL  
     else
+        echo "Setting for non-x86_64 target"
         CUDA=
     fi
 
     # compile more than one thing at a time, leaving
     # 1 cpu free
     export MAKEFLAGS=" -j$(nproc --ignore 1)"
+
+    # print the build parameters
+    echo arch: `arch`
+    echo Building for target: $TARGET
+    echo Using cuda lib: $CUDA
+    echo Make flags: $MAKEFLAGS
 
     apt-get update
     apt-get install -y \
