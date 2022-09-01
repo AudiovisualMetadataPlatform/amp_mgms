@@ -13,15 +13,14 @@ import yaml
 from datetime import datetime
 import os
 import subprocess
-#from amp_bootstrap_utils import run_cmd, build_package
 import time
 import tarfile
 import io
+from amp.package import *
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--debug', default=False, action='store_true', help="Turn on debugging")
-    parser.add_argument('--version', default=None, help="Package Version")  
     parser.add_argument('--package', default=False, action='store_true', help="build a package instead of installing")
     parser.add_argument('destdir', help="Output directory for package or tool directory root")
     args = parser.parse_args()
@@ -70,7 +69,31 @@ def main():
             exit(1)
         os.chdir(here)
 
-        if args.package:            
+        if args.package:        
+            # get the version          
+            if (buildscript.parent / "mgm_version").exists():
+                with open(buildscript.parent / "mgm_version") as f:
+                    version = f.readline().strip()
+            else:
+                version = "0.0"
+
+            # get the defaults
+            defaults = None
+            if (buildscript.parent / "amp_config.default").exists():
+                defaults = str(buildscript.parent / "amp_config.default")
+
+            pkgname = buildscript.parent.stem
+            pfile = create_package(Path(destdir), builddir,
+                                   metadata={'name': "amp_mgms-" + pkgname,
+                                             'version': version,
+                                             'install_path': f'galaxy/tools/amp_mgms-{pkgname}'},
+                                   depends_on=['galaxy', 'amp_python'],
+                                   defaults=defaults)
+            logging.info(f"New package in {pfile!s}")
+            continue
+
+
+
             with tempfile.TemporaryDirectory(prefix='amp_mgms_pkg-', dir=tempdir) as tmpdir:
                 logging.debug(f"Temporary directory is: {tmpdir}")
                 logging.info(f"Copying . to {tmpdir}")
@@ -82,13 +105,14 @@ def main():
                     exit(1)                
                 os.chdir(here)
 
-                buildtime = datetime.now().strftime("%Y%m%d_%H%M%S")        
-                if args.version is None:
-                    if (buildscript.parent / "mgm_version").exists():
-                        with open(buildscript.parent / "mgm_version") as f:
-                            args.version = f.readline().strip()
-                    else:
-                        args.version = buildtime
+                buildtime = datetime.now().strftime("%Y%m%d_%H%M%S")   
+                if (buildscript.parent / "mgm_version").exists():
+                    with open(buildscript.parent / "mgm_version") as f:
+                        args.version = f.readline().strip()
+                else:
+                    args.version = buildtime
+
+
 
                 logging.info(f"Creating package for {buildscript.parent.stem} with version {args.version} in {destdir}")
                 basedir= f"amp_mgms-{buildscript.parent.stem}-{args.version}"

@@ -1,0 +1,6 @@
+mgms:
+    azure:
+        accountId: azure_account_id
+        apiKey: azure_api_key
+        s3Bucket: my-bucket
+        

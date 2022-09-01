@@ -1,0 +1,16 @@
+mgms:
+    hmgm:        
+        auth_key: some random garbage
+        auth_string: auth    
+        transcript_api: /#/hmgm/transcript-editor
+        transcript_input: datasetUrl
+        transcript_media: mediaUrl    
+        ner_api: /#/hmgm/ner-editor
+        ner_input: resourcePath
+        segmentation_api: /#/hmgm/segmentation-editor
+        segmentation_input: inputPath
+    jira:
+        server: https://jira.example.edu
+        username: jira_username
+        password: jira_password
+        project: jira_project_key
