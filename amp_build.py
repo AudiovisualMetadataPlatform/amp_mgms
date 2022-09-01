@@ -86,7 +86,7 @@ def main():
             pfile = create_package(Path(destdir), builddir,
                                    metadata={'name': "amp_mgms-" + pkgname,
                                              'version': version,
-                                             'install_path': f'galaxy/tools/amp_mgms-{pkgname}'},
+                                             'install_path': f'galaxy'},
                                    depends_on=['galaxy', 'amp_python'],
                                    defaults=defaults)
             logging.info(f"New package in {pfile!s}")
