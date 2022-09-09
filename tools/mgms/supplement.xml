@@ -24,7 +24,7 @@
 	  <option value="Transcript">Unaligned Transcript</option>
 	  <option value="Vocabulary">Vocabulary List for Tagging</option>
 	  <option value="Program">Recital Program</option>
-	  <option value="Groundtruth">Groundtruth</option>
+	  <option value="Other">Other</option>
 	  <option value="Groundtruth-segment">Groundtruth for Audio Segmentation</option>
 	  <option value="Groundtruth-applause">Groundtruth for Applause Detection</option>
 	  <option value="Groundtruth-transcript">Groundtruth for Speech-to-Text Transcript</option>
@@ -32,7 +32,6 @@
 	  <option value="Groundtruth-shot">Groundtruth for Shot Detection</option>
 	  <option value="Groundtruth-face">Groundtruth for Face Recognition</option>
 	  <option value="Groundtruth-vocr">Groundtruth for Video OCR</option>
-	  <option value="Other">Other</option>
     </param>
     <param name="format" type="select" label="Format" help="File format/extension of the supplement (required)">   
 	  <option value="zip">zip</option>
