@@ -53,6 +53,9 @@
 
   <section id="video_indexing" name="Video Indexing">
     <tool file="amp_mgms/azure_video_indexer.xml"/>
+  </section>
+
+  <section id="contact_sheet" name="Contact Sheet">
     <tool file="amp_mgms/contact_sheet_frame.xml"/>
     <tool file="amp_mgms/contact_sheet_face.xml"/>
     <tool file="amp_mgms/contact_sheet_shot.xml"/>
