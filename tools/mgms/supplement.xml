@@ -24,6 +24,7 @@
 	  <option value="Transcript">Unaligned Transcript</option>
 	  <option value="Vocabulary">Vocabulary List for Tagging</option>
 	  <option value="Program">Recital Program</option>
+	  <option value="Groundtruth">Groundtruth</option>
 	  <option value="Groundtruth-segment">Groundtruth for Audio Segmentation</option>
 	  <option value="Groundtruth-applause">Groundtruth for Applause Detection</option>
 	  <option value="Groundtruth-transcript">Groundtruth for Speech-to-Text Transcript</option>
