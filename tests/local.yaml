@@ -203,6 +203,16 @@
     sample_format: pcm_s16le
 
 
+- name: INA Speech Segmenter
+  tool: ina_speech_segmenter.xml
+  inputs:
+    input_audio: audio.mp3
+  outputs:
+    amp_segments:
+      - {test: magic, mime: text/plain}
+      - {test: strings, strings: [segments, silence, gender, start, end]}
+
+
 - name: Keep Speech
   tool: mgms/keep_speech.xml
   inputs:
