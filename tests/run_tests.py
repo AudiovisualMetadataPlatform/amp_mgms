@@ -59,8 +59,8 @@ def main():
         command_text = tool_root.findtext("command").strip()
         logging.debug(f"{context} Tool text: {command_text}")
 
-        # build the parameters needed for substitution
-        params = {'__tool_directory__': str(mgm_dir.absolute())}
+        # build the parameters needed for substitution        
+        params = {'__tool_directory__': str(tool_file.parent.absolute())}
         if 'params' in test:
             params.update(test["params"])
 

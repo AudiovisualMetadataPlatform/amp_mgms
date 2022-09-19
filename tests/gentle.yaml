@@ -1,7 +1,7 @@
 # Gentle is really slow, so it gets its own config
 # Actually for the test below it ran for more than 4.5 hours before I killed it.
 - name: Gentle Forced Alignment
-  tool: gentle_force_alignment
+  tool: gengle/gentle_force_alignment.xml
   inputs:
     speech_audio: audio.mp3
     amp_transcript_unaligned: amp_transcript_aws.json

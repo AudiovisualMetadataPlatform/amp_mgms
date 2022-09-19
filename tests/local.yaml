@@ -1,7 +1,7 @@
 # This is the default test suite -- local tools
 
 - name: Adjust Diarization Timestamps
-  tool: adjust_diarization_timestamps.xml
+  tool: mgms/adjust_diarization_timestamps.xml
   inputs:
     amp_diarization_unadjusted: amp_diarization.json
     kept_segments: amp_kept_segments.json
@@ -11,7 +11,7 @@
       - {test: strings, strings: [segments, numSpeakers, media]}
 
 - name: Adjust Transcript Timestamps
-  tool: adjust_transcript_timestamps.xml
+  tool: amp/adjust_transcript_timestamps.xml
   inputs:
     amp_transcript_unadjusted: amp_transcript_aws.json
     kept_segments: amp_kept_segments.json
@@ -22,7 +22,7 @@
 
 
 - name: Applause Detection
-  tool: applause_detection.xml
+  tool: applause_detection/applause_detection.xml
   inputs:
     input_audio: audio.mp3
   params:
@@ -32,63 +32,63 @@
       - {test: magic, mime: text/plain}
       - {test: strings, strings: [segments, label, start, end]}      
 
-- name: Contact Sheets - shot
-  tool: contact_sheets.xml
-  inputs:
-    input_video: video.m4v
-    amp_shots: amp_shots.json
-  params:
-    type: shot
-    amp_faces: none
-    frame_seconds: 0
-    frame_quantity: 0
-    number_of_columns: 4
-    photo_width: 300
-    margin: 10
-    padding: 3
-  outputs:
-    contact_sheet:
-      - {test: magic, mime: image/png}
+#- name: Contact Sheets - shot
+#  tool: contact_sheets.xml
+#  inputs:
+#    input_video: video.m4v
+#    amp_shots: amp_shots.json
+#  params:
+#    type: shot
+#    amp_faces: none
+#    frame_seconds: 0
+#    frame_quantity: 0
+#    number_of_columns: 4
+#    photo_width: 300
+#    margin: 10
+#    padding: 3
+#  outputs:
+#    contact_sheet:
+#      - {test: magic, mime: image/png}
 
-- name: Contact Sheets - time
-  tool: contact_sheets.xml
-  inputs:
-    input_video: video.m4v    
-  params:
-    type: time
-    amp_shots: ""
-    amp_faces: ""
-    frame_seconds: 10
-    frame_quantity: 0
-    number_of_columns: 4
-    photo_width: 300
-    margin: 10
-    padding: 3
-  outputs:
-    contact_sheet:
-      - {test: magic, mime: image/png}
+#- name: Contact Sheets - time
+#  tool: contact_sheets.xml
+#  inputs:
+#    input_video: video.m4v    
+#  params:
+#    type: time
+#    amp_shots: ""
+#    amp_faces: ""
+#    frame_seconds: 10
+#    frame_quantity: 0
+#    number_of_columns: 4
+#    photo_width: 300
+#    margin: 10
+#    padding: 3
+#  outputs:
+#    contact_sheet:
+#      - {test: magic, mime: image/png}
 
-- name: Contact Sheets - quantity
-  tool: contact_sheets.xml
-  inputs:
-    input_video: video.m4v    
-  params:
-    type: quantity
-    amp_shots: ""
-    amp_faces: ""
-    frame_seconds: 0
-    frame_quantity: 10
-    number_of_columns: 4
-    photo_width: 300
-    margin: 10
-    padding: 3
-  outputs:
-    contact_sheet:
-      - {test: magic, mime: image/png}
+#- name: Contact Sheets - quantity
+#  tool: contact_sheets.xml
+#  inputs:
+#    input_video: video.m4v    
+#  params:
+#    type: quantity
+#    amp_shots: ""
+#    amp_faces: ""
+#    frame_seconds: 0
+#    frame_quantity: 10
+#    number_of_columns: 4
+#    photo_width: 300
+#    margin: 10
+#    padding: 3
+#  outputs:
+#    contact_sheet:
+#      - {test: magic, mime: image/png}
 
 
 - name: Extract Audio
-  tool: extract_audio.xml
+  tool: mgms/extract_audio.xml
   inputs:
     input_av: video.m4v
   outputs:
@@ -104,7 +104,7 @@
 
 
 - name: INA Speech Segmenter
-  tool: ina_speech_segmenter.xml
+  tool: ina_speech_segmenter/ina_speech_segmenter.xml
   inputs:
     input_audio: audio.mp3
   outputs:
@@ -113,7 +113,7 @@
       - {test: strings, strings: [segments, silence, gender, start, end]}
 
 - name: Kaldi
-  tool: kaldi.xml
+  tool: kaldi/kaldi.xml
   inputs:
     input_audio: audio.mp3
   outputs:
@@ -128,7 +128,7 @@
       - {test: strings, strings: "celebration of specialness"}
 
 - name: Keep Speech
-  tool: keep_speech.xml
+  tool: mgms/keep_speech.xml
   inputs:
     original_audio: audio.wav
     amp_segments: amp_segments.json
@@ -140,7 +140,7 @@
 
 
 - name: NER to CSV
-  tool: ner_to_csv.xml
+  tool: mgms/ner_to_csv.xml
   inputs:
     amp_entities: amp_entities.ner
   outputs:
@@ -150,7 +150,7 @@
 
 
 - name: PyScene Detect
-  tool: pyscenedetect.xml
+  tool: mgms/pyscenedetect.xml
   inputs:
     input_video: video.m4v
   params:
@@ -165,7 +165,7 @@
       - {test: strings, strings: [Frame Number, Timecode, content_val, delta_hue, delta_lum, delta_sat]}
 
 - name: Remove Silence Music Speech
-  tool: remove_silence_speech.xml
+  tool: mgms/remove_silence_speech.xml
   inputs:
     original_audio: audio.wav
     amp_segments: amp_segments.json
@@ -177,7 +177,7 @@
 
 
 - name: Remove Trailing Silence
-  tool: remove_trailing_silence.xml
+  tool: mgms/remove_trailing_silence.xml
   inputs:
     input_av: audio.mp3
   outputs:
@@ -186,7 +186,7 @@
       - {test: ffprobe, path: "format", attrib: "duration", value: "42.994875"}
     
 - name: Spacy
-  tool: spacy.xml
+  tool: mgms/spacy.xml
   inputs:
     amp_transcript: amp_transcript_aws.json
   params:
@@ -201,7 +201,7 @@
 
 
 - name: Tesseract
-  tool: tesseract.xml
+  tool: mgms/tesseract.xml
   inputs:
     input_video: video.m4v
   outputs:
@@ -211,7 +211,7 @@
       - {test: strings, strings: ["TRUE", "STORIES", "VIRGIL"]}
 
 - name: Transcript to WebVTT
-  tool: transcript_to_webvtt.xml
+  tool: mgms/transcript_to_webvtt.xml
   inputs:
     amp_diarization: amp_diarization.json
     amp_transcript: amp_transcript_aws.json
@@ -221,7 +221,7 @@
       - {test: strings, strings: [WEBVTT, spk_0, multipurpose]}
 
 - name: Vocabulary Tagging
-  tool: vocabulary_tagging.xml
+  tool: mgms/vocabulary_tagging.xml
   inputs:
     amp_transcript: amp_transcript_aws.json
     tag_vocabulary: amp_words.txt
@@ -231,7 +231,7 @@
       - {test: strings, strings: [Word, Start]}
 
 - name: VOCR to CSV
-  tool: vocr_to_csv.xml
+  tool: mgms/vocr_to_csv.xml
   skip: This was broken in the pre-refactored code, and remains so now.
   inputs:
     amp_vocr: vocr.json
