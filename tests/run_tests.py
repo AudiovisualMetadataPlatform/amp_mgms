@@ -106,7 +106,7 @@ set -e
             runscript.chmod(0o755)
 
             if args.debug:
-                os.environ['MGM_DEBUG'] = '1'
+                os.environ['AMP_DEBUG'] = '1'
 
             rc = 255
             script_failed = False
