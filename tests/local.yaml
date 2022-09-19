@@ -59,6 +59,7 @@
 ### tools/mgms
 - name: Adjust Diarization Timestamps
   tool: mgms/adjust_diarization_timestamps.xml
+  tool: mgms/adjust_diarization_timestamps.xml
   inputs:
     amp_diarization_unadjusted: amp_diarization.json
     kept_segments: amp_kept_segments.json
@@ -204,7 +205,7 @@
 
 
 - name: INA Speech Segmenter
-  tool: ina_speech_segmenter.xml
+  tool: ina_speech_segmenter/ina_speech_segmenter.xml
   inputs:
     input_audio: audio.mp3
   outputs:
