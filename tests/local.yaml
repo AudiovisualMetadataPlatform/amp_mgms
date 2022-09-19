@@ -100,7 +100,8 @@
   params:    
     rate: 44100
     channels: 1
-    sample_size: pcm_s16le
+    sample_format: pcm_s16le
+
 
 - name: INA Speech Segmenter
   tool: ina_speech_segmenter.xml
