@@ -6,7 +6,7 @@ import json
 import argparse
 import logging
 
-import amp.logger
+import amp.logging
 import amp.utils
 from amp.schema.contact_sheet import ContactSheet
 
@@ -22,7 +22,7 @@ def main():
 	parser.add_argument('--margin', type=int, default=10, help="Margin around each thumbnail")
 	parser.add_argument('--padding', type=int, default=3, help="Padding around each thumbnail")
 	args = parser.parse_args()
-	
+	amp.logging.setup_logging("contact_sheet_face", args.debug)
 	logging.info(f"Starting with args {args}")
 	(input_video, amp_faces, contact_sheet, columns, width, margin, padding) = (args.input_video, args.amp_faces, args.contact_sheet, args.columns, args.width, args.margin, args.padding)
 

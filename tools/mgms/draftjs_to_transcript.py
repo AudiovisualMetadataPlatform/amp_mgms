@@ -11,7 +11,7 @@ import argparse
 
 import amp.utils
 import logging
-import amp.logger
+import amp.logging
 
 from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult, SpeechToTextScore, SpeechToTextWord
 # import aws_transcribe_to_schema
@@ -25,6 +25,7 @@ def main():
     parser.add_argument("original_transcript")
     parser.add_argument("to_transcript")
     args = parser.parse_args()
+    amp.logging.setup_logging("draftjs_to_transcript", args.debug)
     logging.debug(f"Starting with args {args}")
     (from_draftjs, original_transcript, to_transcript) = (args.from_draftjs, args.original_transcript, args.to_transcript)
 

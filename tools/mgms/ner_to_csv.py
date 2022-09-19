@@ -6,7 +6,7 @@ import argparse
 
 from amp.schema.entity_extraction import EntityExtraction
 import logging
-import amp.logger
+import amp.logging
 
 def main():    
     #(amp_entities, amp_entities_csv) = sys.argv[1:3]
@@ -15,6 +15,7 @@ def main():
     parser.add_argument("amp_entities")
     parser.add_argument("amp_entities_csv")
     args = parser.parse_args()
+    amp.logging.setup_logging("ner_to_csv", args.debug)
     logging.info(f"Starting with args {args}")
     (amp_entities, amp_entities_csv) = (args.amp_entities, args.amp_entities_csv)
 

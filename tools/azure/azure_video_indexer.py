@@ -11,7 +11,7 @@ import boto3
 from distutils.util import strtobool
 import logging
 
-import amp.logger
+import amp.logging
 import amp.utils
 
 def main():
@@ -26,6 +26,7 @@ def main():
     parser.add_argument("azure_video_index", help="Azure Video Index JSON")
     parser.add_argument("azure_artifact_ocr", help="Azure Artifact OCR JSON")
     args = parser.parse_args()
+    amp.logging.setup_logging("azure_video_indexer", args.debug)
     logging.info(f"Starting with args {args}")
     (input_video, include_ocr, azure_video_index, azure_artifact_ocr) = (args.input_video, args.include_ocr, args.azure_video_index, args.azure_artifact_ocr)
 #     (input_video, include_ocr, region_name, azure_video_index, azure_artifact_ocr) = (args.input_video, args.include_ocr, args.region_name, args.azure_video_index, args.azure_artifact_ocr)

@@ -7,7 +7,7 @@ import argparse
 
 import amp.utils
 import logging
-import amp.logger
+import amp.logging
 
 # Convert NER generated JSON file to IIIF manifest JSON file.
 # Usage: ner_to_iiif.py root_dir from_ner to_iiif context_json
@@ -23,6 +23,7 @@ def main():
     parser.add_argument("to_iiif", help="json file fed to HMGM NER editor in IIIF format to convert to")
     parser.add_argument("context_json", help="context info as json string needed for creating HMGM tasks")
     args = parser.parse_args()
+    amp.logging.setup_logging("ner_to_iiif", args.debug)
     logging.debug(f"Starting with args {args}")
     (from_ner, to_iiif, context_json) = (args.from_ner, args.to_iiif, args.context_json)
 

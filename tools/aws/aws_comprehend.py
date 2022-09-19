@@ -14,7 +14,7 @@ import platform
 import tempfile
 import logging
 
-import amp.logger
+import amp.logging
 import amp.utils
 import amp.ner_helper
 
@@ -31,6 +31,7 @@ def main():
     parser.add_argument("--force", default=False, action="store_true", help="delete any existing jobs with this name and force a new job")
 
     args = parser.parse_args()
+    amp.logging.setup_logging("aws_comprehend", args.debug)
     logging.info(f"Starting with args {args}")
     (amp_transcript, aws_entities, amp_entities, ignore_types) = (args.amp_transcript, args.aws_entities, args.amp_entities, args.ignore_types)
 #     (amp_transcript, aws_entities, amp_entities, ignore_types, bucket, dataAccessRoleArn) = (args.amp_transcript, args.aws_entities, args.amp_entities, args.ignore_types, args.bucket, args.dataAccessRoleArn)

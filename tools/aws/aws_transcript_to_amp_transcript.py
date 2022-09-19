@@ -5,7 +5,7 @@ import sys
 import argparse
 import logging
 
-import amp.logger
+import amp.logging
 import amp.utils
 from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult, SpeechToTextWord, SpeechToTextScore
 from amp.schema.segmentation import Segmentation, SegmentationMedia
@@ -19,6 +19,7 @@ def main():
 	parser.add_argument("amp_transcript", help="Output AMP Transcript file")
 	parser.add_argument("amp_diarization", help="Output AMP Diarization file")
 	args = parser.parse_args()
+	amp.logging.setup_logging("aws_transcript_to_amp_transcript", args.debug)
 	logging.info(f"Starting with args {args}")
 	(input_audio, aws_transcript, amp_transcript, amp_diarization) = (args.input_audio, args.aws_transcript, args.amp_transcript, args.amp_diarization)
 

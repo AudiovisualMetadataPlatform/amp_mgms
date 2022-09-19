@@ -13,7 +13,7 @@ import argparse
 
 from amp.schema.segmentation import Segmentation
 import logging
-import amp.logger
+import amp.logging
 
 # Seconds to buffer beginning and end of audio segments by
 buffer = 5
@@ -28,6 +28,7 @@ def main():
 	parser.add_argument("output_file")
 	parser.add_argument("kept_segments_file")
 	args = parser.parse_args()
+	amp.logging.setup_logging("keep_speech", args.debug)
 	logging.info(f"Starting with args {args}")
 	(input_file, input_segmentation_json, remove_type, output_file, kept_segments_file) = (args.input_file, args.input_segmentation_json, args.remove_type, args.output_file, args.kept_segments_file)
 

@@ -12,10 +12,9 @@ from distutils.util import strtobool
 import amp.dlib_face_training as train
 from amp.schema.facial_recognition import FaceRecognition, FaceRecognitionMedia, FaceRecognitionMediaResolution, FaceRecognitionFrame, FaceRecognitionFrameObject, FaceRecognitionFrameObjectScore, FaceRecognitionFrameObjectVertices
 
-from amp.logger import MgmLogger
 import amp.utils
 import logging
-import amp.logger
+import amp.logging
 
 
 FR_SCORE_TYPE = "confidence"
@@ -32,6 +31,7 @@ def main():
     parser.add_argument("tolerance", type=float, default=FR_DEFAULT_TOLERANCE, help="Recognition tolerance")
     parser.add_argument("amp_faces", help="Faces output file")
     args = parser.parse_args()
+    amp.logging.setup_logging("dlib_face_recognition", args.debug)
     logging.info(f"Starting with args {args}")
     (input_video, training_photos, reuse_trained, tolerance, amp_faces) = (args.input_video, args.training_photos, args.reuse_trained, args.tolerance, args.amp_faces)
 

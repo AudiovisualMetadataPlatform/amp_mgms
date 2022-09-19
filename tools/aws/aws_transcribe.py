@@ -9,7 +9,7 @@ import argparse
 from pathlib import Path
 import logging
 from time import sleep
-import amp.logger
+import amp.logging
 import amp.utils
 import boto3
 from botocore.exceptions import ClientError
@@ -30,6 +30,7 @@ def main():
     parser.add_argument("--force", default=False, action="store_true", help="delete any existing jobs with this name and force a new job")
     
     args = parser.parse_args()
+    amp.logging.setup_logging("aws_transcribe", args.debug)
     logging.info(f"Starting args={args}")
 
     config = amp.utils.get_config()

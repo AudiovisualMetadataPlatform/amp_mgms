@@ -6,7 +6,7 @@ from pathlib import Path
 import sys
 import logging
 
-import amp.logger
+import amp.logging
 import amp.utils
 import hpc_submit
 import kaldi_transcript_to_amp_transcript
@@ -24,7 +24,7 @@ def main():
     parser.add_argument("amp_transcript_json", help="AMP JSON output")
     parser.add_argument("hpc_timestamps", help="HPC Timestamps output")
     args = parser.parse_args()
-
+    amp.logging.setup_logging("kaldi_hpc", args.debug)
     # get hpc dropbox dir path
     dropbox = amp.utils.get_work_dir("hpc_dropbox")
                                     

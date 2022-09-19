@@ -7,7 +7,7 @@ import argparse
 
 import amp.utils
 import logging
-import amp.logger
+import amp.logging
 
 segments = list()
 
@@ -20,6 +20,7 @@ def main():
 	parser.add_argument("diarization_json")
 	parser.add_argument("to_draftjs")
 	args = parser.parse_args()
+	amp.logging.setup_logging("transcript_to_draftjs", args.debug)
 	logging.debug(f"Starting with args {args}")
 	(from_transcript, diarization_json, to_draftjs) = (args.from_transcript, args.diarization_json, args.to_draftjs)
 

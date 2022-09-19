@@ -7,7 +7,7 @@ from pathlib import Path
 import sys
 import logging
 
-import amp.logger
+import amp.logging
 import amp.utils
 import hpc_submit
 
@@ -26,7 +26,7 @@ def main():
     parser.add_argument("amp_segments", help="AMP Segmentation Schema output")
     parser.add_argument("hpc_timestamps", help="HPC Timestamps output")
     args = parser.parse_args()
-
+    amp.logging.setup_logging("ina_speech_segmenter_hpc", args.debug)
     # set up logging
 #     logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO,
 #                         stream=sys.stderr,

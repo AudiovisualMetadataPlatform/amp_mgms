@@ -7,7 +7,7 @@ import argparse
 import logging
 import math
 
-import amp.logger
+import amp.logging
 import amp.utils
 from amp.schema.contact_sheet import ContactSheet
 
@@ -24,7 +24,7 @@ def main():
 	parser.add_argument('--margin', type=int, default=10, help="Margin around each thumbnail")
 	parser.add_argument('--padding', type=int, default=3, help="Padding around each thumbnail")
 	args = parser.parse_args()
-	
+	amp.logging.setup_logging("contact_sheet_frame", args.debug)
 	logging.info(f"Starting with args {args}")
 	(input_video, contact_sheet, frame_interval, frame_quantity, columns, width, margin, padding) = (args.input_video, args.contact_sheet, args.frame_interval, args.frame_quantity, args.columns, args.width, args.margin, args.padding)
 
