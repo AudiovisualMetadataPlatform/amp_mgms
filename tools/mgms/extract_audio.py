@@ -8,7 +8,7 @@ import logging
 from pathlib import Path
 import subprocess
 import logging
-import amp.logger
+import amp.logging
 
 def main():
     parser = argparse.ArgumentParser(description="Extract the audio stream from a file as-is")
@@ -19,6 +19,7 @@ def main():
     parser.add_argument('sample_format', default="pcm_s16le", help="Sample format (i.e. pcm_s16le)")
     parser.add_argument('audio_extracted', help="Audio Extracted")
     args = parser.parse_args()    
+    amp.logging.setup_logging("extract_audio", args.debug)
     logging.info(f"Starting with args {args}") 
     # use ffmpeg to extract the audio stream and put it into the file
     p = subprocess.run(['ffmpeg', '-y', 

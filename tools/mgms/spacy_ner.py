@@ -7,7 +7,7 @@ import argparse
 
 import amp.utils
 import amp.ner_helper
-import amp.logger
+import amp.logging
 import logging
 
 def main():
@@ -19,6 +19,7 @@ def main():
     parser.add_argument("amp_entities")
     parser.add_argument("ignore_types")
     args = parser.parse_args()
+    amp.logging.setup_logging("spacy_ner", args.debug)
     logging.info(f"Starting args={args}")
     (amp_transcript, spacy_entities, amp_entities, ignore_types) = (args.amp_transcript, args.spacy_entities, args.amp_entities, args.ignore_types)
 

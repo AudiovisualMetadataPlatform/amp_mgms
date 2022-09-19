@@ -16,10 +16,9 @@ from scenedetect.stats_manager import StatsManager
 # For content-aware scene detection:
 from scenedetect.detectors.content_detector import ContentDetector
 
-from amp.logger import MgmLogger
 import amp.utils
 import logging
-import amp.logger
+import amp.logging
 
 def main():
     #(input_video, threshold, amp_shots, frame_stats) = sys.argv[1:5]
@@ -30,6 +29,7 @@ def main():
     parser.add_argument("amp_shots", help="AMP Shots Generated")
     parser.add_argument("frame_stats", help="Frame Statistics")
     args = parser.parse_args()
+    amp.logging.setup_logging("pyscenedetect", args.debug)
     logging.info(f"Starting with args {args}")
     (input_video, threshold, amp_shots, frame_stats) = (args.input_video, args.threshold, args.amp_shots, args.frame_stats)
 

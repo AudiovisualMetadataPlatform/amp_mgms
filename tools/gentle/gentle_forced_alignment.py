@@ -12,7 +12,7 @@ import traceback
 import argparse
 import logging
 
-import amp.logger
+import amp.logging
 import amp.utils
 from amp.schema.entity_extraction import EntityExtraction, EntityExtractionMedia, EntityExtractionEntity, EntityExtractionEntityScore
 
@@ -26,6 +26,7 @@ def main():
 	parser.add_argument("gentle_transcript")
 	parser.add_argument("amp_transcript_aligned")
 	args = parser.parse_args()
+	amp.logging.setup_logging("gentle_forced_alignment", args.debug)
 	logging.info(f"Starting with args={args}")
 	(speech_audio, amp_transcript_unaligned, gentle_transcript, amp_transcript_aligned) = (args.speech_audio, args.amp_transcript_unaligned, args.gentle_transcript, args.amp_transcript_aligned)
 

@@ -8,7 +8,7 @@ from amp.schema.segmentation import Segmentation
 from amp.adjustment import Adjustment
 
 import logging
-import amp.logger
+import amp.logging
 import amp.utils
 
 
@@ -20,6 +20,7 @@ def main():
     parser.add_argument("adj_json")
     parser.add_argument("output_json")
     args = parser.parse_args()
+    amp.logging.setup_logging("adjust_diarization_timestamps", args.debug)
     (segmentation_json, adj_json, output_json) = (args.segmentation_json, args.adj_json, args.output_json)
     logging.info(f"Starting with args {args}")
 

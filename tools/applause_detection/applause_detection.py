@@ -10,7 +10,7 @@ import argparse
 import logging
 
 import amp.utils
-import amp.logger
+import amp.logging
 
 
 def main():
@@ -21,6 +21,8 @@ def main():
     parser.add_argument("min_segment_duration", type=int, default=1000)
     parser.add_argument("amp_segments")
     args = parser.parse_args()
+    amp.logging.setup_logging("applause_detection", args.debug)
+
     logging.info(f"Starting with args={args}")
     (input_audio, min_segment_duration, amp_segments) = (args.input_audio, args.min_segment_duration, args.amp_segments)    
     

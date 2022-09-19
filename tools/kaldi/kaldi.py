@@ -14,7 +14,7 @@ import os
 import time
 
 import amp.utils
-import amp.logger
+import amp.logging
 
 
 # The run_kaldi.sh script is assumed to be in a directory called kaldi-pua-singularity, which is a peer to the
@@ -33,6 +33,7 @@ def main():
     parser.add_argument("--gpu", default=False, action="store_true", help="Use GPU kaldi")
     parser.add_argument("--overlay_dir", default=None, nargs=1, help="Directory for the overlay file (default to cwd)")
     args = parser.parse_args()
+    amp.logging.setup_logging("kaldi", args.debug)
     logging.info(f"Starting with args {args}")
 
     # copy the input file to a temporary directory

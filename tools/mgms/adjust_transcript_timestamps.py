@@ -8,10 +8,9 @@ import argparse
 from amp.schema.speech_to_text import SpeechToText
 from amp.adjustment import Adjustment
 
-from amp.logger import MgmLogger
 import amp.utils
 import logging
-import amp.logger
+import amp.logging
 
 
 
@@ -24,6 +23,7 @@ def main():
     parser.add_argument("adj_json")
     parser.add_argument("output_json")
     args = parser.parse_args()
+    amp.logging.setup_logging("adjust_transcript_timestamps", args.debug)
     logging.info(f"Starting with args {args}")
     (stt_json, adj_json, output_json) = (args.stt_json, args.adj_json, args.output_json)
 

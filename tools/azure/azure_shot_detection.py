@@ -6,7 +6,7 @@ import os
 import argparse
 import logging
 
-import amp.logger
+import amp.logging
 import amp.utils
 from amp.schema.shot_detection import ShotDetection, ShotDetectionMedia, ShotDetectionShot
 
@@ -20,6 +20,7 @@ def main():
 	parser.add_argument("amp_shots")
 	args = parser.parse_args()
 	logging.info(f"Starting with args {args}")
+	amp.logging.setup_logging("azure_shot_detection", args.debug)
 	(input_video, azure_video_index, amp_shots) = (args.input_video, args.azure_video_index, args.amp_shots)
 
 

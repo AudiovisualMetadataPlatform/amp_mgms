@@ -9,7 +9,7 @@ import shutil
 import sys
 import traceback
 
-import amp.logger
+import amp.logging
 from amp.task.jira import TaskJira
 from amp.task.manager import TaskManager
 from amp.task.openproject import TaskOpenproject 
@@ -43,6 +43,7 @@ def main():
 	parser.add_argument("task_json", help="json file storing information about the HMGM task, such as ticket # etc")
 	parser.add_argument("context_json", help="context info as json string needed for creating HMGM tasks")
 	args = parser.parse_args()
+	amp.logging.setup_logging("hmgm_main", args.debug)
 	logging.debug(f"Starting with args {args}")
 	(task_type, input_json, output_json, task_json, context_json) = (args.task_type, args.input_json, args.output_json, args.task_json, args.context_json)
 

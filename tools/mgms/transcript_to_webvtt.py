@@ -5,7 +5,7 @@ import os
 import time
 import argparse
 import logging
-import amp.logger
+import amp.logging
 
 MIN_WORD_COUNT = 6	# minimum number of words per line
 MAX_WORD_COUNT = 10	# maximum number of words per line
@@ -20,6 +20,7 @@ def main():
 	parser.add_argument("stt_file")
 	parser.add_argument("vtt_file")
 	args = parser.parse_args()
+	amp.logging.setup_logging("transcript_to_webvtt", args.debug)
 	logging.info(f"Starting with args {args}")
 	(seg_file, stt_file, vtt_file) = (args.seg_file, args.stt_file, args.vtt_file)
 

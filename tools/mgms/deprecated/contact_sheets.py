@@ -6,7 +6,7 @@ import requests
 import json
 from amp.schema.contact_sheet import ContactSheet
 import logging
-import amp.logger
+import amp.logging
 import argparse
 
 
@@ -27,6 +27,7 @@ def main():
 	parser.add_argument('--margin', type=int, default=10, help="Margin")
 	parser.add_argument('--padding', type=int, default=3, help="Padding")
 	args = parser.parse_args()
+	amp.logging.setup_logging("contact_sheets", args.debug)
 	logging.info(f"Starting with args {args}")
 	(input_file, type, contact_sheet, frame_interval, frame_quantity, amp_shots, amp_facial_recognition,
 		number_of_columns, photow, margin, padding) = (args.input_file, args.type, args.contact_sheet, args.frame_interval, args.frame_quantity, args.amp_shots, args.amp_facial_recognition,

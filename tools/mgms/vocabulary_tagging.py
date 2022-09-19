@@ -7,7 +7,7 @@ from datetime import datetime
 import argparse
 import logging
 
-import amp.logger
+import amp.logging
 import amp.utils
 
 
@@ -21,6 +21,7 @@ def main():
     parser.add_argument("words_to_flag_file")
     parser.add_argument("output_csv")
     args = parser.parse_args()
+    amp.logging.setup_logging("vocabulary_tagging", args.debug)
     logging.info(f"Starting with args {args}")
     (amp_transcript, words_to_flag_file, output_csv) = (args.amp_transcript, args.words_to_flag_file, args.output_csv)
 

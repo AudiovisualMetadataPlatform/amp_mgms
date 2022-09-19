@@ -5,7 +5,7 @@ import json
 
 from amp.schema.video_ocr import VideoOcr
 import logging
-import amp.logger
+import amp.logging
 
 def main():
     #(amp_vocr, amp_vocr_csv) = sys.argv[1:3]
@@ -14,6 +14,7 @@ def main():
     parser.add_argument("amp_vocr", help="AMP Video OCR")
     parser.add_argument("amp_vocr_csv", help="CSV output file")
     args = parser.parse_args()
+    amp.logging.setup_logging("vocr_to_csv", args.debug)
     logging.info(f"Starting with args {args}")
     (amp_vocr, amp_vocr_csv) = (args.amp_vocr, args.amp_vocr_csv)
 

@@ -7,7 +7,7 @@ import argparse
 
 from amp.schema.contact_sheet import ContactSheet
 import logging
-import amp.logger
+import amp.logging
 
 def main():
 
@@ -26,6 +26,7 @@ def main():
 	parser.add_argument("context_json", help="JSON context")
 	parser.add_argument("amp_contact_sheets", help="AMP Contact sheets")
 	args = parser.parse_args()
+	amp.logging.setup_logging("contact_sheets_collection", args.debug)
 	logging.info(f"Starting with args {args}")
 	(input_file, context_json, amp_contact_sheets) = (args.input_file, args.context_json, args.amp_context_sheets)
 

@@ -18,7 +18,7 @@ from pytesseract import Output
 from PIL import Image
 
 from amp.schema.video_ocr import VideoOcr, VideoOcrMedia, VideoOcrResolution, VideoOcrFrame, VideoOcrObject, VideoOcrObjectScore, VideoOcrObjectVertices
-import amp.logger
+import amp.logging
 import amp.utils
 
 
@@ -34,6 +34,7 @@ def main():
 		parser.add_argument("amp_vocr", help="Original AMP Video OCR output file")
 		parser.add_argument("amp_vocr_dedupe", help="Deduped AMP Video OCR output file")
 		args = parser.parse_args()
+		amp.logging.setup_logging("tesseract", args.debug)
 		logging.info(f"Starting with args={args}")
 		(input_video, vocr_interval, dedupe, dup_gap, amp_vocr, amp_vocr_dedupe) = (args.input_video, args.vocr_interval, args.dedupe, args.dup_gap, args.amp_vocr, args.amp_vocr_dedupe)
 	
