@@ -17,6 +17,6 @@ kaldi-pua-gpu.sif: kaldi-pua-singularity/Singularity.gpu
 # Kaldi's GPU verison doesn't seem to be building -- skip it.
 #install:  kaldi-pua-cpu.sif kaldi-pua-gpu.sif kaldi.py kaldi.xml kaldi_transcript_to_amp_transcript.py
 install:  kaldi-pua-cpu.sif kaldi.py kaldi.xml kaldi_transcript_to_amp_transcript.py
-	mkdir -p $(DESTDIR)/tools/amp_mgms
-	cp $^ $(DESTDIR)/tools/amp_mgms
+	mkdir -p $(DESTDIR)/tools/kaldi
+	cp $^ $(DESTDIR)/tools/kaldi
 	
