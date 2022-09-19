@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env amp_python.sif
 import argparse
 import sys
 import json

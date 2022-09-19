@@ -1,4 +1,4 @@
-#!/usr/bin/env mgm_python.sif
+#!/usr/bin/env amp_python.sif
 # need the mgm_python environment because we call ffmpeg.
 
 import json
