@@ -1,5 +1,5 @@
 - name: Azure Video Indexer
-  tool: azure_video_indexer.xml
+  tool: azure/azure_video_indexer.xml
   inputs:
     input_video: video.m4v
   outputs:
@@ -15,7 +15,7 @@
     location: eastus2
 
 - name: Azure Video OCR
-  tool: azure_video_ocr.xml  
+  tool: azure/azure_video_ocr.xml  
   inputs: 
     input_video: video.m4v
     azure_video_index: azure_video_index.json
@@ -26,7 +26,7 @@
       - {test: strings, strings: [frames, media, duration, resolution]}
       
 - name: Azure Shot Detection
-  tool: azure_shot_detection.xml
+  tool: azure/azure_shot_detection.xml
   inputs:
     input_video: video.m4v
     azure_video_index: azure_video_index.json

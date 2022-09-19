@@ -1,5 +1,5 @@
 - name: AWS Comprehend
-  tool: aws_comprehend.xml
+  tool: aws/aws_comprehend.xml
   inputs:
     amp_transcript: amp_transcript_aws.json
   params:
@@ -16,7 +16,7 @@
 
 
 - name: AWS Transcribe
-  tool: aws_transcribe.xml
+  tool: aws/aws_transcribe.xml
   inputs:
     input_audio: audio.mp3
   params:
