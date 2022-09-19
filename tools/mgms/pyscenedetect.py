@@ -1,4 +1,4 @@
-#!/usr/bin/env mgm_python.sif
+#!/usr/bin/env amp_python.sif
 
 import sys
 import traceback
