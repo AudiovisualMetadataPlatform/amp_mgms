@@ -6,7 +6,6 @@ import traceback
 import argparse
 import logging
 import amp.logging
-from amp.fileutils import valid_file, create_empty_file, read_json_file, write_json_file
 
 # Convert NER generated JSON file to IIIF manifest JSON file.
 # Usage: ner_to_iiif.py root_dir from_ner to_iiif context_json

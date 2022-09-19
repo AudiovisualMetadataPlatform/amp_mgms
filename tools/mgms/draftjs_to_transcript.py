@@ -5,8 +5,6 @@ import string
 import argparse
 import logging
 import amp.logging
-from amp.fileutils import write_json_file, valid_file, read_json_file
-from pathlib import Path
 
 from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult, SpeechToTextScore, SpeechToTextWord
 # import aws_transcribe_to_schema

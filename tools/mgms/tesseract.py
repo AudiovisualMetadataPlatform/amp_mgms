@@ -17,6 +17,7 @@ from PIL import Image
 
 from amp.schema.video_ocr import VideoOcr, VideoOcrMedia, VideoOcrResolution, VideoOcrFrame, VideoOcrObject, VideoOcrObjectScore, VideoOcrObjectVertices
 import amp.logging
+import amp.utils
 
 from amp.fileutils import write_json_file
 from amp.miscutils import strtobool

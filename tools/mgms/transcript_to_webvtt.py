@@ -6,9 +6,6 @@ import argparse
 import logging
 import amp.logging
 
-import amp.vtt_helper
-
-
 MIN_WORD_COUNT = 6	# minimum number of words per line
 MAX_WORD_COUNT = 10	# maximum number of words per line
 MIN_SEGMENT_GAP = 5.00	# minimum gap in seconds between segment for speaker switch

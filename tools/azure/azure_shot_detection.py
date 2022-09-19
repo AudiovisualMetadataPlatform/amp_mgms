@@ -2,9 +2,9 @@
 import logging
 import argparse
 import logging
+
 import amp.logging
-from amp.fileutils import write_json_file, read_json_file
-from amp.timeutils import timestampToSecond
+import amp.utils
 from amp.schema.shot_detection import ShotDetection, ShotDetectionMedia, ShotDetectionShot
 
 

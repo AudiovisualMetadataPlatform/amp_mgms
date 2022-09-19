@@ -2,7 +2,9 @@
 
 import spacy
 import argparse
-import amp.nerutils
+
+import amp.utils
+import amp.ner_helper
 import amp.logging
 import logging
 from amp.fileutils import write_json_file

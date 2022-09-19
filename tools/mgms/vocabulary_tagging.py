@@ -3,8 +3,10 @@ import csv
 import json
 import argparse
 import logging
+
 import amp.logging
-from amp.timeutils import secondToTimestamp
+import amp.utils
+
 
 def main():
     parser = argparse.ArgumentParser()

@@ -2,9 +2,10 @@
 
 import argparse
 import logging
-from pathlib import Path
+
 import amp.logging
-from amp.fileutils import valid_file, write_json_file, read_json_file
+import amp.utils
+from amp.schema.entity_extraction import EntityExtraction, EntityExtractionMedia, EntityExtractionEntity, EntityExtractionEntityScore
 
 
 # Convert IIIF manifest JSON file to standard NER output JSON file.

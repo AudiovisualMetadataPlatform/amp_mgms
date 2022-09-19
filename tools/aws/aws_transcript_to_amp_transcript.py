@@ -1,9 +1,10 @@
 #!/usr/bin/env amp_python.sif
 import argparse
 import logging
+
 import amp.logging
-from amp.fileutils import read_json_file, write_json_file, valid_file
-from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult
+import amp.utils
+from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult, SpeechToTextWord, SpeechToTextScore
 from amp.schema.segmentation import Segmentation, SegmentationMedia
 
 def main():

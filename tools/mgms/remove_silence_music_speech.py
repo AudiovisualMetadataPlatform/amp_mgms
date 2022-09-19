@@ -9,7 +9,6 @@ from shutil import copyfile
 import argparse
 import logging
 import amp.logging
-from amp.fileutils import write_json_file
 from amp.schema.segmentation import Segmentation
 
 
@@ -26,7 +25,8 @@ def main():
 	parser.add_argument("kept_segments_file", help="output segments")
 	args = parser.parse_args()
 	amp.logging.setup_logging("remove_silence_music_speech", args.debug)
-	logging.info(f"Starting with args {args}")	
+	logging.info(f"Starting with args {args}")
+	(input_file, input_segmentation_json, remove_type, output_file, kept_segments_file) = (args.input_file, args.input_segmentation_json, args.remove_type, args.output_file, args.kept_segments_file)
 
 	# Turn segmentation json file into segmentation object
 	with open(args.input_segmentation_json, 'r') as file:

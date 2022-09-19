@@ -6,10 +6,10 @@ import logging
 import os
 import os.path
 import shutil
-from pathlib import Path
+import sys
+import traceback
+
 import amp.logging
-from amp.config import load_amp_config, get_config_value, get_work_dir
-from amp.fileutils import valid_file, create_empty_file, read_json_file
 from amp.task.jira import TaskJira
 from amp.task.trello import TaskTrello
 from amp.task.manager import TaskManager

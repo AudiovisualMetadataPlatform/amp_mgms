@@ -4,7 +4,6 @@ import json
 import argparse
 import logging
 import amp.logging
-from amp.fileutils import valid_file, create_empty_file, write_json_file
 
 segments = list()
 
