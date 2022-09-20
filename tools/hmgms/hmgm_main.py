@@ -8,7 +8,7 @@ import os.path
 import shutil
 
 import amp.logging
-from amp.config import load_amp_config, get_config_value
+from amp.config import load_amp_config, get_config_value, get_work_dir
 from amp.task.jira import TaskJira
 from amp.task.trello import TaskTrello
 from amp.task.manager import TaskManager
