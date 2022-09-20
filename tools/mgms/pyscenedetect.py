@@ -1,9 +1,5 @@
 #!/usr/bin/env amp_python.sif
 
-import sys
-import traceback
-import os
-import json
 import datetime
 import argparse
 
@@ -19,6 +15,7 @@ from scenedetect.detectors.content_detector import ContentDetector
 import amp.utils
 import logging
 import amp.logging
+from amp.fileutils import write_json_file
 
 def main():
     #(input_video, threshold, amp_shots, frame_stats) = sys.argv[1:5]
@@ -47,7 +44,7 @@ def main():
     shots_dict = convert_to_json(shots, input_video)
     
     # save the output json file    
-    amp.utils.write_json_file(shots_dict, amp_shots)
+    write_json_file(shots_dict, amp_shots)
     logging.info("Finished.")
 
 # Get the duration based on the last output

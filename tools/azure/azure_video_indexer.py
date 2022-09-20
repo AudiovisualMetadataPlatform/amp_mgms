@@ -73,7 +73,7 @@ def main():
     # Get the simple video index json
     auth_token = get_auth_token(apiUrl, region_name, account_id, api_key)
     index_json = get_video_index_json(apiUrl, region_name, account_id, videoId, auth_token, api_key)
-    amp.utils.write_json_file(index_json, azure_video_index)
+    write_json_file(index_json, azure_video_index)
 
     # Get the advanced OCR json via the artifact URL if requested
     if include_ocr:

@@ -20,7 +20,7 @@ from PIL import Image
 from amp.schema.video_ocr import VideoOcr, VideoOcrMedia, VideoOcrResolution, VideoOcrFrame, VideoOcrObject, VideoOcrObjectScore, VideoOcrObjectVertices
 import amp.logging
 import amp.utils
-
+from amp.fileutils import write_json_file
 
 # Python imports
 def main():
@@ -85,7 +85,7 @@ def main():
 		
 		# create and save the AMP VOCR instance
 		vocr = VideoOcr(amp_media, [], frames)					
-		amp.utils.write_json_file(vocr, amp_vocr)
+		write_json_file(vocr, amp_vocr)
 		logging.info(f"Successfully generated AMP VOCR with {len(frames)} original frames.")
 		
 		# if dedupe, create and save the deduped AMP VOCR
@@ -93,7 +93,7 @@ def main():
 			# the duplicate gap should be at least vocr_interval
 			gap = max(dup_gap, vocr_interval)
 			vocr_dedupe = vocr.dedupe(gap)
-			amp.utils.write_json_file(vocr_dedupe, amp_vocr_dedupe)		
+			write_json_file(vocr_dedupe, amp_vocr_dedupe)		
 			logging.info(f"Successfully deduped AMP VOCR to {len(vocr_dedupe.frames)} frames.")
 		
 

@@ -14,6 +14,8 @@ import logging
 
 import amp.logging
 import amp.utils
+from amp.fileutils import write_json_file
+from amp.schema.entity_extraction import EntityExtraction, EntityExtractionMedia, EntityExtractionEntity, EntityExtractionEntityScore
 
 
 def main():
@@ -142,7 +144,7 @@ def gentle_transcript_to_amp_transcript(gentle_transcript, amp_transcript_unalig
 		logging.info(f"Successfully updated confidence for {updated} words in AMP aligned transcript.")
 		
 		# write final amp_transcript_aligned_json to file
-		amp.utils.write_json_file(amp_transcript_aligned_json, amp_transcript_aligned)
+		write_json_file(amp_transcript_aligned_json, amp_transcript_aligned)
 		
 		
 # Find the next success match in the given words list starting at the given current index, return the last and next match index,

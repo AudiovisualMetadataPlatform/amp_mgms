@@ -12,10 +12,9 @@ from distutils.util import strtobool
 import amp.dlib_face_training as train
 from amp.schema.facial_recognition import FaceRecognition, FaceRecognitionMedia, FaceRecognitionMediaResolution, FaceRecognitionFrame, FaceRecognitionFrameObject, FaceRecognitionFrameObjectScore, FaceRecognitionFrameObjectVertices
 
-import amp.utils
 import logging
 import amp.logging
-
+from amp.fileutils import write_json_file
 
 FR_SCORE_TYPE = "confidence"
 FR_DEFAULT_TOLERANCE = 0.6
@@ -56,7 +55,7 @@ def main():
     fr_result = recognize_faces(input_video, known_names, known_faces, tolerance)
     
     # save the recognized_faces in the standard AMP Face JSON file
-    amp.utils.write_json_file(fr_result, amp_faces)
+    write_json_file(fr_result, amp_faces)
     logging.info("Finished.")
     
 # Recognize faces in the input_video at the tolerance level, given the known_names and known_faces from trained FR model;

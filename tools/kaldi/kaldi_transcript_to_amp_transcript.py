@@ -5,6 +5,7 @@ import os
 import argparse
 import logging
 import amp.utils
+from amp.fileutils import read_json_file, write_json_file
 from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult, SpeechToTextWord, SpeechToTextScore
 
 
@@ -29,7 +30,7 @@ def convert(input_audio, kaldi_transcript_json, kaldi_transcript_text, amp_trans
 	results = SpeechToTextResult()
 
 	# Open the kaldi json
-	data = amp.utils.read_json_file(kaldi_transcript_json)
+	data = read_json_file(kaldi_transcript_json)
 
 	# Get the kaldi transcript
 	transcript_file = open(kaldi_transcript_text, "r")	
@@ -49,7 +50,7 @@ def convert(input_audio, kaldi_transcript_json, kaldi_transcript_text, amp_trans
 		results.addWord("pronunciation", w["word"], None, start, end, None, None)
 
 	# compute offset for all words in the list
-	results.compute_offset();
+	results.compute_offset()
 	
 	# Create the media object
 	media = SpeechToTextMedia(duration, input_audio)
@@ -58,7 +59,7 @@ def convert(input_audio, kaldi_transcript_json, kaldi_transcript_text, amp_trans
 	stt = SpeechToText(media, results)
 
 	#write the output
-	amp.utils.write_json_file(stt, amp_transcript)
+	write_json_file(stt, amp_transcript)
 
 
 if __name__ == "__main__":

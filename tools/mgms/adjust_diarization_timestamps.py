@@ -1,7 +1,6 @@
 #!/usr/bin/env amp_python.sif
 
 import json
-import sys
 import argparse
 
 from amp.schema.segmentation import Segmentation
@@ -9,8 +8,7 @@ from amp.adjustment import Adjustment
 
 import logging
 import amp.logging
-import amp.utils
-
+from amp.fileutils import write_json_file
 
 def main():
     #(segmentation_json, adj_json, output_json) = sys.argv[1:4]
@@ -60,7 +58,7 @@ def main():
         adjust_segment(segment, offset_adj)
         
     # Write the resulting json
-    amp.utils.write_json_file(seg, output_json)
+    write_json_file(seg, output_json)
     logging.info("Finished.")
 
 def adjust_segment(segment, offset_adj):

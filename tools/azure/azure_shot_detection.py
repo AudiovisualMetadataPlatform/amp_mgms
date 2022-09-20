@@ -1,12 +1,12 @@
 #!/usr/bin/env amp_python.sif
-import sys
+
 import logging
 import json
-import os
 import argparse
 import logging
 
 import amp.logging
+from amp.fileutils import write_json_file
 from amp.timeutils import timestampToSecond
 from amp.schema.shot_detection import ShotDetection, ShotDetectionMedia, ShotDetectionShot
 
@@ -32,7 +32,7 @@ def main():
 	amp_shots_obj = create_amp_shots(input_video, azure_index_json)
 	
 	# write AMP Video OCR JSON file
-	amp.utils.write_json_file(amp_shots_obj, amp_shots)
+	write_json_file(amp_shots_obj, amp_shots)
 	logging.info(f"Successfully generated AMP Shot with {len(amp_shots_obj.shots)} shots.")
 
 

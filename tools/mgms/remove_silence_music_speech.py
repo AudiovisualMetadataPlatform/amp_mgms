@@ -4,14 +4,13 @@
 import json
 import math
 import os
-from pathlib import Path
 import subprocess
-import sys
 import time
 from shutil import copyfile
 import argparse
 import logging
 import amp.logging
+from amp.fileutils import write_json_file
 from amp.schema.segmentation import Segmentation
 
 import amp.utils
@@ -42,7 +41,7 @@ def main():
 	kept_segments = remove_silence(remove_type, seg_data, input_file, output_file)
 
 	# Write kept segments to json file
-	amp.utils.write_json_file(kept_segments, kept_segments_file)
+	write_json_file(kept_segments, kept_segments_file)
 	logging.info("Finished.")
 	exit(0)
 

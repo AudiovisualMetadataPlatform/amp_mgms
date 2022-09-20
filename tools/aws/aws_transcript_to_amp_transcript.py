@@ -6,7 +6,7 @@ import argparse
 import logging
 
 import amp.logging
-import amp.utils
+from amp.fileutils import read_json_file, write_json_file
 from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult, SpeechToTextWord, SpeechToTextScore
 from amp.schema.segmentation import Segmentation, SegmentationMedia
 
@@ -25,7 +25,7 @@ def main():
 
 	# read the AWS transcribe json file
 	amp.utils.exception_if_file_not_exist(aws_transcript)
-	aws = amp.utils.read_json_file(aws_transcript)		
+	aws = read_json_file(aws_transcript)		
 
 	# Fail if we don't have results
 	if "results" not in aws.keys():
@@ -97,7 +97,7 @@ def main():
 	outputFile = SpeechToText(media, amp_results)
 
 	# Write the output
-	amp.utils.write_json_file(outputFile, amp_transcript)
+	write_json_file(outputFile, amp_transcript)
 
 	# Start segmentation schema with diarization data
 	# Create a segmentation object to serialize
@@ -117,7 +117,7 @@ def main():
 			segmentation.addDiarizationSegment(float(segment["start_time"]), float(segment["end_time"]), segment["speaker_label"])
 		
 	# Write the output
-	amp.utils.write_json_file(segmentation, amp_diarization)
+	write_json_file(segmentation, amp_diarization)
 	logging.info(f"Successfully converted {aws_transcript} to {amp_transcript} and {amp_diarization}.")
 
 
