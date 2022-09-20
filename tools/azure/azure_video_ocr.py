@@ -9,7 +9,7 @@ import argparse
 import logging
 
 import amp.logging
-import amp.utils
+from amp.timeutils import frameToSecond
 from amp.schema.video_ocr import VideoOcr, VideoOcrMedia, VideoOcrResolution, VideoOcrFrame, VideoOcrObject, VideoOcrObjectScore, VideoOcrObjectVertices
 
 
@@ -122,7 +122,7 @@ def createVocrFrames(results_json, fps):
 			continue
 		
 		nframe = result["FrameIndex"]
-		start = amp.utils.frameToSecond(nframe, fps)
+		start = frameToSecond(nframe, fps)
 		objects = []
 		
 		# for video there should only be one page, but we loop through the page list just in case
