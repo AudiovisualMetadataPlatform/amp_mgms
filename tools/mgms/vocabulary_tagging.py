@@ -9,7 +9,7 @@ import logging
 
 import amp.logging
 import amp.utils
-
+from amp.timeutils import secondToTimestamp
 
 def main():
     #amp_transcript =  sys.argv[1] 
@@ -95,7 +95,7 @@ def write_csv(output_file, matching_words):
         
         # Print each row, sorted by text/start
         for word in sorted(matching_words, key = lambda i: (i['text'], i['start'])):
-            csvwriter.writerow([word["text"], amp.utils.secondToTimestamp(word["start"])])
+            csvwriter.writerow([word["text"], secondToTimestamp(word["start"])])
 
 # Simple word cleaning function for comparison
 def clean_word(word):
