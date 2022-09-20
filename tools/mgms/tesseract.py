@@ -6,10 +6,8 @@ from datetime import datetime
 import json
 import logging
 import os
-import pprint
 import shlex
 import subprocess
-import sys
 import tempfile
 import time
 from distutils.util import strtobool
@@ -19,7 +17,7 @@ from PIL import Image
 
 from amp.schema.video_ocr import VideoOcr, VideoOcrMedia, VideoOcrResolution, VideoOcrFrame, VideoOcrObject, VideoOcrObjectScore, VideoOcrObjectVertices
 import amp.logging
-import amp.utils
+
 from amp.fileutils import write_json_file
 
 # Python imports

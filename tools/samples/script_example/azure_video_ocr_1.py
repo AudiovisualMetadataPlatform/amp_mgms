@@ -1,14 +1,10 @@
 #!/usr/bin/env amp_python.sif
-import sys
 import logging
 import json
-import os
-from datetime import datetime
 import math
 import argparse
 
 from amp.schema.video_ocr import VideoOcr, VideoOcrMedia, VideoOcrResolution, VideoOcrFrame, VideoOcrObject, VideoOcrObjectScore, VideoOcrObjectVertices
-import amp.utils
 import logging
 import amp.logging
 from amp.fileutils import write_json_file

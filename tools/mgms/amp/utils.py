@@ -1,8 +1,5 @@
 import os
-import json
 import logging
-
-
 
 ERR_SUFFIX = ".err"
 
@@ -11,29 +8,6 @@ ERR_SUFFIX = ".err"
 # to decide if the output has been created; rather, we can use its file size and/or content as the criteria.
 
 
-# Return true if the specified file exists and has contents; false otherwise.
-def file_exists(file):
-    return os.path.exists(file) and os.stat(file).st_size > 0
-
-
-# Exit with code 255 if the given (output) file already generated previously.
-# This method is typically called by a command with following command depending on it, both called repeatedly, such as in HMGM. 
-def exit_if_file_generated(file):        
-    # if the file has already been generated, for ex, by the HMGM converter, exit calling command with error code 255 
-    # to avoid redundant process, and inform HMGM job runner to reschedule the job till all commands complete.     
-    if os.path.exists(file) and os.stat(file).st_size > 0:
-        logging.debug("File " + file + " has already been generated, exit 255")
-        exit(255)
- 
- 
-# Raise exception if the given (input) file does not exist for processing.
-# This method is typically called by a command depending on the previous command's success in a multi-command MGM.
-def exception_if_file_not_exist(file):       
-    # the exception should stop further processing in the calling command, which could either exit with the exception, 
-    # or handle the exception and exit with error code 1, to signal HMGM job runner to fail the whole job in ERROR status
-    if not os.path.exists(file) or os.stat(file).st_size == 0:
-        raise Exception("Exception: File " + file + " doesn't exist or is empty, the previous command generating it must have failed.")
- 
  
 # Check if the given (input) file is in error or doesn't exist for processing,  raise exception (error code 1) or exit with 255 respectively.
 # This method is typically called by a command repeatedly waiting on the previous command's completion in a multi-command HMGM.
@@ -79,30 +53,3 @@ def cleanup_err_file(file):
         os.remove(err_file)
         logging.debug("Error file for " + file + " has been cleaned up")
         
-     
-# Read/parse the given JSON input_file and return the validated JSON dictionary.
-def read_json_file(input_file):
-    with open(input_file, 'r', encoding='utf8') as file:
-        input_json = json.load(file)
-    return input_json
-        
-                
-# Serialize the given object and write it to the given JSON output_file
-def write_json_file(object, output_file):
-    with open(output_file, 'w', encoding='utf8') as file:
-        json.dump(object, file, indent = 4, default = lambda x: x.__dict__)
-        
-# Write the given string to the given text output_file
-def write_text_file(string, output_file):
-    with open(output_file, 'w', encoding='utf8') as file:
-        file.write(string)
-        
-        
-
-
-
-
-
-
-
-

@@ -5,9 +5,9 @@ import sys
 import traceback
 import argparse
 
-import amp.utils
 import logging
 import amp.logging
+from amp.fileutils import valid_file
 
 # Convert NER generated JSON file to IIIF manifest JSON file.
 # Usage: ner_to_iiif.py root_dir from_ner to_iiif context_json
@@ -32,9 +32,11 @@ def main():
     # using output instead of input filename as the latter is unique while the former could be used by multiple jobs 
     try:
         # exit to requeue here if NER->IIIF conversion already done
-        amp.utils.exit_if_file_generated(to_iiif)
-        logging.info("Converting from NER " + from_ner + " to IIIF: " + to_iiif)
-       
+        if valid_file(to_iiif):
+            logging.debug("IIIF has already been generated (exit 255)")
+            exit(255)
+    
+        logging.info("Converting from NER " + from_ner + " to IIIF: " + to_iiif)   
         # parse input NER and context JSON
         context = json.loads(context_json)
         with open(from_ner, 'r') as ner_file:

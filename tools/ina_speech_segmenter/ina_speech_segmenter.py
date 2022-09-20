@@ -5,11 +5,8 @@ import os.path
 import shutil
 import subprocess
 import sys
-import tempfile
 import uuid
 import argparse
-
-import amp.utils
 
 def main():
 	#(root_dir, input_file, json_file) = sys.argv[1:4]

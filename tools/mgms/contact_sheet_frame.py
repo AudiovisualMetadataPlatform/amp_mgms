@@ -1,14 +1,10 @@
 #!/usr/bin/env amp_python.sif
 
-import sys
-import os
-import json
 import argparse
 import logging
 import math
 
 import amp.logging
-import amp.utils
 from amp.schema.contact_sheet import ContactSheet
 
 

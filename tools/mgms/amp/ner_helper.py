@@ -2,7 +2,6 @@
 import traceback
 import logging
 
-import amp.utils
 from amp.schema.entity_extraction import EntityExtraction, EntityExtractionMedia, EntityExtractionEntity, EntityExtractionEntityScore
 from amp.schema.speech_to_text import SpeechToText
 from amp.fileutils import read_json_file, write_json_file

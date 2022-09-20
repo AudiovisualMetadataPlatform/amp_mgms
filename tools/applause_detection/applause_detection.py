@@ -36,7 +36,6 @@ def main():
         logging.info("Temporary directory " + tmpdir + " after input file copied: " + str(os.listdir(tmpdir)))
         
         # The applause_detection singularity file is assumed to be @ {mgm_sif}/applause_detection.sif
-        #sif = amp.utils.get_sif_dir(root_dir) + "/applause_detection.sif"
         # the new build puts the sif next to the script.
         sif = sys.path[0] + "/applause_detection.sif"
 

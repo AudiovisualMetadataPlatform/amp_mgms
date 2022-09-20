@@ -1,12 +1,11 @@
 #!/usr/bin/env amp_python.sif
 
-import sys
 import json
 import xml.etree.ElementTree as ET
 from datetime import datetime
 import argparse
 
-import amp.utils
+
 
 def main():
     #input_file = sys.argv[1]

@@ -9,6 +9,7 @@ import shutil
 
 import amp.logging
 from amp.config import load_amp_config, get_config_value, get_work_dir
+from amp.fileutils import valid_file
 from amp.task.jira import TaskJira
 from amp.task.trello import TaskTrello
 from amp.task.manager import TaskManager
@@ -55,7 +56,9 @@ def main():
 		
 		# as a safeguard, if input_json doesn't exist or is empty, throw exception to fail the job
 		# (this means the conversion command failed before hmgm task command)
-		amp.utils.exception_if_file_not_exist(input_json)
+		if not valid_file(input_json):
+			logging.error(f"{input_json} is not a valid file")
+			exit(1)
 		
 		logging.debug(f"Handling HMGM task: uncorrected JSON: {input_json}, corrected JSON: {output_json}, task JSON: {task_json}")				
         # Load basic HMGM configuration based from the property file under the given root directory
