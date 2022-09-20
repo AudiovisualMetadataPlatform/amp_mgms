@@ -4,7 +4,7 @@ import argparse
 import logging
 
 import amp.logging
-import amp.utils
+from amp.timeutils import frameToSecond
 from amp.schema.video_ocr import VideoOcr, VideoOcrMedia, VideoOcrResolution, VideoOcrFrame, VideoOcrObject, VideoOcrObjectScore, VideoOcrObjectVertices
 from amp.miscutils import strtobool
 

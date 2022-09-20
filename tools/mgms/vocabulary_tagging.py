@@ -6,7 +6,7 @@ import logging
 
 import amp.logging
 import amp.utils
-
+from amp.timeutils import secondToTimestamp
 
 def main():
     parser = argparse.ArgumentParser()

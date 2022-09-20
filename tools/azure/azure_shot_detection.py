@@ -4,7 +4,7 @@ import argparse
 import logging
 
 import amp.logging
-import amp.utils
+from amp.timeutils import timestampToSecond
 from amp.schema.shot_detection import ShotDetection, ShotDetectionMedia, ShotDetectionShot
 
 
