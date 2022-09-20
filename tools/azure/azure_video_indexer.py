@@ -30,11 +30,14 @@ def main():
     
     config = load_amp_config()
 
-    azure = amp.utils.get_azure_credentials()
+    azure = get_cloud_credentials(config, 'azure')
     account_id = azure['account_id']
     api_key = azure['api_key']
     region_name = azure['region_name']
-    s3_bucket = azure['s3_bucket']
+
+
+    s3_bucket = get_config_value(config, ['mgms', 'azure_video_indexer', 's3_bucket'])
+    
 
     # Turn on HTTP debugging here
     http_client.HTTPConnection.debuglevel = 1
