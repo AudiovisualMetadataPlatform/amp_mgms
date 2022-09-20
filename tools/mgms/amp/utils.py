@@ -104,14 +104,7 @@ def write_text_file(string, output_file):
         
 
 
-# Get the absolute path of the specified module/mgm working directory
-def get_work_dir(work_dir):
-    # The original implementation looked it up in the .ini file, but this should be something that "just works".  
-    # With that in mind, this will create a working directory next to the script with the work_dir parameter as the subdirectory.
-    wd = Path(sys.path[0], work_dir)
-    wd.mkdir(parents=True, exist_ok=True)
-    logging.debug(f"Getting/Creating workdir: {wd!s}")
-    return str(wd.absolute())
+
 
 
 
