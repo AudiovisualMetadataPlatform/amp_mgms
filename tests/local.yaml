@@ -29,7 +29,7 @@
     min_segment_duration: 3000
   outputs:
     amp_applause_segments:
-      - {test: magic, mime: text/plain}
+      - {test: magic, mime: application/json}
       - {test: strings, strings: [segments, label, start, end]}      
 
 #- name: Contact Sheets - shot

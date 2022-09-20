@@ -1,4 +1,4 @@
-#!/usr/bin/env amp_python.sif
+#!/usr/bin/env python3
 
 import os
 import os.path
@@ -9,7 +9,6 @@ import tempfile
 import argparse
 import logging
 
-import amp.utils
 import amp.logging
 
 
