@@ -1,9 +1,9 @@
-mgms:
+cloud:
     aws:
         aws_access_key_id: my_awsaccess_key
         aws_secret_access_key: my_aws_secret_access
-        region_name: us-east-2
-
+        region_name: us-east-2    
+mgms:
     aws_comprehend:
         default_bucket: my-bucket
         default_access_arn: arn:aws:iam::<some_number>:role/AwsComprehend

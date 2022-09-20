@@ -1,7 +1,5 @@
 #!/usr/bin/env amp_python.sif
 import argparse
-import sys
-import traceback
 import requests
 import logging
 import time
@@ -10,9 +8,10 @@ import uuid
 import boto3
 from distutils.util import strtobool
 import logging
+import http.client as http_client
 
 import amp.logging
-import amp.utils
+from amp.config import load_amp_config, get_config_value, get_cloud_credentials
 
 def main():
     apiUrl = "https://api.videoindexer.ai"
@@ -22,20 +21,14 @@ def main():
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("input_video", help="Input video file")
     parser.add_argument("include_ocr", type=strtobool, default=True, help="Include OCR")
-#     parser.add_argument("region_name", help="Azure account region")
     parser.add_argument("azure_video_index", help="Azure Video Index JSON")
     parser.add_argument("azure_artifact_ocr", help="Azure Artifact OCR JSON")
     args = parser.parse_args()
     amp.logging.setup_logging("azure_video_indexer", args.debug)
     logging.info(f"Starting with args {args}")
     (input_video, include_ocr, azure_video_index, azure_artifact_ocr) = (args.input_video, args.include_ocr, args.azure_video_index, args.azure_artifact_ocr)
-#     (input_video, include_ocr, region_name, azure_video_index, azure_artifact_ocr) = (args.input_video, args.include_ocr, args.region_name, args.azure_video_index, args.azure_artifact_ocr)
-
-    try:
-        import http.client as http_client
-    except ImportError:
-        # Python 2
-        import httplib as http_client
+    
+    config = load_amp_config()
 
     azure = amp.utils.get_azure_credentials()
     account_id = azure['account_id']
@@ -46,8 +39,10 @@ def main():
     # Turn on HTTP debugging here
     http_client.HTTPConnection.debuglevel = 1
 
+    aws_creds = get_cloud_credentials(config, 'aws')
+
     # upload video to S3
-    s3_path = upload_to_s3(input_video, s3_bucket)
+    s3_path = upload_to_s3(aws_creds, input_video, s3_bucket)
     
     # Get an authorization token for subsequent requests
     auth_token = get_auth_token(apiUrl, region_name, account_id, api_key)
@@ -55,9 +50,6 @@ def main():
     # Upload the video and get the ID to reference for indexing status and results
     video_url = "https://" + s3_bucket + ".s3.us-east-2.amazonaws.com/" + s3_path
     videoId = index_video(apiUrl, region_name, account_id, auth_token, input_video, video_url)
-
-    # Get the auth token associated with this video    
-    # video_auth_token = get_video_auth_token(apiUrl, region_name, account_id, api_key, videoId)
 
     # Check on the indexing status
     while True:
@@ -94,7 +86,7 @@ def main():
         except:
             logging.exception(f"Failed to download OCR artifact to {azure_artifact_ocr}!")    
     
-    delete_from_s3(s3_path, s3_bucket)
+    delete_from_s3(aws_creds, s3_path, s3_bucket)
     logging.info("Finished.")
 
 
@@ -182,8 +174,8 @@ def index_video(apiUrl, region_name, account_id, auth_token, input_video, video_
                 logging.error("No id in data")
                 exit(1)
 
-def upload_to_s3(input_video, bucket):
-    s3_client = boto3.client('s3', **amp.utils.get_aws_credentials())
+def upload_to_s3(creds, input_video, bucket):
+    s3_client = boto3.client('s3', **creds)
     jobname = str(uuid.uuid1())
     try:
         response = s3_client.upload_file(input_video, bucket, jobname, ExtraArgs={'ACL': 'public-read'})
@@ -193,8 +185,8 @@ def upload_to_s3(input_video, bucket):
         logging.exception(f"Failed to upload file {input_video} to S3 bucket {bucket}!")
         exit(1)
 
-def delete_from_s3(s3_path, bucket):
-    s3_client = boto3.resource('s3', **amp.utils.get_aws_credentials())
+def delete_from_s3(creds, s3_path, bucket):
+    s3_client = boto3.resource('s3', **creds)
     try:
         obj = s3_client.Object(bucket, s3_path)
         obj.delete()
