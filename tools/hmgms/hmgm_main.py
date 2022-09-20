@@ -8,7 +8,7 @@ import os.path
 import shutil
 
 import amp.logging
-from amp.config import load_amp_config, get_config_value
+from amp.config import load_amp_config, get_config_value, get_work_dir
 from amp.task.jira import TaskJira
 from amp.task.manager import TaskManager
 from amp.task.openproject import TaskOpenproject 
@@ -205,7 +205,7 @@ def get_editor_input_path(config, dataset_file):
 	# For security concerns, we don't pass the original input/output path to HMGM task editors, to avoid exposing the internal Galaxy file system 
 	# to external web apps; Instead, we use a designated directory for passing such input/output files, and generate a soft link in 
 	# (or copy the file to) this directory, using a filename uniquely mapped from the original filename.  
-	io_dir = amp.utils.get_work_dir("hmgm_io") 
+	io_dir = get_work_dir("hmgm_io") 
 
 	# TODO replace below code with logic to generate an obscure soft link based on the original file path
 	# for now we just use the original filename within the designated directory
