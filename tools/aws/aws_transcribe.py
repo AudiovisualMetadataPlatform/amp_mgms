@@ -10,7 +10,7 @@ from pathlib import Path
 import logging
 from time import sleep
 import amp.logging
-import amp.utils
+from amp.config import load_amp_config, get_cloud_credentials, get_config_value
 import boto3
 from botocore.exceptions import ClientError
 import platform

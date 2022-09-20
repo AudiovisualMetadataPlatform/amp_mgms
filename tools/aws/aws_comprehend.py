@@ -11,8 +11,10 @@ import argparse
 import tempfile
 import logging
 
+from amp.config import load_amp_config, get_config_value, get_cloud_credentials
 import amp.logging
-import amp.utils
+
+
 import amp.ner_helper
 
 def main():

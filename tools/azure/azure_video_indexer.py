@@ -11,7 +11,7 @@ import logging
 import http.client as http_client
 
 import amp.logging
-import amp.utils
+from amp.config import load_amp_config, get_config_value, get_cloud_credentials
 
 def main():
     apiUrl = "https://api.videoindexer.ai"
@@ -33,6 +33,9 @@ def main():
     s3_bucket = get_config_value(config, ['mgms', 'azure_video_indexer', 's3_bucket'])
     
     # Turn on HTTP debugging here
+    http_client.HTTPConnection.debuglevel = 1
+
+    aws_creds = get_cloud_credentials(config, 'aws')
     if args.debug:
         http_client.HTTPConnection.debuglevel = 1
 
