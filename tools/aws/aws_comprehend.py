@@ -1,7 +1,5 @@
 #!/usr/bin/env amp_python.sif
 
-
-import sys
 import tempfile
 import shutil
 import tarfile
@@ -10,12 +8,13 @@ import time
 from datetime import datetime
 import boto3
 import argparse
-import platform
 import tempfile
 import logging
 
+from amp.config import load_amp_config, get_config_value, get_cloud_credentials
 import amp.logging
-import amp.utils
+
+
 import amp.ner_helper
 
 def main():
@@ -37,20 +36,18 @@ def main():
 #     (amp_transcript, aws_entities, amp_entities, ignore_types, bucket, dataAccessRoleArn) = (args.amp_transcript, args.aws_entities, args.amp_entities, args.ignore_types, args.bucket, args.dataAccessRoleArn)
 
     # fixup the default arguments...
-    config = amp.utils.get_config()
-#     if dataAccessRoleArn == '':
-    role_arn = config.get('aws_comprehend', 'role_arn', fallback=None)
+    config = load_amp_config()
+    role_arn = get_config_value(config, ['mgms', 'aws_comprehend', 'role_awn'], None)
     if role_arn is None:
-        logging.error('aws_comprehend/role_arn is not specified in the config file')
+        logging.error('mgms.aws_comprehend.role_arn is not specified in the config file')
         exit(1)
-#     if s3_bucket == '':
-    s3_bucket = config.get('aws_comprehend', 's3_bucket', fallback=None)
+    s3_bucket = get_config_value(config, ['mgms', 'aws_comprehend', 's3_bucket'], None)    
     if s3_bucket is None:
-        logging.error("aws_comprehend/s3_bucket is not specified in the config file")
+        logging.error("mgms.aws_comprehend.s3_bucket is not specified in the config file")
         exit(1)
-    s3_directory = config.get('aws_comprehend', 's3_directory', fallback='')
+    s3_directory = get_config_value(config, ['mgms', 'aws_comprehend', 's3_directory'], None)                
     if s3_directory is None:
-        logging.error('aws_comprehend/s3_directory is not specified in the config file')
+        logging.error('mgms.aws_comprehend.s3_directory is not specified in the config file')
         exit(1)
     s3_directory.strip('/')        
 
@@ -61,26 +58,21 @@ def main():
     # generate a job name, using the output filename as the basis.    
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
     # hostname + timestamp should ensure unique job name
-    jobname = 'AWSC-' + socket.gethostname() + "-" + timestamp 
-#     jobname = "AWST-" + platform.node().split('.')[0] + args.output_file.replace('/', '-')
-#     logging.debug(f"Generated job name {jobname}")
-
-    if s3_directory != '':
-        object_name = f"{s3_directory}/{jobname}"
-    else:
-        object_name = jobname        
+    jobname = 'AWSC-' + socket.gethostname() + "-" + timestamp      
     s3uri = 's3://' + s3_bucket + '/'
+
+    aws_creds = get_cloud_credentials(config, 'aws')
 
     with tempfile.TemporaryDirectory() as tmpdir:
         # write AMP Transcript text into the input file in a temp directory and upload it to S3
         #tmpdir = tempfile.mkdtemp(dir="/tmp")
-        upload_input_to_s3(amp_transcript_obj, tmpdir, s3_bucket, jobname)
+        upload_input_to_s3(aws_creds, amp_transcript_obj, tmpdir, s3_bucket, jobname)
 
         # Make call to AWS Comprehend
-        outputuri = run_comprehend_job(jobname, s3uri, role_arn)
+        outputuri = run_comprehend_job(aws_creds, jobname, s3uri, role_arn)
 
         # download AWS Comprehend output from s3 to the tmp directory, uncompress and copy it to output aws_entities output file
-        download_output_from_s3(outputuri, s3uri, s3_bucket, tmpdir, aws_entities)
+        download_output_from_s3(aws_creds, outputuri, s3uri, s3_bucket, tmpdir, aws_entities)
 
         # AWS Comprehend output should contain entities
         aws_entities_json = amp.utils.read_json_file(aws_entities)
@@ -97,7 +89,7 @@ def main():
     logging.info("Finished.")
     
 # Upload the transcript file created from amp_transcript_obj in tmpdir to the S3 bucket for the given job. 
-def upload_input_to_s3(amp_transcript_obj, tmpdir, bucket, jobname):
+def upload_input_to_s3(creds, amp_transcript_obj, tmpdir, bucket, jobname):
     # write the transcript text into a tmp input file
     try:
         # use jobname as input filename
@@ -111,7 +103,7 @@ def upload_input_to_s3(amp_transcript_obj, tmpdir, bucket, jobname):
     
     # upload the tmp file to s3
     try:
-        s3_client = boto3.client('s3', **amp.utils.get_aws_credentials())
+        s3_client = boto3.client('s3', **creds)
         response = s3_client.upload_file(input, bucket, jobname)
         logging.info(f"Successfully uploaded input file {input} to S3 bucket {bucket} for AWS Comprehend job.")
     except Exception as e:
@@ -119,13 +111,13 @@ def upload_input_to_s3(amp_transcript_obj, tmpdir, bucket, jobname):
         raise
 
 # Download AWS Comprehend output from the given URL in the given S3 bucket to the tmpdir and extract it to aws_entities.
-def download_output_from_s3(outputuri, s3uri, bucket, tmpdir, aws_entities):
+def download_output_from_s3(creds, outputuri, s3uri, bucket, tmpdir, aws_entities):
     # get the output file from s3
     try:
         outkey = outputuri.replace(s3uri, '')
         outname = outkey.rsplit("/", 1)[1]
         output = tmpdir + outname
-        s3_client = boto3.client('s3', **amp.utils.get_aws_credentials())    
+        s3_client = boto3.client('s3', **creds)    
         s3_client.download_file(bucket, outkey, output)
         logging.info(f"Successfully downloaded AWS Comprehend output {outputuri} to compressed output file {output}.")
     except Exception as e:
@@ -150,11 +142,11 @@ def download_output_from_s3(outputuri, s3uri, bucket, tmpdir, aws_entities):
         raise     
 
 # Run AWS Comprehend job with the given jobname, using the input at the given S3 URL with the given dataAccessRoleArn.
-def run_comprehend_job(jobname, s3uri, dataAccessRoleArn):
+def run_comprehend_job(creds, jobname, s3uri, dataAccessRoleArn):
     # submit AWS Comprehend job
     try:
         # TODO region name should be in MGM config
-        comprehend = boto3.client(service_name='comprehend', **amp.utils.get_aws_credentials())
+        comprehend = boto3.client(service_name='comprehend', **creds)
         # jobname was used as the object_name uploaded to s3
         inputs3uri = s3uri + jobname
         response = comprehend.start_entities_detection_job(

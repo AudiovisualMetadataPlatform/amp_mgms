@@ -127,11 +127,4 @@ def get_azure_credentials():
     return res
 
 
-# get the AWS credentials from the config file and return them as a dict.
-def get_aws_credentials():
-    config = get_config()
-    res = config._sections['aws']
-    logging.debug(f"AWS credentials: {res}")
-    return res
-
 
