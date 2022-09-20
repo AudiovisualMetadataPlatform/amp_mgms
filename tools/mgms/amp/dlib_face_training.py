@@ -8,7 +8,7 @@ import pickle
 # from tqdm.notebook import tqdm
 from zipfile import ZipFile
 import logging
-import amp.utils
+from amp.config import get_work_dir
 
 FR_TRAINED_MODEL_SUFFIX = ".frt"
 
@@ -114,7 +114,7 @@ def get_model_file(training_photos):
 
 # Get the facial recognition working directory path for training and matching.
 def get_facial_dir():
-    return amp.utils.get_work_dir("facial_io")
+    return get_work_dir("facial_io")
 
     
 # Unzip training_photos zip file to a directory with the same name as training_photos under facial_dir.
