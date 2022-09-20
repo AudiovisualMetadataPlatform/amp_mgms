@@ -1,14 +1,12 @@
 #!/usr/bin/env amp_python.sif
 import difflib
-#from difflib_data import *
-
-
 import json
 import string
 import argparse
 import logging
 import amp.logging
-from amp.fileutils import write_json_file
+from amp.fileutils import write_json_file, valid_file
+from pathlib import Path
 
 from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult, SpeechToTextScore, SpeechToTextWord
 # import aws_transcribe_to_schema
@@ -30,7 +28,14 @@ def main():
     try:
         # if from_draftjs is in error raise exception to notify HMGM job runner to fail the job
          # otherwise if from_draftjs doesn't exist yet, exit to requeue (keep waiting)
-        amp.utils.exit_if_file_not_ready(from_draftjs)
+        if Path(from_draftjs + ".err").exists():
+            raise Exception(f"File {from_draftjs} is in error, the previous command generating it must have failed.")
+        if not valid_file(from_draftjs):
+            # file isn't there yet -- exit with 255 to requeue
+            exit(255)
+
+
+
         logging.info(f"Converting DraftJs {from_draftjs} to Transcript {to_transcript}")
 
         with open(from_draftjs) as json_file:
