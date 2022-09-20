@@ -3,7 +3,7 @@ import argparse
 import logging
 
 import amp.logging
-from amp.fileutils import read_json_file, write_json_file
+from amp.fileutils import read_json_file, write_json_file, valid_file
 from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult, SpeechToTextWord, SpeechToTextScore
 from amp.schema.segmentation import Segmentation, SegmentationMedia
 

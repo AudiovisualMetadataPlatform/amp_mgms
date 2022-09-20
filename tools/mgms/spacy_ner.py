@@ -3,7 +3,6 @@
 import spacy
 import argparse
 
-import amp.utils
 import amp.ner_helper
 import amp.logging
 import logging

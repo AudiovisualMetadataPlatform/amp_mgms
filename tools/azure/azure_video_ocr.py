@@ -5,7 +5,7 @@ import logging
 
 import amp.logging
 from amp.timeutils import frameToSecond
-from amp.fileutils import read_json_file, write_json_file
+from amp.fileutils import read_json_file, write_json_file, valid_file
 from amp.schema.video_ocr import VideoOcr, VideoOcrMedia, VideoOcrResolution, VideoOcrFrame, VideoOcrObject, VideoOcrObjectScore, VideoOcrObjectVertices
 from amp.miscutils import strtobool
 

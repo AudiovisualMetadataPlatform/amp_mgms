@@ -9,7 +9,6 @@ import argparse
 import logging
 
 import amp.logging
-import amp.utils
 from amp.fileutils import write_json_file
 from amp.schema.entity_extraction import EntityExtraction, EntityExtractionMedia, EntityExtractionEntity, EntityExtractionEntityScore
 

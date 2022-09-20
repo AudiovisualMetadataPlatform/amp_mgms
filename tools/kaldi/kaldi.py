@@ -13,7 +13,6 @@ import atexit
 import os
 import time
 
-import amp.utils
 import amp.logging
 
 

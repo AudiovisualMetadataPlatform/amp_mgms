@@ -3,9 +3,7 @@ import csv
 import json
 import argparse
 import logging
-
 import amp.logging
-import amp.utils
 from amp.timeutils import secondToTimestamp
 
 def main():

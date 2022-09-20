@@ -5,7 +5,6 @@ import logging
 import math
 
 import amp.logging
-import amp.utils
 from amp.schema.contact_sheet import ContactSheet
 
 

@@ -12,7 +12,6 @@ from scenedetect.stats_manager import StatsManager
 # For content-aware scene detection:
 from scenedetect.detectors.content_detector import ContentDetector
 
-import amp.utils
 import logging
 import amp.logging
 from amp.fileutils import write_json_file
