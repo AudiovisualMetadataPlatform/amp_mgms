@@ -1,11 +1,11 @@
-import json
+
 import traceback
 import logging
 
 import amp.utils
 from amp.schema.entity_extraction import EntityExtraction, EntityExtractionMedia, EntityExtractionEntity, EntityExtractionEntityScore
 from amp.schema.speech_to_text import SpeechToText
-
+from amp.fileutils import read_json_file, write_json_file
 
 # Shared helper methods for NER MGMs
 
@@ -18,7 +18,7 @@ def initialize_amp_entities(amp_transcript, amp_entities, ignore_types):
 
     # parse input AMP Transcript JSON file into amp_transcript object
     try:
-        amp_transcript_obj = SpeechToText().from_json(amp.utils.read_json_file(amp_transcript))
+        amp_transcript_obj = SpeechToText().from_json(read_json_file(amp_transcript))
     except Exception:
         logging.exception(f"Exception while parsing AMP Transcript {amp_transcript}:")
         raise
@@ -31,7 +31,7 @@ def initialize_amp_entities(amp_transcript, amp_entities, ignore_types):
     # If input AMP transcript is empty, don't error, instead, output AMP Entity JSON with empty entity list and complete the whole process
     if mediaLength == 0:
         logging.warning(f"Warning: Input AMP Transcript Json file has empty transcript, will output AMP NER Json with empty entities list.")
-        amp.utils.write_json_file(amp_entities_obj, amp_entities)
+        write_json_file(amp_entities_obj, amp_entities)
         exit(0)
 
     # otherwise return the intermediate results of the preprocess

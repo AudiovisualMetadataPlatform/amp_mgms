@@ -2,13 +2,13 @@
 
 
 import spacy
-import sys
 import argparse
 
 import amp.utils
 import amp.ner_helper
 import amp.logging
 import logging
+from amp.fileutils import write_json_file
 
 def main():
     #(amp_transcript, spacy_entities, amp_entities, ignore_types) = sys.argv[1:5]
@@ -35,13 +35,13 @@ def main():
     spacy_entities_obj = nlp(amp_transcript_obj.results.transcript)
 
     # write the output Spacy entities object to JSON file
-    amp.utils.write_json_file(spacy_entities_obj.to_json(), spacy_entities)
+    write_json_file(spacy_entities_obj.to_json(), spacy_entities)
     
     # populate AMP Entities list based on input AMP transcript words list and output AWS Entities list  
     amp.ner_helper.populate_amp_entities(amp_transcript_obj, spacy_entities_obj.ents, amp_entities_obj, ignore_types_list)
 
     # write the output AMP entities object to JSON file
-    amp.utils.write_json_file(amp_entities_obj, amp_entities)
+    write_json_file(amp_entities_obj, amp_entities)
     logging.info("Finished")
 
 if __name__ == "__main__":

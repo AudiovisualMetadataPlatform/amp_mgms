@@ -1,15 +1,12 @@
 #!/usr/bin/env amp_python.sif
-import sys
 import logging
-import os
-from datetime import datetime
 from distutils.util import strtobool
-import math
 import argparse
 import logging
 
 import amp.logging
 from amp.timeutils import frameToSecond
+from amp.fileutils import read_json_file, write_json_file
 from amp.schema.video_ocr import VideoOcr, VideoOcrMedia, VideoOcrResolution, VideoOcrFrame, VideoOcrObject, VideoOcrObjectScore, VideoOcrObjectVertices
 
 
@@ -29,23 +26,23 @@ def main():
 	(input_video, azure_video_index, azure_artifact_ocr, dedupe, dup_gap, amp_vocr, amp_vocr_dedupe) = (args.input_video, args.azure_video_index, args.azure_artifact_ocr, args.dedupe, args.dup_gap, args.amp_vocr, args.amp_vocr_dedupe)
 	
 	# get Azure video indexer json
-	azure_index_json = amp.utils.read_json_file(azure_video_index)
+	azure_index_json = read_json_file(azure_video_index)
 
 	# get Azure artifact OCR json
 	# in case Azure Indexer didn't produce OCR artifact, pass in empty json
-	azure_ocr_json = amp.utils.read_json_file(azure_artifact_ocr) if amp.utils.file_exists(azure_artifact_ocr) else None
+	azure_ocr_json = read_json_file(azure_artifact_ocr) if amp.utils.file_exists(azure_artifact_ocr) else None
 
 	# create AMP Video OCR object
 	vocr = create_amp_vocr(input_video, azure_index_json, azure_ocr_json)
 	
 	# write AMP Video OCR JSON file
-	amp.utils.write_json_file(vocr, amp_vocr)
+	write_json_file(vocr, amp_vocr)
 	logging.info(f"Successfully generated AMP VOCR with {len(vocr.frames)} original frames.")
 	
 	# if dedupe, create the deduped AMP VOCR
 	if dedupe:
 		vocr_dedupe = vocr.dedupe(dup_gap)
-		amp.utils.write_json_file(vocr_dedupe, amp_vocr_dedupe)
+		write_json_file(vocr_dedupe, amp_vocr_dedupe)
 		logging.info(f"Successfully deduped AMP VOCR to {len(vocr_dedupe.frames)} frames.")			
 	
 	

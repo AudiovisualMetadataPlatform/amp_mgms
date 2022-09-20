@@ -13,7 +13,7 @@ import logging
 
 from amp.config import load_amp_config, get_config_value, get_cloud_credentials
 import amp.logging
-
+from amp.fileutils import read_json_file, write_json_file
 
 import amp.ner_helper
 
@@ -75,7 +75,7 @@ def main():
         download_output_from_s3(aws_creds, outputuri, s3uri, s3_bucket, tmpdir, aws_entities)
 
         # AWS Comprehend output should contain entities
-        aws_entities_json = amp.utils.read_json_file(aws_entities)
+        aws_entities_json = read_json_file(aws_entities)
         if not 'Entities' in aws_entities_json.keys():
             logging.error(f"Error: AWS Comprehend output does not contain entities list")
             exit(1)
@@ -85,7 +85,7 @@ def main():
         amp.ner_helper.populate_amp_entities(amp_transcript_obj, aws_entities_list, amp_entities_obj, ignore_types_list)
 
         # write the output AMP entities to JSON file
-        amp.utils.write_json_file(amp_entities_obj, amp_entities)
+        write_json_file(amp_entities_obj, amp_entities)
     logging.info("Finished.")
     
 # Upload the transcript file created from amp_transcript_obj in tmpdir to the S3 bucket for the given job. 

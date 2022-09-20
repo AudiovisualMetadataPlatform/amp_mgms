@@ -11,7 +11,7 @@ from amp.schema.video_ocr import VideoOcr, VideoOcrMedia, VideoOcrResolution, Vi
 import amp.utils
 import logging
 import amp.logging
-
+from amp.fileutils import write_json_file
 
 def main():
 	parser = argparse.ArgumentParser()
@@ -40,13 +40,13 @@ def main():
 	amp_vocr_obj = create_amp_ocr(input_video, azure_index_json, azure_ocr_json)
 	
 	# write AMP Video OCR JSON file
-	amp.utils.write_json_file(amp_vocr_obj, amp_vocr)
+	write_json_file(amp_vocr_obj, amp_vocr)
 	
 	# if dedupe, create the deduped AMP VOCR
 	if dedupe:
 		vocr_dedupe = amp_vocr_obj.dedupe(int(dup_gap))
 		logging.info(f"Successfully deduped AMP VOCR to {len(vocr_dedupe.frames)} frames.")
-		amp.utils.write_json_file(vocr_dedupe, amp_vocr_dedupe)
+		write_json_file(vocr_dedupe, amp_vocr_dedupe)
 			
 	logging.info(f"Successfully generated AMP VOCR with {len(amp_vocr_obj.frames)} original frames.")
 	

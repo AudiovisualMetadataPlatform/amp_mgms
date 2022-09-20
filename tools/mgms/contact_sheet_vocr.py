@@ -1,15 +1,11 @@
 #!/usr/bin/env amp_python.sif
 
-import sys
-import os
-import json
 import argparse
 import logging
 
 import amp.logging
-import amp.utils
 from amp.schema.contact_sheet import ContactSheet
-
+from amp.fileutils import read_json_file
 
 def main():
 	parser = argparse.ArgumentParser()
@@ -36,7 +32,7 @@ def main():
 	logging.debug("padding: " + str(padding))
 	
 	sheet = ContactSheet(input_video, contact_sheet, columns, width, margin, padding)
-	vocr = amp.utils.read_json_file(amp_vocr)
+	vocr = read_json_file(amp_vocr)
 	sheet.create_vocr(vocr)
 	logging.info("Finished.")
 

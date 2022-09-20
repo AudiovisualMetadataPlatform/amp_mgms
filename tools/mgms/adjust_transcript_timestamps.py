@@ -8,10 +8,9 @@ import argparse
 from amp.schema.speech_to_text import SpeechToText
 from amp.adjustment import Adjustment
 
-import amp.utils
 import logging
 import amp.logging
-
+from amp.fileutils import write_json_file
 
 
 def main():
@@ -62,7 +61,7 @@ def main():
         adjust_word(word, offset_adj)
         
     # Write the resulting json
-    amp.utils.write_json_file(stt, output_json)
+    write_json_file(stt, output_json)
     logging.info("Finished.")
 
 def adjust_word(word, offset_adj):

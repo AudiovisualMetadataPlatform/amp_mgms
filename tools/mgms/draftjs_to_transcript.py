@@ -12,6 +12,7 @@ import argparse
 import amp.utils
 import logging
 import amp.logging
+from amp.fileutils import write_json_file
 
 from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult, SpeechToTextScore, SpeechToTextWord
 # import aws_transcribe_to_schema
@@ -132,7 +133,7 @@ def main():
         stt = SpeechToText(media, results)
     
         # Write the output
-        amp.utils.write_json_file(stt, to_transcript)
+        write_json_file(stt, to_transcript)
         logging.info(f"Successfully converted from DraftJs {from_draftjs} to Transcript {to_transcript}")
         # as the last command in HMGM, implicitly exit 0 here to let the whole job complete in success
     except Exception as e:
