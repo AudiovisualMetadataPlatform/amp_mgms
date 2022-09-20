@@ -102,12 +102,7 @@ def write_text_file(string, output_file):
         file.write(string)
         
         
-# Get the configuration file
-def get_config():
-	config = configparser.ConfigParser()
-	config.read(sys.path[0] + "/amp_mgm.ini")    
-	return config
-    
+
 
 # Get the absolute path of the specified module/mgm working directory
 def get_work_dir(work_dir):

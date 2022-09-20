@@ -6,16 +6,15 @@ import logging
 import os
 import os.path
 import shutil
-import sys
-import traceback
 
 import amp.logging
+from amp.config import load_amp_config, get_config_value
 from amp.task.jira import TaskJira
 from amp.task.trello import TaskTrello
 from amp.task.manager import TaskManager
 from amp.task.openproject import TaskOpenproject 
 from amp.task.redmine import TaskRedmine
-import amp.utils
+
 
 
 # It's assumed that all HMGMs generate the output file in the same directory as the input file with ".completed" suffix added to the original filename
@@ -60,7 +59,10 @@ def main():
 		
 		logging.debug(f"Handling HMGM task: uncorrected JSON: {input_json}, corrected JSON: {output_json}, task JSON: {task_json}")				
         # Load basic HMGM configuration based from the property file under the given root directory
-		config = amp.utils.get_config()
+		amp_config = load_amp_config()
+		 # base the config at the MGMS, because the bits below expect to find 
+		 # 'jira' at the root.
+		config = get_config_value(amp_config, ['mgms']) 
 		context = json.loads(context_json)
 		context = desanitize_context(context)
 		
