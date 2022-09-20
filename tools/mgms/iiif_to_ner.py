@@ -2,8 +2,9 @@
 
 import argparse
 import logging
-
+from pathlib import Path
 import amp.logging
+from amp.fileutils import valid_file
 from amp.schema.entity_extraction import EntityExtraction, EntityExtractionMedia, EntityExtractionEntity, EntityExtractionEntityScore
 
 
