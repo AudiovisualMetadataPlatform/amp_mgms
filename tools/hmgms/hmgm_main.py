@@ -6,9 +6,9 @@ import logging
 import os
 import os.path
 import shutil
-
+from pathlib import Path
 import amp.logging
-from amp.config import load_amp_config, get_config_value, get_work_dir
+from amp.config import load_amp_config, get_config_value, get_work_dir, create_empty_file
 from amp.fileutils import valid_file
 from amp.task.jira import TaskJira
 from amp.task.trello import TaskTrello
@@ -52,7 +52,7 @@ def main():
 	# using output instead of input filename as the latter is unique while the former could be used by multiple jobs 
 	try:
 		# clean up previous error file as needed in case this is a rerun of a failed job
-		amp.utils.cleanup_err_file(output_json)
+		Path(output_json + ".err").unlink(missing_ok=True)
 		
 		# as a safeguard, if input_json doesn't exist or is empty, throw exception to fail the job
 		# (this means the conversion command failed before hmgm task command)
@@ -93,7 +93,7 @@ def main():
 				exit(255)        
 	# upon exception, create error file to notify the following conversion command to fail, and exit 1 (error) to avoid requene
 	except Exception as e:
-		amp.utils.create_err_file(output_json)
+		create_empty_file(output_json + ".err")
 		logging.exception(f"Failed to handle HMGM task: uncorrected: {input_json}, corrected: {output_json}, task: {task_json}")
 		exit(1)
 

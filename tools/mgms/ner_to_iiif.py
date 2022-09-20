@@ -7,7 +7,7 @@ import argparse
 
 import logging
 import amp.logging
-from amp.fileutils import valid_file
+from amp.fileutils import valid_file, create_empty_file
 
 # Convert NER generated JSON file to IIIF manifest JSON file.
 # Usage: ner_to_iiif.py root_dir from_ner to_iiif context_json
@@ -55,7 +55,7 @@ def main():
         # implicitly exit 0 as the current command completes
     except Exception as e:
         # empty out to_iiif to tell the following HMGM task command to fail
-        amp.utils.empty_file(to_iiif)
+        create_empty_file(to_iiif)
         logging.exception(f"Failed to convert from NER {from_ner} to IIIF {to_iiif}")
         exit(1)
 

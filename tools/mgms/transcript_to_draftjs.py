@@ -2,11 +2,9 @@
 
 import json
 import argparse
-
-import amp.utils
 import logging
 import amp.logging
-from amp.fileutils import valid_file
+from amp.fileutils import valid_file, create_empty_file
 
 segments = list()
 
@@ -172,7 +170,7 @@ def main():
 		# implicitly exit 0 as the current command completes
 	except Exception as e:
 		# empty out to_draftjs to tell the following HMGM task command to fail
-		amp.utils.empty_file(to_draftjs)
+		create_empty_file(to_draftjs)
 		logging.exception(f"Failed to convert from Transcript {from_transcript} to DraftJs {to_draftjs}")	
 		exit(1)
 	
