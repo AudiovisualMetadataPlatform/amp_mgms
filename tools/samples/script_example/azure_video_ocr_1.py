@@ -7,7 +7,7 @@ import argparse
 from amp.schema.video_ocr import VideoOcr, VideoOcrMedia, VideoOcrResolution, VideoOcrFrame, VideoOcrObject, VideoOcrObjectScore, VideoOcrObjectVertices
 import logging
 import amp.logging
-
+from amp.fileutils import write_json_file
 
 def main():
 	parser = argparse.ArgumentParser()

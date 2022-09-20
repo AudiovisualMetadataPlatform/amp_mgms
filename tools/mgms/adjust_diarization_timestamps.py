@@ -5,8 +5,7 @@ from amp.schema.segmentation import Segmentation
 from amp.adjustment import Adjustment
 import logging
 import amp.logging
-import amp.utils
-
+from amp.fileutils import write_json_file
 
 def main():
     parser = argparse.ArgumentParser()

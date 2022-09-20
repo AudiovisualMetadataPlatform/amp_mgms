@@ -8,10 +8,9 @@ from amp.miscutils import strtobool
 import dlib_face_training as train
 from amp.schema.facial_recognition import FaceRecognition, FaceRecognitionMedia, FaceRecognitionMediaResolution, FaceRecognitionFrame, FaceRecognitionFrameObject, FaceRecognitionFrameObjectScore, FaceRecognitionFrameObjectVertices
 
-import amp.utils
 import logging
 import amp.logging
-
+from amp.fileutils import write_json_file
 
 FR_SCORE_TYPE = "confidence"
 FR_DEFAULT_TOLERANCE = 0.6
