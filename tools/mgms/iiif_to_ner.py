@@ -2,12 +2,10 @@
 
 import json
 import sys
-import traceback
 import argparse
 import logging
 
 import amp.logging
-import amp.utils
 from amp.schema.entity_extraction import EntityExtraction, EntityExtractionMedia, EntityExtractionEntity, EntityExtractionEntityScore
 
 

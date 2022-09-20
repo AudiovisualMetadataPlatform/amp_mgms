@@ -5,11 +5,7 @@ import difflib
 
 import json
 import string
-import sys
-import traceback
 import argparse
-
-import amp.utils
 import logging
 import amp.logging
 from amp.fileutils import write_json_file

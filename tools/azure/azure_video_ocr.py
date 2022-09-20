@@ -6,7 +6,7 @@ import logging
 
 import amp.logging
 from amp.timeutils import frameToSecond
-from amp.fileutils import read_json_file, write_json_file
+from amp.fileutils import read_json_file, write_json_file, valid_file
 from amp.schema.video_ocr import VideoOcr, VideoOcrMedia, VideoOcrResolution, VideoOcrFrame, VideoOcrObject, VideoOcrObjectScore, VideoOcrObjectVertices
 
 
@@ -30,7 +30,7 @@ def main():
 
 	# get Azure artifact OCR json
 	# in case Azure Indexer didn't produce OCR artifact, pass in empty json
-	azure_ocr_json = read_json_file(azure_artifact_ocr) if amp.utils.file_exists(azure_artifact_ocr) else None
+	azure_ocr_json = read_json_file(azure_artifact_ocr) if valid_file(azure_artifact_ocr) else None
 
 	# create AMP Video OCR object
 	vocr = create_amp_vocr(input_video, azure_index_json, azure_ocr_json)

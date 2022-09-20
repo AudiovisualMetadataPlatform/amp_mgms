@@ -1,12 +1,11 @@
 #!/usr/bin/env amp_python.sif
 
-import json
-import sys
+
 import argparse
 import logging
 
 import amp.logging
-from amp.fileutils import read_json_file, write_json_file
+from amp.fileutils import read_json_file, write_json_file, valid_file
 from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult, SpeechToTextWord, SpeechToTextScore
 from amp.schema.segmentation import Segmentation, SegmentationMedia
 
@@ -24,7 +23,10 @@ def main():
 	(input_audio, aws_transcript, amp_transcript, amp_diarization) = (args.input_audio, args.aws_transcript, args.amp_transcript, args.amp_diarization)
 
 	# read the AWS transcribe json file
-	amp.utils.exception_if_file_not_exist(aws_transcript)
+	if not valid_file(aws_transcript):
+		logging.error(f"{aws_transcript} is not a valid file")
+		exit(1)
+
 	aws = read_json_file(aws_transcript)		
 
 	# Fail if we don't have results

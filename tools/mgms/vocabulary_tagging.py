@@ -1,14 +1,9 @@
 #!/usr/bin/env amp_python.sif
 import csv
-from pathlib import Path
 import json
-import sys
-from datetime import datetime
 import argparse
 import logging
-
 import amp.logging
-import amp.utils
 from amp.timeutils import secondToTimestamp
 
 def main():

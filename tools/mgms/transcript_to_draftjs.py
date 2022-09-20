@@ -1,13 +1,12 @@
 #!/usr/bin/env amp_python.sif
 
 import json
-import sys
-import traceback
 import argparse
 
 import amp.utils
 import logging
 import amp.logging
+from amp.fileutils import valid_file
 
 segments = list()
 
@@ -27,7 +26,10 @@ def main():
 	# using output instead of input filename as the latter is unique while the former could be used by multiple jobs 
 	try:
 		# exit to requeue here if Transcript->DraftJs conversion already done
-		amp.utils.exit_if_file_generated(to_draftjs)
+		if valid_file(to_draftjs):
+			logging.debug("IIIF has already been generated (exit 255)")
+			exit(255)
+		
 		logging.info(f"Converting from Transcript {from_transcript} to DraftJs {to_draftjs}")
 		
 		if diarization_json is not None and diarization_json!='None':

@@ -13,7 +13,7 @@ import amp.logging
 from amp.fileutils import write_json_file
 from amp.schema.segmentation import Segmentation
 
-import amp.utils
+
 
 
 # Seconds to buffer beginning and end of audio segments by
