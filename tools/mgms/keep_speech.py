@@ -31,7 +31,7 @@ def main():
 
 	logging.info("Reading segmentation file")
 	# Turn segmentation json file into segmentation object
-	seg_data = Segmentation().from_json(read_json_file(args.input_segmention_json))
+	seg_data = Segmentation().from_json(read_json_file(args.input_segmentation_json))
 	
 	logging.info("Removing silence to get a list of kept segments")
 	# Remove silence and get a list of kept segments
