@@ -7,11 +7,11 @@
     kept_segments: amp_kept_segments.json
   outputs:
     amp_diarization_adjusted:
-      - {test: magic, mime: text/plain}
+      - {test: magic, mime: [text/plain, application/json], comp: in}
       - {test: strings, strings: [segments, numSpeakers, media]}
 
 - name: Adjust Transcript Timestamps
-  tool: amp/adjust_transcript_timestamps.xml
+  tool: mgms/adjust_transcript_timestamps.xml
   inputs:
     amp_transcript_unadjusted: amp_transcript_aws.json
     kept_segments: amp_kept_segments.json
@@ -109,7 +109,7 @@
     input_audio: audio.mp3
   outputs:
     amp_segments:
-      - {test: magic, mime: text/plain}
+      - {test: magic, mime: [text/plain, application/json], comp: in}
       - {test: strings, strings: [segments, silence, gender, start, end]}
 
 - name: Kaldi
@@ -121,10 +121,10 @@
       - {test: magic, mime: text/plain}
       - {test: strings, strings: "celebration of specialness"}
     kaldi_transcript_json:
-      - {test: magic, mime: application/json}
+      - {test: magic, mime: [text/plain, application/json], comp: in}
       - {test: strings, strings: "duration"}
     amp_transcript:
-      - {test: magic, mime: application/json}
+      - {test: magic, mime: [text/plain, application/json], comp: in}
       - {test: strings, strings: "celebration of specialness"}
 
 - name: Keep Speech
@@ -136,7 +136,7 @@
     speech_audio:
       - {test: pass, status: true}
     kept_segments:
-      - {test: magic, mime: text/plain}  
+      - {test: magic, mime: [text/plain, application/json], comp: in}  
 
 
 - name: NER to CSV
@@ -173,7 +173,7 @@
     music_audio:
       - {test: pass, status: true}
     kept_segments:
-      - {test: magic, mime: text/plain}
+      - {test: magic, mime: [text/plain, application/json], comp: in}
 
 
 - name: Remove Trailing Silence
@@ -227,7 +227,7 @@
     tag_vocabulary: amp_words.txt
   outputs:
     tagged_words:
-      - {test: magic, mime: text/plain}
+      - {test: magic, mime: [text/plain, text/csv], comp: in}
       - {test: strings, strings: [Word, Start]}
 
 - name: VOCR to CSV

@@ -16,164 +16,216 @@ import json
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
+    parser.add_argument("--fixtures", type=str, default=sys.path[0] + "/fixtures", help="Fixtures directory")
     parser.add_argument("mgm_dir", help="Directory with MGMs")
     parser.add_argument("suite", help="Test suite YAML file")
     parser.add_argument("only_these_tests", nargs="*", help="Only run the named tests")
     args = parser.parse_args()
     logging.basicConfig(format="%(asctime)s [%(levelname)-8s] (%(filename)s:%(lineno)d)  %(message)s",
                         level=logging.DEBUG if args.debug else logging.INFO)
-    
-        
+            
     # load the fixture file names
-    fixtures = {}
-    for f in Path(sys.path[0], "fixtures").glob("*"):
-        fixtures[f.name] = f.absolute()
+    fixtures = {}    
+    for f in Path(args.fixtures).glob("*"):
+        fixtures[f.name] = str(f.absolute())
 
-    # load our test suite
+    # load the test suite
     with open(args.suite) as f:
-        tests = yaml.safe_load(f)    
+        tests = yaml.safe_load(f)        
     logging.info(f"Loaded {len(tests)} tests")
 
-    mgm_dir = Path(args.mgm_dir)
-    cur_test = 0
-    passes = 0
-    fails = 0
-    for test in tests:
-        if args.only_these_tests and test['name'] not in args.only_these_tests:
-            logging.debug(f"Skipping {test['name']} because it's not in {args.only_these_tests}")
-            continue
-        cur_test += 1
+    # remove tests that aren't requested
+    if args.only_these_tests:
+        tests = [x for x in tests if x['name'] in args.only_these_tests]
+        logging.info(f"Selected {len(tests)} tests")
+    
+    # Run the selected tests.
+    results = {'pass': 0, 'fail': 0, 'skip': 0}
+    total_tests = len(tests)
+    for i in range(total_tests):
+        test = tests[i]
+        leader = f"({i + 1}/{total_tests})"
 
-        if 'skip' in test:        
-            logging.info(f"Skipping {test['name']}: {test['skip']}")
-            continue
-
-        tool_file = mgm_dir / test["tool"]        
-        context = f"({cur_test}/{len(tests)}) '{test['name']}'"
-        if not tool_file.exists():
-            logging.error(f"{context} failed:  tool file {tool_file} doesn't exist")
-            fails += 1
+        # some tests will be skipped due to configuration
+        if 'skip' in test:
+            logging.info(f"{leader} Skipping {test['name']}:  {test['skip']}")
+            results['skip'] += 1
             continue
 
-        tool_root = ET.parse(tool_file).getroot()
-        command_text = tool_root.findtext("command").strip()
-        logging.debug(f"{context} Tool text: {command_text}")
+        logging.info(f"{leader} Running test {test['name']}")
+        try:
+            with tempfile.TemporaryDirectory() as tempdir:
+                # build the runscript and the output map.
+                outputs = build_script(test, args.mgm_dir, fixtures, tempdir)
 
-        # build the parameters needed for substitution        
-        params = {'__tool_directory__': str(tool_file.parent.absolute())}
-        if 'params' in test:
-            params.update(test["params"])
+                # execute the runscript                
+                runscript(tempdir)
 
-        # get the input fixtures
-        missing_fixture = False
-        for k, v in test["inputs"].items():
-            if v not in fixtures:
-                logging.error(f"{context} fixture for {k}={v} not found.")
-                missing_fixture = True
-            else:
-                params[k] = str(fixtures[v])
-        if missing_fixture:
-            logging.error(f"{context} test failed because of missing fixtures")
-            fails += 1
-            continue
+                # run the tests on the output
+                run_tests(test, outputs, tempdir)
 
-        with tempfile.TemporaryDirectory(prefix="mgm_tests-") as tempdir:
-            # get the output files
-            outputs = {}
-            for o in test['outputs']:
-                outputs[o] = tempdir + "/" + o
-                params[o] = outputs[o]
 
-            logging.debug(f"{context} Test parameters: {params}")
+        except Exception as e:
+            logging.error(f"{leader} Failed: {e}")
+            results['fail'] += 1
 
-            # replace the parameters in the command text
-            for k, v in params.items():
-                command_text = command_text.replace("$" + k, str(v))
-            if '$' in command_text:
-                logging.error(f"{context} Command text still contains a '$':  are all parameters substituted?")
-                logging.error(f"{command_text}")            
-                exit(1)
 
-            runscript = Path(tempdir, "runscript.sh")
-            # build the shell script
-            script = f"""#!/bin/bash
+
+
+    logging.info(f"Results:  {total_tests} tests, {results['pass']} passed, {results['fail']} failed, {results['skip']} skipped.")
+
+
+
+def build_script(test, mgm_dir, fixtures, tempdir):
+    """Build the text of the script, based on the environment, and return a 
+       dict of the output name -> tempdir/name files"""
+    tool_file = Path(mgm_dir, test['tool'])
+    if not tool_file.exists():
+        raise FileNotFoundError(f"Tool file {tool_file.absolute()!s} not found")
+
+    # get the text of the command from the tool
+    tool_root = ET.parse(tool_file).getroot()
+    command_text = tool_root.findtext("command").strip()
+
+    # build the parameters needed for substitution        
+    params = {'__tool_directory__': str(tool_file.parent.absolute())}
+    if 'params' in test:
+        params.update(test["params"])
+
+    # get the input fixtures
+    missing_fixture = False
+    for k, v in test["inputs"].items():
+        if v not in fixtures:
+            logging.error(f"Fixture for {k}={v} not found.")
+            missing_fixture = True
+        else:
+            params[k] = fixtures[v]
+    if missing_fixture:
+        raise FileNotFoundError("One or more fixtures cannot be found")
+
+    # create the output file map
+    outputs = {}
+    for o in test['outputs']:
+        outputs[o] = tempdir + "/" + o + ".dat"
+        params[o] = outputs[o]
+
+    # replace the parameters in the command text
+    for k in sorted(params.keys(), reverse=True, key=len):
+        command_text = command_text.replace("$" + k, str(params[k]))
+    if '$' in command_text:
+        raise ValueError(f"The command text still contains a '$': {command_text}")
+        
+    # write the script
+    runscript = Path(tempdir, "runscript.sh")
+    # build the shell script
+    script = f"""#!/bin/bash
 set -e
 {command_text}
-            """
-            logging.debug(f"{context} script: {script}")
-            with open(runscript, "w") as f:
-                f.write(script)
-            runscript.chmod(0o755)
+    """        
+    with open(runscript, "w") as f:
+        f.write(script)
+    runscript.chmod(0o755)
+    logging.debug(f"Runscript text:\n{script}")
 
-            if args.debug:
-                os.environ['AMP_DEBUG'] = '1'
+    return outputs
 
-            rc = 255
-            script_failed = False
-            while rc == 255:
-                logging.debug(f"{context} Starting runscript")
-                p = subprocess.run([str(runscript)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf-8")
-                logging.debug(f"Runscript exited with {rc}")
-                rc = p.returncode
-                if rc == 0:                    
-                    # success
-                    break
-                if rc == 255:
-                    # wait
-                    sleep(10)
-                else:
-                    logging.error(f"{context} runscript failed with return code {p.returncode}")
-                    logging.error(p.stdout)
-                    fails += 1
-                    script_failed = True
-             
-            if script_failed:
-                # got to the next test
-                break
+def runscript(tempdir, debug=False):
+    "Run the runscript.sh in the directory specified"
+    if debug:
+        os.environ['AMP_DEBUG'] = '1'
+
+    rc = 255    
+    while rc == 255:
+        logging.debug(f"Starting {tempdir}/runscript.sh")                
+        p = subprocess.run([tempdir + "/runscript.sh"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf-8")        
+        rc = p.returncode
+        logging.debug(f"Return code {rc}, output:\n{p.stdout}")
+        if rc == 255:
+            sleep(10)
+    if rc != 0:
+        raise Exception(f"Runscript failed with rc {rc} and this output:\n{p.stdout}")
 
 
-            # Since the script worked OK, run any tests on the output file
-            test_errors = 0
-            test_items = 0
-            for out in outputs:
-                test_items += 1
-                if not Path(outputs[out]).exists():
-                    logging.error(f"{context} output file {out} doesn't exist")
-                    test_errors += 1
+def run_tests(test, outputs, tempdir):
+    "Run the specified tests on the output"
+    has_failures = False
+    for outname in outputs:
+        outfile = outputs[outname]        
+        if not Path(outfile).exists():
+            logging.error(f"{outname}: Output file {outfile!s} doesn't exist")
+            has_failures = True
+            continue
+
+        file_cache = {}
+        for args in test['outputs'][outname]:
+            testname = args['test']
+            comp = args.get('comp', '==')
+            setop = args.get('setop', 'all')
+            if testname == 'pass':                
+                # this test always passes
+                pass
+            elif testname == "debug":
+                # this isn't a test, so much as it is a file copy
+                if args.get("save", False):
+                    logging.info(f"Copying {outfile} to {args['save']}")
+                    shutil.copy(outfile, args["save"])
+            elif testname == 'magic':
+                # this is a file magic check
+                p = subprocess.run(['file', '-b', '--mime-type', outfile], stdout=subprocess.PIPE, encoding='utf-8')
+                mime = p.stdout.strip()                
+                if not comparitor(mime, args['mime'], comp):                
+                    logging.error(f"{outname} mime-type: {mime} {comp} {args['mime']} is false.")
+                    has_failures = True
                     continue
-                for ftest in test['outputs'][out]:
-                    test_items += 1
-                    if ftest['test'] not in test_functions:
-                        logging.error(f"{context}/{out} test function {ftest['test']} doesn't exist")
-                        test_errors +=1 
-                        continue
-                    try:
-                        res = test_functions[ftest['test']](outputs[out], ftest)
-                        if not res:
-                            logging.error(f"{context} -> {out} {ftest} Failed")
-                            test_errors +=1
-                            continue
-                    except Exception as e:
-                        logging.error(f"{context} -> {out} test failed with exception")
-                        logging.error(e)
-                        test_errors += 1
-                        continue
+            elif testname == 'size':
+                # file size check
+                size = Path(outfile).stat().st_size
+                csize = int(args['size'])                
+                if not comparitor(csize, size, comp):
+                    logging.error(f"{outfile} file size: {size} {comp} {csize} is false.")
+                    has_failures = True
+                    continue
+            elif testname == 'strings':
+                # check to make sure any/all strings are present
+                data = Path(outfile).read_text(encoding='utf-8')                
+                if not isinstance(args['strings'], list):
+                    args['strings'] = [args['strings']]
+                found = set()
+                for s in args['strings']:
+                    if s in data:                        
+                        found.add(s)
+                if setop == "all" and len(found) != len(args['strings']):
+                    logging.error(f"{outfile} strings: Some strings not found: {set(args['strings']).difference(found)}")
+                    has_failures = True
+                    continue
+                if setop == "any" and len(found) == 0:
+                    logging.error(f"{outfile} strings: None of the strings were found")
+                    has_failures = True
+                    continue
 
-            if test_errors != 0:
-                logging.error(f"{context} {test_errors}/{test_items} file tests failed")
-                fails += 1
-                continue
-
-        logging.info(f"{context} Passed")
-        passes += 1
-
-    logging.info(f"Results:  {len(tests)} tests, {passes} passed, {fails} failed.")
+    if has_failures:
+        raise Exception("Some tests have failed")
 
 
+def comparitor(a, b, comp='=='):
+    if comp == '==':
+        return a == b
+    if comp == '!=':
+        return a != b
+    if comp == '>':
+        return a > b
+    if comp == '>=':
+        return a >= b
+    if comp == '<':
+        return a < b
+    if comp == '<=':
+        return a <= b
+    if comp == 'in':
+        return a in b
 
-def test_pass(file, args):
-    "pass/fail the test automatically"
-    return args['status']
+#################################################################
+
+
 
 
 ffprobes = {}
@@ -241,60 +293,10 @@ def _data_to_xml_string(data):
         xml = xml.replace('>', '&gt;')
     return xml
 
-def test_magic(file, args):
-    "compare the mime type"
-    p = subprocess.run(['file', '-b', '--mime-type', file], stdout=subprocess.PIPE, encoding='utf-8')
-    mime = p.stdout.strip()
-    if mime != args['mime']:
-        logging.error(f"{file} should be type {args['mime']} but got {mime}")
-        return False
-    return True
-
-def test_size(file, args):
-    "compare the file size"
-    size = Path(file).stat().st_size
-    if int(args['size']) != size:
-        logging.error(f"{file} expected file size of {args['size']} but got {size} instead")
-        return False
-    return True
-
-def test_debug(file, args):
-    """Allow some thigns that make debugging easier"""
-    if args.get("save", False):
-        logging.info(f"Copying {file} to {args.get('save')}")
-        shutil.copy(file, args.get("save"))
-            
-    return True
-
-def test_strings(file, args):
-    "check if the file contains the strings"
-    with open(file, encoding='utf-8') as f:
-        data = f.read()
-        if not isinstance(args['strings'], list):
-            args['strings'] = [args['strings']]
-        for s in args['strings']:
-            if s not in data:
-                logging.error(f"{file} String '{s}' not in the file")
-                return False
-
-    return True
-
-def test_md5(file, args):
-    "compare the MD5 of the file"
-    pass
 
 
-test_functions = {
-    'pass': test_pass,
-    'magic': test_magic,
-    'ffprobe': test_ffprobe,
-    'xmlfile': test_xml,
-    'size': test_size,
-    'debug': test_debug,
-    'strings': test_strings,
-    'md5': test_md5,
-    'json': test_json,
-}
+
+
 
 
 if __name__ == "__main__":
