@@ -8,6 +8,8 @@ import uuid
 import argparse
 import logging
 
+# NOTE: since this doesn't use amp_python.sif, this may need some fixups to
+# find the amp libraries.
 import amp.logging
 from amp.fileutils import write_json_file
 
@@ -22,8 +24,7 @@ def main():
 	parser.add_argument("amp_transcript_aligned")
 	args = parser.parse_args()
 	amp.logging.setup_logging("gentle_forced_alignment", args.debug)
-	logging.info(f"Starting with args={args}")
-	(speech_audio, amp_transcript_unaligned, gentle_transcript, amp_transcript_aligned) = (args.speech_audio, args.amp_transcript_unaligned, args.gentle_transcript, args.amp_transcript_aligned)
+	logging.info(f"Starting with args={args}")	
 
 	try:
 		# prefix random id to original filenames to ensure uniqueness for the tmp Gentle singularity input files 
