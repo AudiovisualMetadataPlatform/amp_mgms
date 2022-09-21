@@ -7,9 +7,6 @@ import amp.logging
 from amp.timeutils import secondToTimestamp
 
 def main():
-    #amp_transcript =  sys.argv[1] 
-    #words_to_flag_file =  sys.argv[2] 
-    #output_csv =  sys.argv[3] 
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("amp_transcript")
@@ -18,18 +15,14 @@ def main():
     args = parser.parse_args()
     amp.logging.setup_logging("vocabulary_tagging", args.debug)
     logging.info(f"Starting with args {args}")
-    (amp_transcript, words_to_flag_file, output_csv) = (args.amp_transcript, args.words_to_flag_file, args.output_csv)
 
     # Get a list of words to flag
-    words_to_flag = get_words(words_to_flag_file) 
-    logging.debug("Words to Flag:")
-    for w in words_to_flag:
-        logging.debug(w)
-    logging.debug("")
+    words_to_flag = get_words(args.words_to_flag_file) 
+    logging.debug(f"Words to flag: {', '.join(words_to_flag)}")
 
     # Search for matching words/phrases
     matching_words = list()
-    with open(amp_transcript, 'r') as f:
+    with open(args.amp_transcript, 'r') as f:
         transcript_dict = json.load(f)
         # Check to see if we have a valid transcript.  If so, find the matches. 
         if "results" in transcript_dict.keys() and "words" in transcript_dict["results"].keys():
@@ -39,9 +32,8 @@ def main():
             logging.warning("Warning: Results or words missing from AMP Json")
 
     # Print the output
-    logging.debug("Matching Words:")
-    logging.debug(matching_words)
-    write_csv(output_csv, matching_words)
+    logging.debug(f"Matching Words: {matching_words}")    
+    write_csv(args.output_csv, matching_words)
     logging.info("Finished.")
     exit(0)
 
@@ -109,7 +101,6 @@ def get_words(words_to_flag):
 
     for line in word_lines:
         flag_word = dict()
-
         flag_word["parts"] = list()
         flag_word["whole_phrase"] = remove_punctuation(clean_word(line))
 

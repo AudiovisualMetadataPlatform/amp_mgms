@@ -1,6 +1,5 @@
 #!/usr/bin/env amp_python.sif
 
-
 import json
 import math
 import os
@@ -14,13 +13,10 @@ from amp.fileutils import write_json_file
 from amp.schema.segmentation import Segmentation
 
 
-
-
 # Seconds to buffer beginning and end of audio segments by
 buffer = 1
 
 def main():
-	#(input_file, input_segmentation_json, remove_type, output_file, kept_segments_file) = sys.argv[1:6]
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 	parser.add_argument("input_file")
@@ -30,18 +26,17 @@ def main():
 	parser.add_argument("kept_segments_file")
 	args = parser.parse_args()
 	amp.logging.setup_logging("remove_silence_music_speech", args.debug)
-	logging.info(f"Starting with args {args}")
-	(input_file, input_segmentation_json, remove_type, output_file, kept_segments_file) = (args.input_file, args.input_segmentation_json, args.remove_type, args.output_file, args.kept_segments_file)
+	logging.info(f"Starting with args {args}")	
 
 	# Turn segmentation json file into segmentation object
-	with open(input_segmentation_json, 'r') as file:
+	with open(args.input_segmentation_json, 'r') as file:
 		seg_data = Segmentation().from_json(json.load(file))
 	
 	# Remove silence and get a list of kept segments
-	kept_segments = remove_silence(remove_type, seg_data, input_file, output_file)
+	kept_segments = remove_silence(args.remove_type, seg_data, args.input_file, args.output_file)
 
 	# Write kept segments to json file
-	write_json_file(kept_segments, kept_segments_file)
+	write_json_file(kept_segments, args.kept_segments_file)
 	logging.info("Finished.")
 	exit(0)
 
@@ -54,7 +49,6 @@ def remove_silence(remove_type, seg_data, filename, output_file):
 
 	# For each segment, calculate the blocks of speech segments
 	for s in seg_data.segments:
-
 		if should_remove_segment(remove_type, s, start_block) == True:
 			# If we have catalogued speech, create a segment from that chunk
 			if previous_end > 0 and start_block >= 0:
@@ -106,7 +100,6 @@ def create_audio_part(input_file, start, end, segment, file_duration):
 	
 	# Create a temporary file name
 	tmp_filename = "tmp_" + str(segment) + ".wav"
-
 	start_offset = get_start_with_buffer(start)
 
 	# Convert the seconds to a timestamp

@@ -4,54 +4,46 @@ import json
 import xml.etree.ElementTree as ET
 from datetime import datetime
 import argparse
-
-
+from amp.fileutils import read_json_file
 
 def main():
-    #input_file = sys.argv[1]
-    #context_json = sys.argv[2]
-    #output_xml = sys.argv[3]
     parser = argparse.ArgumentParser()
     parser.add_argument("input_file")
     parser.add_argument("context_json")
     parser.add_argument("output_xml")
     args = parser.parse_args()
-    (input_file, context_json, output_xml) = (args.input_file, args.context_json, args.output_xml)
     
-    print(context_json)
-    context = json.loads(context_json)
+    context = json.loads(args.context_json)
     item_name = context["itemName"]
     primary_file_name = context["primaryfileName"]
-    
-    with open(input_file,'r') as json_file:
-        applause_segments = json.load(json_file)
-        segment_start = None
-        segment_count = 1
-        item = ET.Element('Item')
-        item.set('label', item_name)
-        primary_file = ET.SubElement(item, 'Div')
-        primary_file.set('label', primary_file_name)
+    applause_segments = read_json_file(args.applause_segments)
+    segment_start = None
+    segment_count = 1
+    item = ET.Element('Item')
+    item.set('label', item_name)
+    primary_file = ET.SubElement(item, 'Div')
+    primary_file.set('label', primary_file_name)
 
-        for segment in applause_segments["segments"]:
-            # This should start a segment
-            if segment["label"] == "applause":
-                # If this is the first segment, set the start time
-                if segment_start is None:
-                    segment_start = segment["start"]
-                #  Applause item, create the element
-                create_work_item(primary_file, segment_start, segment["end"], 'Work')
-                segment_start = None
-            elif segment["label"] == "non-applause":
-                # Non applause should be added to the next applause segment
+    for segment in applause_segments["segments"]:
+        # This should start a segment
+        if segment["label"] == "applause":
+            # If this is the first segment, set the start time
+            if segment_start is None:
                 segment_start = segment["start"]
-                # If this is the last segment, output it
-                if segment_count == len(applause_segments["segments"]):
-                    create_work_item(primary_file, segment_start, segment["end"], 'Other')
-                    segment_start = None
-            segment_count+=1
-        mydata = ET.tostring(element=item, method="xml")
-        myfile = open(output_xml, "wb")
-        myfile.write(mydata)
+            #  Applause item, create the element
+            create_work_item(primary_file, segment_start, segment["end"], 'Work')
+            segment_start = None
+        elif segment["label"] == "non-applause":
+            # Non applause should be added to the next applause segment
+            segment_start = segment["start"]
+            # If this is the last segment, output it
+            if segment_count == len(applause_segments["segments"]):
+                create_work_item(primary_file, segment_start, segment["end"], 'Other')
+                segment_start = None
+        segment_count+=1
+    mydata = ET.tostring(element=item, method="xml")
+    myfile = open(args.output_xml, "wb")
+    myfile.write(mydata)
     
     exit(0)
 

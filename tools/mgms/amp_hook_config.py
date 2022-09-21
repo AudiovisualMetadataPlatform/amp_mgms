@@ -25,13 +25,15 @@ def main():
     # set amp_root
     amp_root = Path(os.environ['AMP_ROOT'])
 
-    # create the INI file
-    logging.info("Creating the MGM configuration file")
-    with open(amp_root / "galaxy/tools/amp_mgms/amp_mgm.ini", "w") as f:
-        for s in config['mgms']:
-            f.write(f'[{s}]\n')
-            for k,v in config['mgms'][s].items():
-                f.write(f'{k} = {v}\n')
+    # The INI file shouldn't be used any longer
+    if False:
+        # create the INI file
+        logging.info("Creating the MGM configuration file")
+        with open(amp_root / "galaxy/tools/amp_mgms/amp_mgm.ini", "w") as f:
+            for s in config['mgms']:
+                f.write(f'[{s}]\n')
+                for k,v in config['mgms'][s].items():
+                    f.write(f'{k} = {v}\n')
                 
 if __name__ == "__main__":
     main()

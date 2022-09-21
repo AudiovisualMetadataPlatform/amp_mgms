@@ -14,8 +14,7 @@ MAX_WORD_COUNT = 10	# maximum number of words per line
 MIN_SEGMENT_GAP = 5.00	# minimum gap in seconds between segment for speaker switch
 
 # Reads the AMP Transcript and Segment inputs and convert them to Web VTT output.
-def main():
-	#(seg_file, stt_file, vtt_file) =  sys.argv[1:4] 
+def main(): 
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 	parser.add_argument("seg_file")
@@ -24,23 +23,22 @@ def main():
 	args = parser.parse_args()
 	amp.logging.setup_logging("transcript_to_webvtt", args.debug)
 	logging.info(f"Starting with args {args}")
-	(seg_file, stt_file, vtt_file) = (args.seg_file, args.stt_file, args.vtt_file)
 
 	# read words and segments from input files
 	segments = []
 	words = []
-	if os.path.exists(seg_file):
-		json_seg = open(seg_file)
+	if os.path.exists(args.seg_file):
+		json_seg = open(args.seg_file)
 		dict_seg = json.loads(json_seg.read())
 		segments = dict_seg['segments']
-	if os.path.exists(stt_file):
-		json_stt = open(stt_file)
+	if os.path.exists(args.stt_file):
+		json_stt = open(args.stt_file)
 		dict_stt = json.loads(json_stt.read())
 		words = dict_stt['results']['words']
 	
 	# write header to output vtt file
-	out_file = open(vtt_file, "w")
-	out_file.write(amp.vtt_helper.get_header())
+	out_file = open(args.vtt_file, "w")
+	out_file.write(writeHeader())
 
 	# initialize status before first (new) line
 	nword = 0	# number of pronunciation words in current line so far 
