@@ -1,6 +1,5 @@
 #!/usr/bin/env amp_python.sif
 import json
-import sys
 import os
 import time
 import argparse

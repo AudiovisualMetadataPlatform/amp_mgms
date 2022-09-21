@@ -1,6 +1,5 @@
 #!/usr/bin/env amp_python.sif
 import argparse
-import sys
 import json
 
 from amp.schema.video_ocr import VideoOcr
