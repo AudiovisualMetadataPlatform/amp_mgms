@@ -5,6 +5,7 @@ from amp.schema.video_ocr import VideoOcr
 import logging
 import amp.logging
 
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")

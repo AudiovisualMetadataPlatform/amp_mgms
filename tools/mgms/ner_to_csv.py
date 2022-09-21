@@ -5,6 +5,7 @@ import argparse
 from amp.schema.entity_extraction import EntityExtraction
 import logging
 import amp.logging
+from amp.fileutils import read_json_file
 
 def main():        
     parser = argparse.ArgumentParser()

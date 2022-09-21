@@ -3,10 +3,9 @@
 import argparse
 from amp.schema.speech_to_text import SpeechToText
 from amp.adjustment import Adjustment
-
 import logging
 import amp.logging
-from amp.fileutils import write_json_file
+from amp.fileutils import write_json_file, read_json_file
 
 
 def main():

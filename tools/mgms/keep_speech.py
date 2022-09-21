@@ -10,6 +10,7 @@ import argparse
 from amp.schema.segmentation import Segmentation
 import logging
 import amp.logging
+from amp.fileutils import read_json_file, write_json_file
 
 # Seconds to buffer beginning and end of audio segments by
 buffer = 5

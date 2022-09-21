@@ -2,7 +2,6 @@
 
 import spacy
 import argparse
-
 import amp.nerutils
 import amp.logging
 import logging
