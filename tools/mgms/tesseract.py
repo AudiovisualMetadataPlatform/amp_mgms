@@ -20,26 +20,24 @@ import amp.logging
 
 from amp.fileutils import write_json_file
 
-# Python imports
 def main():
 	with tempfile.TemporaryDirectory(dir = "/tmp") as tmpdir:
 		parser = argparse.ArgumentParser()
 		parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 		parser.add_argument("input_video", help="Video input file")
-		parser.add_argument("vocr_interval", type=float, default=1.0, help="Interval in seconds by which video frames are extracted for VOCR")
-		parser.add_argument("dedupe", type=strtobool, default=True, help="Whether to dedupe consecutive frames with same texts")
-		parser.add_argument("dup_gap", type=int, default=5, help="Gap in seconds within which adjacent VOCR frames with same text are considered duplicates")
+		parser.add_argument("--vocr_interval", type=float, default=1.0, help="Interval in seconds by which video frames are extracted for VOCR")
+		parser.add_argument("--dedupe", type=strtobool, default=True, help="Whether to dedupe consecutive frames with same texts")
+		parser.add_argument("--dup_gap", type=int, default=5, help="Gap in seconds within which adjacent VOCR frames with same text are considered duplicates")
 		parser.add_argument("amp_vocr", help="Original AMP Video OCR output file")
 		parser.add_argument("amp_vocr_dedupe", help="Deduped AMP Video OCR output file")
 		args = parser.parse_args()
 		amp.logging.setup_logging("tesseract", args.debug)
 		logging.info(f"Starting with args={args}")
-		(input_video, vocr_interval, dedupe, dup_gap, amp_vocr, amp_vocr_dedupe) = (args.input_video, args.vocr_interval, args.dedupe, args.dup_gap, args.amp_vocr, args.amp_vocr_dedupe)
-	
+
 		# ffmpeg extracts the frames from the video input
 		dateTimeObj = datetime.now()
-		fps = 1 / vocr_interval;
-		command = f"ffmpeg -i {input_video} -an -vf fps={fps} '{tmpdir}/frame_%05d_{dateTimeObj}.jpg'"
+		fps = 1 / amp.vocr_interval
+		command = f"ffmpeg -i {args.input_video} -an -vf fps={fps} '{tmpdir}/frame_%05d_{dateTimeObj}.jpg'"
 		logging.info(f"Extracting frames for VOCR with command {command}")
 		subprocess.call(command, shell=True)
 		
@@ -47,11 +45,11 @@ def main():
 		script_start = time.time()
 		
 		# Get some stats on the video
-		(dim, duration, frameRate, numFrames) = findVideoMetada(input_video)
+		(dim, duration, frameRate, numFrames) = findVideoMetada(args.input_video)
 
 		# create AMP VOCR instance
 		resolution = VideoOcrResolution(int(dim[0]), int(dim[1]))
-		amp_media = VideoOcrMedia(input_video, duration, frameRate, numFrames, resolution)
+		amp_media = VideoOcrMedia(args.input_video, duration, frameRate, numFrames, resolution)
 		frames = []		
 		
 		# for every saved frame run VOCR
@@ -77,21 +75,21 @@ def main():
 		
 			# add frame if it had text
 			if len(objects) > 0:
-				start_time =+ (vocr_interval * num) 
+				start_time =+ (args.vocr_interval * num) 
 				frame = VideoOcrFrame(start_time, content, objects)
 				frames.append(frame)
 		
 		# create and save the AMP VOCR instance
 		vocr = VideoOcr(amp_media, [], frames)					
-		write_json_file(vocr, amp_vocr)
+		write_json_file(vocr, args.amp_vocr)
 		logging.info(f"Successfully generated AMP VOCR with {len(frames)} original frames.")
 		
 		# if dedupe, create and save the deduped AMP VOCR
-		if dedupe:
+		if args.dedupe:
 			# the duplicate gap should be at least vocr_interval
-			gap = max(dup_gap, vocr_interval)
+			gap = max(args.dup_gap, args.vocr_interval)
 			vocr_dedupe = vocr.dedupe(gap)
-			write_json_file(vocr_dedupe, amp_vocr_dedupe)		
+			write_json_file(vocr_dedupe, args.amp_vocr_dedupe)		
 			logging.info(f"Successfully deduped AMP VOCR to {len(vocr_dedupe.frames)} frames.")
 		
 

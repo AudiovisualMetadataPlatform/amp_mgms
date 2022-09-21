@@ -1,9 +1,5 @@
 #!/usr/bin/env amp_python.sif
 #
-# Simple singularity container to extract an audio stream from an a/v file.
-#
-# Since this uses ffmpeg that isn't part of the default install, it has to be wrapped in a
-# singularity container.
 
 import argparse
 import logging

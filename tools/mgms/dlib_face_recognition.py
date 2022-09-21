@@ -22,13 +22,12 @@ def main():
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("input_video", help="Input Video")
     parser.add_argument("training_photos", help="Training photos")
-    parser.add_argument("reuse_trained", type=strtobool, default=True, help="Reuse Training data")
-    parser.add_argument("tolerance", type=float, default=FR_DEFAULT_TOLERANCE, help="Recognition tolerance")
+    parser.add_argument("--reuse_trained", type=strtobool, default=True, help="Reuse Training data")
+    parser.add_argument("--tolerance", type=float, default=FR_DEFAULT_TOLERANCE, help="Recognition tolerance")
     parser.add_argument("amp_faces", help="Faces output file")
     args = parser.parse_args()
     amp.logging.setup_logging("dlib_face_recognition", args.debug)
     logging.info(f"Starting with args {args}")
-    (input_video, training_photos, reuse_trained, tolerance, amp_faces) = (args.input_video, args.training_photos, args.reuse_trained, args.tolerance, args.amp_faces)
 
     # using output instead of input filename as the latter is unique while the former could be used by multiple jobs 
     
@@ -37,21 +36,21 @@ def main():
     known_faces = []
     
     # if reuse_trained is set to true, retrieve previous training results
-    if reuse_trained:
-        known_names, known_faces = train.retrieve_trained_results(training_photos)
+    if args.reuse_trained:
+        known_names, known_faces = train.retrieve_trained_results(args.training_photos)
               
     # if no valid previous trained results is available, do the training
     if (known_names == [] or known_faces == []):
-        known_names, known_faces = train.train_faces(training_photos)
+        known_names, known_faces = train.train_faces(args.training_photos)
               
     logging.debug(f"known_names: {known_names}")
     logging.debug(f"known_faces: {known_faces}")
                   
     # run face recognition on the given video using the trained results at the given tolerance level
-    fr_result = recognize_faces(input_video, known_names, known_faces, tolerance)
+    fr_result = recognize_faces(args.input_video, known_names, known_faces, args.tolerance)
     
     # save the recognized_faces in the standard AMP Face JSON file
-    write_json_file(fr_result, amp_faces)
+    write_json_file(fr_result, args.amp_faces)
     logging.info("Finished.")
     
 # Recognize faces in the input_video at the tolerance level, given the known_names and known_faces from trained FR model;

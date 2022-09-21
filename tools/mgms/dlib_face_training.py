@@ -2,9 +2,7 @@ import os
 import os.path
 import shutil
 import face_recognition
-import cv2
 import pickle
-# from tqdm.notebook import tqdm
 from zipfile import ZipFile
 import logging
 from amp.config import get_work_dir
@@ -24,11 +22,6 @@ def train_faces(training_photos):
     # get all persons photo directories
     person_dir_names = [d for d in os.listdir(photos_dir) if os.path.isdir(os.path.join(photos_dir, d))]
 
-#     # exit in error if no training data found    
-#     if (len(person_dir_names) == 0):
-#         print("Training failed as training photos " + training_photos + " contains no sub-directory")
-#         exit(1)
-         
     known_names = []
     known_faces = []
     model = []
@@ -38,11 +31,6 @@ def train_faces(training_photos):
         name = person_dir_name
         person_dir = os.path.join(photos_dir, person_dir_name)
         photos = [f for f in os.listdir(person_dir) if os.path.isfile(os.path.join(person_dir, f))]
-
-#         # skip the current person if no training photo found    
-#         if (len(photos) == 0):
-#             print("Skipped " + name + " as no training photo is found in the corresponding photo directory " + person_dir)
-#             continue
 
         # initialize total number of usable photos for the current person
         count = 0

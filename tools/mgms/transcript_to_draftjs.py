@@ -4,13 +4,12 @@ import json
 import argparse
 import logging
 import amp.logging
-from amp.fileutils import valid_file, create_empty_file
+from amp.fileutils import valid_file, create_empty_file, write_json_file
 
 segments = list()
 
 # Converts AMP Transcript json to Draft JS which is used by the transcript editor.
 def main():
-	#(root_dir, from_transcript, diarization_json, to_draftjs) = sys.argv[1:5]
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 	parser.add_argument("from_transcript")
@@ -19,26 +18,25 @@ def main():
 	args = parser.parse_args()
 	amp.logging.setup_logging("transcript_to_draftjs", args.debug)
 	logging.debug(f"Starting with args {args}")
-	(from_transcript, diarization_json, to_draftjs) = (args.from_transcript, args.diarization_json, args.to_draftjs)
 
 	# using output instead of input filename as the latter is unique while the former could be used by multiple jobs 
 	try:
 		# exit to requeue here if Transcript->DraftJs conversion already done
-		if valid_file(to_draftjs):
+		if valid_file(args.to_draftjs):
 			logging.debug("IIIF has already been generated (exit 255)")
 			exit(255)
 		
-		logging.info(f"Converting from Transcript {from_transcript} to DraftJs {to_draftjs}")
+		logging.info(f"Converting from Transcript {args.from_transcript} to DraftJs {args.to_draftjs}")
 		
-		if diarization_json is not None and diarization_json!='None':
-			fill_speakers(diarization_json)
+		if args.diarization_json is not None and args.diarization_json!='None':
+			fill_speakers(args.diarization_json)
 		speaker_count = 0
 		out_json = dict()
 		out_json['entityMap'] = {}
 		out_json['blocks'] = []
 
 		# Open the transcribe output
-		with open(from_transcript) as json_file:
+		with open(args.from_transcript) as json_file:
 			try:
 				json_input = json.load(json_file)
 			except ValueError as e:
@@ -163,15 +161,15 @@ def main():
 					block = createBlock(0, data, entityRanges, this_transcript)
 					out_json['blocks'].append(block)
 
-			# Write the json
-			write_to_draftjs(out_json, to_draftjs)
-				
-		logging.info(f"Successfully converted from Transcript {from_transcript} to DraftJs {to_draftjs}")
+			# Write the json			
+			write_json_file(out_json, args.to_draftjs)
+
+		logging.info(f"Successfully converted from Transcript {args.from_transcript} to DraftJs {args.to_draftjs}")
 		# implicitly exit 0 as the current command completes
 	except Exception as e:
 		# empty out to_draftjs to tell the following HMGM task command to fail
-		create_empty_file(to_draftjs)
-		logging.exception(f"Failed to convert from Transcript {from_transcript} to DraftJs {to_draftjs}")	
+		create_empty_file(args.to_draftjs)
+		logging.exception(f"Failed to convert from Transcript {args.from_transcript} to DraftJs {args.to_draftjs}")	
 		exit(1)
 	
 def createBlock(depth, data, entityRanges, transcript):
@@ -220,12 +218,6 @@ def get_speaker_name(start, end, speaker_count):
 		speaker_count += 1
 
 	return name
-
-# Serialize schema obj and write it to output file
-def write_to_draftjs(input_json, json_file):
-	# Serialize the segmentation object
-	with open(json_file, 'w') as outfile:
-		json.dump(input_json, outfile, default=lambda x: x.__dict__)
 
 
 if __name__ == "__main__":

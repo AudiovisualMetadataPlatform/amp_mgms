@@ -1,19 +1,14 @@
 #!/usr/bin/env amp_python.sif
 
-import json
 import argparse
-
 from amp.schema.speech_to_text import SpeechToText
 from amp.adjustment import Adjustment
-
 import logging
 import amp.logging
-from amp.fileutils import write_json_file
+from amp.fileutils import write_json_file, read_json_file
 
 
 def main():
-
-    #(stt_json, adj_json, output_json) = sys.argv[1:4]
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("stt_json")
@@ -22,16 +17,12 @@ def main():
     args = parser.parse_args()
     amp.logging.setup_logging("adjust_transcript_timestamps", args.debug)
     logging.info(f"Starting with args {args}")
-    (stt_json, adj_json, output_json) = (args.stt_json, args.adj_json, args.output_json)
-
 
     # Turn adjustment data into list of kept segments
-    with open(adj_json, 'r') as file:
-        adj_data = json.load(file)
+    adj_data = read_json_file(args.adj_json)
 
     # Turn stt json into objects
-    with open(stt_json, 'r') as file:
-        stt = SpeechToText().from_json(json.load(file))
+    stt = SpeechToText().from_json(read_json_file(args.stt_json))
     
     # List of adjustments (start, end, adjustment)
     offset_adj = []
@@ -59,7 +50,7 @@ def main():
         adjust_word(word, offset_adj)
         
     # Write the resulting json
-    write_json_file(stt, output_json)
+    write_json_file(stt, args.output_json)
     logging.info("Finished.")
 
 def adjust_word(word, offset_adj):

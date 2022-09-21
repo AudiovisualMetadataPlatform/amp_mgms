@@ -5,7 +5,7 @@ import string
 import argparse
 import logging
 import amp.logging
-from amp.fileutils import write_json_file, valid_file
+from amp.fileutils import write_json_file, valid_file, read_json_file
 from pathlib import Path
 
 from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult, SpeechToTextScore, SpeechToTextWord
@@ -22,29 +22,27 @@ def main():
     args = parser.parse_args()
     amp.logging.setup_logging("draftjs_to_transcript", args.debug)
     logging.debug(f"Starting with args {args}")
-    (from_draftjs, original_transcript, to_transcript) = (args.from_draftjs, args.original_transcript, args.to_transcript)
 
     # using output instead of input filename as the latter is unique while the former could be used by multiple jobs     
     try:
         # if from_draftjs is in error raise exception to notify HMGM job runner to fail the job
          # otherwise if from_draftjs doesn't exist yet, exit to requeue (keep waiting)
-        if Path(from_draftjs + ".err").exists():
-            raise Exception(f"File {from_draftjs} is in error, the previous command generating it must have failed.")
-        if not valid_file(from_draftjs):
+        if Path(args.from_draftjs + ".err").exists():
+            raise Exception(f"File {args.from_draftjs} is in error, the previous command generating it must have failed.")
+        if not valid_file(args.from_draftjs):
             # file isn't there yet -- exit with 255 to requeue
             exit(255)
 
+        logging.info(f"Converting DraftJs {args.from_draftjs} to Transcript {args.to_transcript}")
 
-
-        logging.info(f"Converting DraftJs {from_draftjs} to Transcript {to_transcript}")
-
-        with open(from_draftjs) as json_file:
-            d = json.load(json_file)
-            data = eval(json.dumps(d))
+        data = read_json_file(args.from_draftjs)
+        # The original code is slightly scary and doesn't make sense...
+        #with open(from_draftjs) as json_file:
+        #    d = json.load(json_file)
+        #    data = eval(json.dumps(d))  
     
         #read original file for extracting only the confidence score of each word
-        original_input = open(original_transcript)
-        original_json = json.loads(original_input.read())
+        original_json = read_json_file(args.original_transcript)
         original_items = original_json["results"]["words"]
     	
         #print("the data in editor output is:",data)
@@ -56,7 +54,6 @@ def main():
         # draftJS input file here always came from converted and corrected AMP Transcript,
         # so it should always contain 'entityMap', otherwise error should occur        
         #Standardising draft js format
-#         if "entityMap" in data.keys():
         transcript = ''
         entityMap = data["entityMap"]
         for i in range(0, len(entityMap.keys())):
@@ -128,18 +125,19 @@ def main():
             logging.debug("i: " + str(i) + " j:" + str(j))
             
         # Create the media object
-        media = SpeechToTextMedia(duration, original_transcript)
+        media = SpeechToTextMedia(duration, args.original_transcript)
     
         # Create the final object
         stt = SpeechToText(media, results)
     
         # Write the output
-        write_json_file(stt, to_transcript)
-        logging.info(f"Successfully converted from DraftJs {from_draftjs} to Transcript {to_transcript}")
+        write_json_file(stt, args.to_transcript)
+        logging.info(f"Successfully converted from DraftJs {args.from_draftjs} to Transcript {args.to_transcript}")
         # as the last command in HMGM, implicitly exit 0 here to let the whole job complete in success
+        exit(0)
     except Exception as e:
         # as the last command in HMGM, exit in error to let the whole job fail
-        logging.exception(f"Failed to convert from DraftJs {from_draftjs} to Transcript {to_transcript}")
+        logging.exception(f"Failed to convert from DraftJs {args.from_draftjs} to Transcript {args.to_transcript}")
         exit(1)            
 
 
