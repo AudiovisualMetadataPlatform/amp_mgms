@@ -39,12 +39,11 @@ def main():
 	args = parser.parse_args()
 	amp.logging.setup_logging("hmgm_main", args.debug)
 	logging.debug(f"Starting with args {args}")
-	(task_type, input_json, output_json, task_json, context_json) = (args.task_type, args.input_json, args.output_json, args.task_json, args.context_json)
 
 	# using output instead of input filename as the latter is unique while the former could be used by multiple jobs 
 	try:
 		# clean up previous error file as needed in case this is a rerun of a failed job
-		Path(output_json + ".err").unlink(missing_ok=True)
+		Path(args.output_json + ".err").unlink(missing_ok=True)
 		
 		# as a safeguard, if input_json doesn't exist or is empty, throw exception to fail the job
 		# (this means the conversion command failed before hmgm task command)
