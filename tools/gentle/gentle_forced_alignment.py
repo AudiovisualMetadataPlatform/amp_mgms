@@ -1,6 +1,4 @@
-#!/usr/bin/env amp_python.sif
-
-import json
+#!/usr/bin/env python3
 import os
 import os.path
 import shutil
@@ -10,12 +8,12 @@ import uuid
 import argparse
 import logging
 
+# NOTE: since this doesn't use amp_python.sif, this may need some fixups to
+# find the amp libraries.
 import amp.logging
-from amp.fileutils import write_json_file
-
+from amp.fileutils import write_json_file, read_json_file
 
 def main():
-	#(root_dir, speech_audio, amp_transcript_unaligned, gentle_transcript, amp_transcript_aligned) = sys.argv[1:6]
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 	parser.add_argument("speech_audio")
@@ -24,16 +22,14 @@ def main():
 	parser.add_argument("amp_transcript_aligned")
 	args = parser.parse_args()
 	amp.logging.setup_logging("gentle_forced_alignment", args.debug)
-	logging.info(f"Starting with args={args}")
-	(speech_audio, amp_transcript_unaligned, gentle_transcript, amp_transcript_aligned) = (args.speech_audio, args.amp_transcript_unaligned, args.gentle_transcript, args.amp_transcript_aligned)
+	logging.info(f"Starting with args={args}")	
 
-	exception = False
 	try:
 		# prefix random id to original filenames to ensure uniqueness for the tmp Gentle singularity input files 
 		id = str(uuid.uuid4())
-		tmp_speech_audio_name = "gentle-" + id + "-" + os.path.basename(speech_audio)
-		tmp_amp_transcript_unaligned_name = "gentle-" + id + "-" + os.path.basename(amp_transcript_unaligned)
-		tmp_gentle_transcript_name = "gentle-" + id + "-" + os.path.basename(gentle_transcript)
+		tmp_speech_audio_name = "gentle-" + id + "-" + os.path.basename(args.speech_audio)
+		tmp_amp_transcript_unaligned_name = "gentle-" + id + "-" + os.path.basename(args.amp_transcript_unaligned)
+		tmp_gentle_transcript_name = "gentle-" + id + "-" + os.path.basename(args.gentle_transcript)
 
 		# define directory accessible to singularity container
 		tmpdir = '/tmp'
@@ -44,33 +40,28 @@ def main():
 		tmp_gentle_transcript = f"{tmpdir}/{tmp_gentle_transcript_name}"
 
 		# Load the audio and transcript inputs into tmp dir and run gentle
-		with open(amp_transcript_unaligned, "r") as amp_transcript_unaligned_file:
-			amp_transcript_unaligned_json = json.load(amp_transcript_unaligned_file)
+		amp_transcript_unaligned_json = read_json_file(args.amp_transcript_unaligned)
+		write_json_file(amp_transcript_unaligned_json["results"]["transcript"], tmp_amp_transcript_unaligned)
+			
+		# Copy the audio file to a location accessible to the singularity container
+		shutil.copy(args.speech_audio, tmp_speech_audio)
 
-			# Write the transcript to an input file into gentle
-			with open(tmp_amp_transcript_unaligned, "w") as tmp_amp_transcript_unaligned_file:
-				tmp_amp_transcript_unaligned_file.write(amp_transcript_unaligned_json["results"]["transcript"])
+		# Run gentle
+		logging.info(f"Running Gentle... tmp_speech_audio: {tmp_speech_audio}, tmp_amp_transcript_unaligned: {tmp_amp_transcript_unaligned}, tmp_gentle_transcript: {tmp_gentle_transcript}")
+		sif = sys.path[0] + "/gentle_forced_alignment.sif"
+		r = subprocess.run(["singularity", "run", sif, tmp_speech_audio, tmp_amp_transcript_unaligned, "-o", tmp_gentle_transcript], stdout=subprocess.PIPE)
+		logging.info(f"Finished running Gentle with return Code: {r.returncode}")
 
-			# Copy the audio file to a location accessible to the singularity container
-			shutil.copy(speech_audio, tmp_speech_audio)
+		# if Gentle completed in success, continue with transcript conversion
+		if r.returncode == 0:
+			# Copy the tmp Gentle output file to gentle_transcript
+			shutil.copy(tmp_gentle_transcript, args.gentle_transcript)
 
-			# Run gentle
-			logging.info(f"Running Gentle... tmp_speech_audio: {tmp_speech_audio}, tmp_amp_transcript_unaligned: {tmp_amp_transcript_unaligned}, tmp_gentle_transcript: {tmp_gentle_transcript}")
-			#sif = mgm_utils.get_sif_dir(root_dir) + "/gentle_forced_alignment.sif"
-			sif = sys.path[0] + "/gentle_forced_alignment.sif"
-			r = subprocess.run(["singularity", "run", sif, tmp_speech_audio, tmp_amp_transcript_unaligned, "-o", tmp_gentle_transcript], stdout=subprocess.PIPE)
-			logging.info(f"Finished running Gentle with return Code: {r.returncode}")
+			logging.info("Creating AMP transcript aligned...")
+			gentle_transcript_to_amp_transcript(args.gentle_transcript, amp_transcript_unaligned_json, args.amp_transcript_aligned)
 
-			# if Gentle completed in success, continue with transcript conversion
-			if r.returncode == 0:
-				# Copy the tmp Gentle output file to gentle_transcript
-				shutil.copy(tmp_gentle_transcript, gentle_transcript)
-	
-				logging.info("Creating AMP transcript aligned...")
-				gentle_transcript_to_amp_transcript(gentle_transcript, amp_transcript_unaligned_json, amp_transcript_aligned)
-
-			logging.info("Finished")
-			exit(r.returncode)
+		logging.info("Finished")
+		exit(r.returncode)
 	except Exception as e:
 		logging.exception("Exception while running Gentle.")
 		exit(1)
@@ -78,69 +69,67 @@ def main():
 
 # Convert Gentle output transcript JSON file to AMP Transcript JSON file.
 def gentle_transcript_to_amp_transcript(gentle_transcript, amp_transcript_unaligned_json, amp_transcript_aligned):
-	with open(gentle_transcript, "r") as gentle_transcript_file:		
-		# read gentle_transcript and initialize pointers
-		gentle_transcript_json = json.load(gentle_transcript_file)
-		transcript = gentle_transcript_json["transcript"]
-		gwords = gentle_transcript_json["words"]
-		uwords = amp_transcript_unaligned_json["results"]["words"]
-		duration = amp_transcript_unaligned_json["media"]["duration"]
-		words = list()
-		next = -1	# index of next success match
-		preoffset = 0	# end offset of previous word
+	gentle_transcript_json = read_json_file(gentle_transcript)
+	transcript = gentle_transcript_json["transcript"]
+	gwords = gentle_transcript_json["words"]
+	uwords = amp_transcript_unaligned_json["results"]["words"]
+	duration = amp_transcript_unaligned_json["media"]["duration"]
+	words = list()
+	next = -1	# index of next success match
+	preoffset = 0	# end offset of previous word
 
-		# initialize amp_transcript_aligned_json
-		amp_transcript_aligned_json = dict()
-		amp_transcript_aligned_json["media"] = amp_transcript_unaligned_json["media"]
-		amp_transcript_aligned_json["results"] = dict()
-		amp_transcript_aligned_json["results"]["transcript"] = transcript
-		amp_transcript_aligned_json["results"]["words"] = words	
+	# initialize amp_transcript_aligned_json
+	amp_transcript_aligned_json = dict()
+	amp_transcript_aligned_json["media"] = amp_transcript_unaligned_json["media"]
+	amp_transcript_aligned_json["results"] = dict()
+	amp_transcript_aligned_json["results"]["transcript"] = transcript
+	amp_transcript_aligned_json["results"]["words"] = words	
+	
+	# populate amp_transcript_aligned_json words list, based on gentle_transcript words list
+	for gi in range(0, len(gwords)):
+		# if current index is beyond the last found next successful alignment, then
+		# find the new next success and the interval between previous success
+		if gi > next:
+			[last, next, lastend, interval] = find_next_success(gwords, gi, duration)
+								
+		# if current word is the next success, use the aligned timestamp, and default confidence 1.0
+		if gi == next:
+			start = gwords[gi]["start"]
+			end = gwords[gi]["end"]
+			confidence = 1.0
+		# otherwise current word is unmatched, use same start/end timestamp as the last success time 
+		# accumulated with the interval between the last-next alignment, and default confidence 0.0
+		else:	# 0 <= gi < next
+			start = end = lastend + interval * (gi - last)				
+			confidence = 0.0
 		
-		# populate amp_transcript_aligned_json words list, based on gentle_transcript words list
-		for gi in range(0, len(gwords)):
-			# if current index is beyond the last found next successful alignment, then
-			# find the new next success and the interval between previous success
-			if gi > next:
-				[last, next, lastend, interval] = find_next_success(gwords, gi, duration)
-									
-			# if current word is the next success, use the aligned timestamp, and default confidence 1.0
-			if gi == next:
-				start = gwords[gi]["start"]
-				end = gwords[gi]["end"]
-				confidence = 1.0
-			# otherwise current word is unmatched, use same start/end timestamp as the last success time 
-			# accumulated with the interval between the last-next alignment, and default confidence 0.0
-			else:	# 0 <= gi < next
-				start = end = lastend + interval * (gi - last)				
-				confidence = 0.0
-			
-			# insert punctuations between the current and previous word if any, based on their offsets;
-			# this is needed as Gentle doen't include punctuations in the words list, but the transcript does
-			[preoffset, curoffset] = insert_punctuations(words, gwords, gi, preoffset, transcript)
-				
-			# append the current Gentle word to the AMP words list
-			words.append({
-				"type": "pronunciation", 
-				"start": start, 
-				"end": end, 
-				"text": gwords[gi]["word"],
-				"offset": curoffset,
-				"score": {
-					"type": "confidence", 
-					"value": confidence,
-				},
-			})							
-			
-		# append punctuations after the last word if any text left
+		# insert punctuations between the current and previous word if any, based on their offsets;
+		# this is needed as Gentle doen't include punctuations in the words list, but the transcript does
 		[preoffset, curoffset] = insert_punctuations(words, gwords, gi, preoffset, transcript)
-		logging.info(f"Successfully added {len(words)} words into AMP aligned transcript, including {len(gwords)} words from Gentle words, and {len(words)-len(gwords)} punctuations inserted from Gentle transcript.")
-		 	
-		# update words confidence in amp_transcript_aligned_json, based on amp_transcript_unaligned_json words
-		updated = update_confidence(words, uwords)
-		logging.info(f"Successfully updated confidence for {updated} words in AMP aligned transcript.")
+			
+		# append the current Gentle word to the AMP words list
+		words.append({
+			"type": "pronunciation", 
+			"start": start, 
+			"end": end, 
+			"text": gwords[gi]["word"],
+			"offset": curoffset,
+			"score": {
+				"type": "confidence", 
+				"value": confidence,
+			},
+		})							
 		
-		# write final amp_transcript_aligned_json to file
-		write_json_file(amp_transcript_aligned_json, amp_transcript_aligned)
+	# append punctuations after the last word if any text left
+	[preoffset, curoffset] = insert_punctuations(words, gwords, gi, preoffset, transcript)
+	logging.info(f"Successfully added {len(words)} words into AMP aligned transcript, including {len(gwords)} words from Gentle words, and {len(words)-len(gwords)} punctuations inserted from Gentle transcript.")
+		
+	# update words confidence in amp_transcript_aligned_json, based on amp_transcript_unaligned_json words
+	updated = update_confidence(words, uwords)
+	logging.info(f"Successfully updated confidence for {updated} words in AMP aligned transcript.")
+	
+	# write final amp_transcript_aligned_json to file
+	write_json_file(amp_transcript_aligned_json, amp_transcript_aligned)
 		
 		
 # Find the next success match in the given words list starting at the given current index, return the last and next match index,
@@ -280,11 +269,3 @@ def update_confidence(words, uwords):
 		
 if __name__ == "__main__":
 	main()
-
-# 	amp_transcript_unaligned = "amp_un.json"
-# 	gentle_transcript = "amp_gen.json"
-# 	amp_transcript_aligned = "amp_al.json"
-#  	
-# 	with open(amp_transcript_unaligned, "r") as amp_transcript_unaligned_file:
-# 		amp_transcript_unaligned_json = json.load(amp_transcript_unaligned_file)
-# 	gentle_transcript_to_amp_transcript(gentle_transcript, amp_transcript_unaligned_json, amp_transcript_aligned)
