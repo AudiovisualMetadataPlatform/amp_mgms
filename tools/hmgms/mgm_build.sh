@@ -8,5 +8,5 @@ if [ $destdir == "unspecified" ]; then
 fi
 
 mkdir -p $destdir/tools/hmgms
-cp -av  *.py *.xml $destdir/tools/hmgms
+cp -av  *.py *.xml task $destdir/tools/hmgms
 
