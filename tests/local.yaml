@@ -210,7 +210,7 @@
     input_audio: audio.mp3
   outputs:
     amp_segments:
-      - {test: magic, mime: text/plain}
+      - {test: magic, mime: [text/plain, application/json], comp: in}
       - {test: strings, strings: [segments, silence, gender, start, end]}
 
 
