@@ -10,30 +10,23 @@ import boto3
 import argparse
 import tempfile
 import logging
-
 from amp.config import load_amp_config, get_config_value, get_cloud_credentials
 import amp.logging
 from amp.fileutils import read_json_file, write_json_file
-
 import amp.nerutils
 
 def main():
-    #(amp_transcript, aws_entities, amp_entities, ignore_types, bucket, dataAccessRoleArn) = sys.argv[1:7]
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("amp_transcript", help="Input transcription file")
     parser.add_argument("aws_entities", help="Output aws entities file")
     parser.add_argument("amp_entities", help="Output amp entities file")
     parser.add_argument("--ignore_types", default="QUANTITY, DATE", help="Types of things to ignore")
-#     parser.add_argument("--bucket", default='', help="S3 bucket to use")
-#     parser.add_argument("--dataAccessRoleArn", default='', help="AWS ARN to use")
     parser.add_argument("--force", default=False, action="store_true", help="delete any existing jobs with this name and force a new job")
 
     args = parser.parse_args()
     amp.logging.setup_logging("aws_comprehend", args.debug)
     logging.info(f"Starting with args {args}")
-    (amp_transcript, aws_entities, amp_entities, ignore_types) = (args.amp_transcript, args.aws_entities, args.amp_entities, args.ignore_types)
-#     (amp_transcript, aws_entities, amp_entities, ignore_types, bucket, dataAccessRoleArn) = (args.amp_transcript, args.aws_entities, args.amp_entities, args.ignore_types, args.bucket, args.dataAccessRoleArn)
 
     # fixup the default arguments...
     config = load_amp_config()
@@ -52,7 +45,7 @@ def main():
     s3_directory.strip('/')        
 
     # preprocess NER inputs and initialize AMP entities output
-    [amp_transcript_obj, amp_entities_obj, ignore_types_list] = amp.ner_helper.initialize_amp_entities(amp_transcript, amp_entities, ignore_types)
+    [amp_transcript_obj, amp_entities_obj, ignore_types_list] = amp.ner_helper.initialize_amp_entities(args.amp_transcript, args.amp_entities, args.ignore_types)
 
     # if we reach here, further processing is needed, continue with preparation for AWS Comprehend job 
     # generate a job name, using the output filename as the basis.    
@@ -65,17 +58,16 @@ def main():
 
     with tempfile.TemporaryDirectory() as tmpdir:
         # write AMP Transcript text into the input file in a temp directory and upload it to S3
-        #tmpdir = tempfile.mkdtemp(dir="/tmp")
         upload_input_to_s3(aws_creds, amp_transcript_obj, tmpdir, s3_bucket, jobname)
 
         # Make call to AWS Comprehend
         outputuri = run_comprehend_job(aws_creds, jobname, s3uri, role_arn)
 
         # download AWS Comprehend output from s3 to the tmp directory, uncompress and copy it to output aws_entities output file
-        download_output_from_s3(aws_creds, outputuri, s3uri, s3_bucket, tmpdir, aws_entities)
+        download_output_from_s3(aws_creds, outputuri, s3uri, s3_bucket, tmpdir, args.aws_entities)
 
         # AWS Comprehend output should contain entities
-        aws_entities_json = read_json_file(aws_entities)
+        aws_entities_json = read_json_file(args.aws_entities)
         if not 'Entities' in aws_entities_json.keys():
             logging.error(f"Error: AWS Comprehend output does not contain entities list")
             exit(1)
@@ -85,7 +77,7 @@ def main():
         amp.ner_helper.populate_amp_entities(amp_transcript_obj, aws_entities_list, amp_entities_obj, ignore_types_list)
 
         # write the output AMP entities to JSON file
-        write_json_file(amp_entities_obj, amp_entities)
+        write_json_file(amp_entities_obj, args.amp_entities)
     logging.info("Finished.")
     
 # Upload the transcript file created from amp_transcript_obj in tmpdir to the S3 bucket for the given job. 

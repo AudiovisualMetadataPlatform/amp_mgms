@@ -1,16 +1,12 @@
 #!/usr/bin/env amp_python.sif
-
-
 import argparse
 import logging
-
 import amp.logging
 from amp.fileutils import read_json_file, write_json_file, valid_file
-from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult, SpeechToTextWord, SpeechToTextScore
+from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult
 from amp.schema.segmentation import Segmentation, SegmentationMedia
 
 def main():
-	#(input_audio, aws_transcript, amp_transcript, amp_diarization) = sys.argv[1:5]
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 	parser.add_argument("input_audio", help="Input audio file")
@@ -20,14 +16,12 @@ def main():
 	args = parser.parse_args()
 	amp.logging.setup_logging("aws_transcript_to_amp_transcript", args.debug)
 	logging.info(f"Starting with args {args}")
-	(input_audio, aws_transcript, amp_transcript, amp_diarization) = (args.input_audio, args.aws_transcript, args.amp_transcript, args.amp_diarization)
 
 	# read the AWS transcribe json file
-	if not valid_file(aws_transcript):
-		logging.error(f"{aws_transcript} is not a valid file")
+	if not valid_file(args.aws_transcript):
+		logging.error(f"{args.aws_transcript} is not a valid file")
 		exit(1)
-
-	aws = read_json_file(aws_transcript)		
+	aws = read_json_file(args.aws_transcript)		
 
 	# Fail if we don't have results
 	if "results" not in aws.keys():
@@ -90,23 +84,23 @@ def main():
 		amp_results.addWord(item["type"], text, None, start_time, end_time, "confidence", max_confidence)
 		
 	# compute offset for all words in the list
-	amp_results.compute_offset();
+	amp_results.compute_offset()
 	
 	# Create the media object
-	media = SpeechToTextMedia(duration, input_audio)
+	media = SpeechToTextMedia(duration, args.input_audio)
 
 	# Create the final object
 	outputFile = SpeechToText(media, amp_results)
 
 	# Write the output
-	write_json_file(outputFile, amp_transcript)
+	write_json_file(outputFile, args.amp_transcript)
 
 	# Start segmentation schema with diarization data
 	# Create a segmentation object to serialize
 	segmentation = Segmentation()
 
 	# Create the media object
-	segMedia = SegmentationMedia(duration, input_audio)
+	segMedia = SegmentationMedia(duration, args.input_audio)
 	segmentation.media = segMedia
 	
 	if "speaker_labels" in aws_results.keys():
@@ -119,8 +113,8 @@ def main():
 			segmentation.addDiarizationSegment(float(segment["start_time"]), float(segment["end_time"]), segment["speaker_label"])
 		
 	# Write the output
-	write_json_file(segmentation, amp_diarization)
-	logging.info(f"Successfully converted {aws_transcript} to {amp_transcript} and {amp_diarization}.")
+	write_json_file(segmentation, args.amp_diarization)
+	logging.info(f"Successfully converted {args.aws_transcript} to {args.amp_transcript} and {args.amp_diarization}.")
 
 
 if __name__ == "__main__":
