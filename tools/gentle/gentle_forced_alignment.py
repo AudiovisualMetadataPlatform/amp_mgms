@@ -10,7 +10,6 @@ import logging
 
 import amp.logging
 from amp.fileutils import write_json_file
-from amp.schema.entity_extraction import EntityExtraction, EntityExtractionMedia, EntityExtractionEntity, EntityExtractionEntityScore
 
 from amp.fileutils import write_json_file, read_json_file
 
