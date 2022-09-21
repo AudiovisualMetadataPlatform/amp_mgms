@@ -176,6 +176,7 @@ def run_tests(test, outputs, debug=False):
     if has_failures:
         raise Exception("Some tests have failed")
 
+#################################################################
 
 #######################
 # test language bits.
