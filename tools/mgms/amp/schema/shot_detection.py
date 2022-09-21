@@ -1,5 +1,3 @@
-import json
-
 class ShotDetection:
     def __init__(self, media = None, shots = None):
         if media is None:

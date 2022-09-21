@@ -5,11 +5,11 @@ class EntityExtraction:
 		if media is None:
 			self.media = EntityExtractionMedia()
 		else:
-			 self.media = media
+			self.media = media
 		if entities is None:
 			self.entities = []
 		else:
-			 self.entities = entities
+			self.entities = entities
 
 	def addEntity(self, type, text, beginOffset, endOffset, start = None, end = None, scoreType = None, scoreValue = None):
 		entity = EntityExtractionEntity(type, text, beginOffset, endOffset, start, end)

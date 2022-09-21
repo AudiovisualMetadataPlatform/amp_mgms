@@ -1,19 +1,14 @@
 import ffmpeg
-import sys
-import requests
 import logging
-import time
-import json
 import tempfile
 import os
 import datetime
 from datetime import timedelta
 from datetime import datetime
 import math
-import uuid
 import subprocess
 import shutil
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 
 class ContactSheet:
 	def __init__(self, input_file, output_file, ncols = 4, thumbw = 300, margin = 10, padding = 3):

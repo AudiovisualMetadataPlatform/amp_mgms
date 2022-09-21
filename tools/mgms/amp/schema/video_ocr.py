@@ -1,6 +1,4 @@
-import json
 import csv
-
 
 class VideoOcrResolution:
     width = 0
