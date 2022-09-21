@@ -4,7 +4,7 @@
 	<requirement type="package" version="3.8">python</requirement>
   </requirements>
   <command detect_errors="exit_code">
-  	'$__tool_directory__/azure_video_ocr.py' '$input_video' '$azure_video_index' '$azure_artifact_ocr' '$dedupe' '$dup_gap' '$amp_vocr' '$amp_vocr_dedupe'
+  	'$__tool_directory__/azure_video_ocr.py' '$input_video' '$azure_video_index' '$azure_artifact_ocr' --dedupe '$dedupe' --dup_gap '$dup_gap' '$amp_vocr' '$amp_vocr_dedupe'
   </command>
   <inputs>
 	<param name="input_video" type="data" format="video" label="Input Video" help="Input video file used by Azure Video Indexer"/>

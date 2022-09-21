@@ -1,18 +1,15 @@
 #!/usr/bin/env amp_python.sif
 
 import logging
-import json
 import argparse
 import logging
-
 import amp.logging
-from amp.fileutils import write_json_file
+from amp.fileutils import write_json_file, read_json_file
 from amp.timeutils import timestampToSecond
 from amp.schema.shot_detection import ShotDetection, ShotDetectionMedia, ShotDetectionShot
 
 
 def main():
-	#(input_video, azure_video_index, amp_shots) = sys.argv[1:4]
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 	parser.add_argument("input_video")
@@ -25,14 +22,13 @@ def main():
 
 
 	# Get Azure video indexer json
-	with open(azure_video_index, 'r') as azure_index_file:
-		azure_index_json = json.load(azure_index_file)
-
+	azure_index_json = read_json_file(args.azure_video_index)
+	
 	# Create AMP Shot object
-	amp_shots_obj = create_amp_shots(input_video, azure_index_json)
+	amp_shots_obj = create_amp_shots(args.input_video, azure_index_json)
 	
 	# write AMP Video OCR JSON file
-	write_json_file(amp_shots_obj, amp_shots)
+	write_json_file(amp_shots_obj, args.amp_shots)
 	logging.info(f"Successfully generated AMP Shot with {len(amp_shots_obj.shots)} shots.")
 
 
