@@ -9,6 +9,8 @@ import tempfile
 import argparse
 import logging
 
+# NOTE:  since this is using the non-container python3, the PYTHONPATH may
+# need to be constructed to find the amp standard library
 import amp.logging
 
 
@@ -21,12 +23,8 @@ def main():
     args = parser.parse_args()
     amp.logging.setup_logging("applause_detection", args.debug)
 
-    logging.info(f"Starting with args={args}")
-    (input_audio, min_segment_duration, amp_segments) = (args.input_audio, args.min_segment_duration, args.amp_segments)    
-    
-    logging.debug("Current directory: " + os.getcwd())
-    logging.debug("Input audio: " + input_audio)
-    
+    logging.info(f"Starting with args={args}")    
+
     # use a tmp directory accessible to the singularity for input/output
     with tempfile.TemporaryDirectory() as tmpdir:
         # copy the input audio file to the tmp directory
