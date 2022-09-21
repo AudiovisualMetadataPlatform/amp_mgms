@@ -1,4 +1,4 @@
-#!/usr/bin/env amp_python.sif
+#!/usr/bin/env python3
 
 import os.path
 import shutil
@@ -12,6 +12,9 @@ import math
 import atexit
 import os
 import time
+
+# NOTE: this will need likely need some fixups to find the amp modules
+# since this uses the python3.
 
 import amp.logging
 
