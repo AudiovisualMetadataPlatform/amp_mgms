@@ -1,4 +1,4 @@
-from amp.task.manager import TaskManager
+from .manager import TaskManager
 
 
 class TaskOpenproject (TaskManager):

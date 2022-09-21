@@ -10,10 +10,10 @@ from pathlib import Path
 import amp.logging
 from amp.config import load_amp_config, get_config_value, get_work_dir, create_empty_file
 from amp.fileutils import valid_file
-from amp.task.jira import TaskJira
-from amp.task.manager import TaskManager
-from amp.task.openproject import TaskOpenproject 
-from amp.task.redmine import TaskRedmine
+from task.jira import TaskJira
+from task.manager import TaskManager
+from task.openproject import TaskOpenproject 
+from task.redmine import TaskRedmine
 
 
 

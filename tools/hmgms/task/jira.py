@@ -1,7 +1,7 @@
 import json
 from jira import JIRA
 
-from amp.task.manager import TaskManager
+from .manager import TaskManager
 import logging
  
 class TaskJira (TaskManager):
