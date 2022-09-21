@@ -5,11 +5,11 @@ class SpeechToText:
 		if media is None:
 			self.media = SpeechToTextMedia()
 		else:
-			 self.media = media
+			self.media = media
 		if results is None:
 			self.results = SpeechToTextResult()
 		else:
-			 self.results = results
+			self.results = results
 			 
 	@classmethod
 	def from_json(cls, json_data: dict):

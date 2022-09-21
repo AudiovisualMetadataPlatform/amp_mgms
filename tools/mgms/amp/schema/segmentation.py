@@ -1,4 +1,4 @@
-import json
+import logging
 
 class Segmentation:
 	MINIMUM_SILENCE = 10.0
@@ -23,7 +23,7 @@ class Segmentation:
 			last_segment = self.segments[-1]
 
 		if last_segment is not None:
-			print(last_segment)
+			logging.debug(last_segment)
 
 		# If the time of the segment is less than 10 seconds, we have another segment, and the current 
 		# segment is noise or silence, don't add it but add the time to the previous segment
