@@ -4,7 +4,7 @@
 import spacy
 import argparse
 
-import amp.ner_helper
+import amp.nerutils
 import amp.logging
 import logging
 from amp.fileutils import write_json_file
@@ -23,7 +23,7 @@ def main():
     (amp_transcript, spacy_entities, amp_entities, ignore_types) = (args.amp_transcript, args.spacy_entities, args.amp_entities, args.ignore_types)
 
     # preprocess NER inputs and initialize AMP entities output
-    [amp_transcript_obj, amp_entities_obj, ignore_types_list] = amp.ner_helper.initialize_amp_entities(amp_transcript, amp_entities, ignore_types)
+    [amp_transcript_obj, amp_entities_obj, ignore_types_list] = amp.nerutils.initialize_amp_entities(amp_transcript, amp_entities, ignore_types)
 
     # if we reach here, further processing is needed, continue with Spacy   
      
@@ -37,7 +37,7 @@ def main():
     write_json_file(spacy_entities_obj.to_json(), spacy_entities)
     
     # populate AMP Entities list based on input AMP transcript words list and output AWS Entities list  
-    amp.ner_helper.populate_amp_entities(amp_transcript_obj, spacy_entities_obj.ents, amp_entities_obj, ignore_types_list)
+    amp.nerutils.populate_amp_entities(amp_transcript_obj, spacy_entities_obj.ents, amp_entities_obj, ignore_types_list)
 
     # write the output AMP entities object to JSON file
     write_json_file(amp_entities_obj, amp_entities)
