@@ -1,15 +1,11 @@
 #!/usr/bin/env amp_python.sif
 
 import argparse
-import json
-import os
-import os.path
-import sys
 import face_recognition
 import cv2
 from distutils.util import strtobool
 
-import amp.dlib_face_training as train
+import dlib_face_training as train
 from amp.schema.facial_recognition import FaceRecognition, FaceRecognitionMedia, FaceRecognitionMediaResolution, FaceRecognitionFrame, FaceRecognitionFrameObject, FaceRecognitionFrameObjectScore, FaceRecognitionFrameObjectVertices
 
 import logging
