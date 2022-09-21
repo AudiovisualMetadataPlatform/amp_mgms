@@ -1,8 +1,6 @@
 #!/usr/bin/env amp_python.sif
 
 import json
-import os
-import sys
 import argparse
 
 from amp.schema.speech_to_text import SpeechToText
