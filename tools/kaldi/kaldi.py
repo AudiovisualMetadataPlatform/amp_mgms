@@ -1,4 +1,4 @@
-#!/usr/bin/env amp_python.sif
+#!/usr/bin/env python3
 
 import os.path
 import shutil
@@ -13,6 +13,9 @@ import atexit
 import os
 import time
 
+# NOTE: this will need likely need some fixups to find the amp modules
+# since this uses the python3.
+
 import amp.logging
 
 
@@ -23,7 +26,6 @@ import amp.logging
 
 
 def main():
-    #(root_dir, input_audio, kaldi_transcript_json, kaldi_transcript_text) = sys.argv[1:5]
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("input_audio", help="Input audio file")
@@ -38,7 +40,6 @@ def main():
     # copy the input file to a temporary directory
     with tempfile.TemporaryDirectory() as tmpdir:        
         shutil.copy(args.input_audio, f"{tmpdir}/xxx.wav")
-        tmp = Path(tmpdir)
         # find the right Kaldi SIF and set up things to make it work...
         sif = Path(sys.path[0], f"kaldi-pua-{'gpu' if args.gpu else 'cpu'}.sif")
         if not sif.exists():
@@ -77,7 +78,6 @@ def main():
             exit(1)
 
         # build the singularity command line
-        #cmd = ['singularity', 'run', '-B', f"{tmpdir}:/audio_in", '--writable-tmpfs', str(sif) ]
         cmd = ['singularity', 'run', '-B', f"{tmpdir}:/audio_in", '--overlay', overlay_file, str(sif) ]
         logging.debug(f"Singularity Command: {cmd}")
         p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding='utf-8')        
