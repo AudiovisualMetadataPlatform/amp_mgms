@@ -12,6 +12,7 @@ import http.client as http_client
 
 import amp.logging
 from amp.config import load_amp_config, get_config_value, get_cloud_credentials
+from amp.fileutils import write_json_file
 
 def main():
     apiUrl = "https://api.videoindexer.ai"

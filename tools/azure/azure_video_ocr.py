@@ -2,7 +2,6 @@
 import logging
 import argparse
 import logging
-
 import amp.logging
 from amp.timeutils import frameToSecond
 from amp.fileutils import read_json_file, write_json_file, valid_file
@@ -21,8 +20,7 @@ def main():
 	parser.add_argument("amp_vocr_dedupe", help="Deduped AMP Video OCR output file")
 	args = parser.parse_args()
 	amp.logging.setup_logging("azure_video_ocr", args.debug)
-	logging.info(f"Starting with args {args}")
-	(input_video, azure_video_index, azure_artifact_ocr, dedupe, dup_gap, amp_vocr, amp_vocr_dedupe) = (args.input_video, args.azure_video_index, args.azure_artifact_ocr, args.dedupe, args.dup_gap, args.amp_vocr, args.amp_vocr_dedupe)
+	logging.info(f"Starting with args {args}")	
 	
 	# get Azure video indexer json
 	azure_index_json = read_json_file(args.azure_video_index)
