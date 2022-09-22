@@ -1,0 +1,10 @@
+mgms:
+    hmgm:        
+        auth_key: some random garbage
+        auth_string: auth    
+
+    jira:
+        server: https://jira.example.edu
+        username: jira_username
+        password: jira_password
+        project: jira_project_key

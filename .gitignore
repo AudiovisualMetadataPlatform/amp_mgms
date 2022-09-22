@@ -1,5 +1,12 @@
+# pua data
+exp2.tar.gz
+
 # singularity containers
 *.sif
+
+
+Singularity.cpu
+Singularity.gpu
 
 # ini files
 *.ini

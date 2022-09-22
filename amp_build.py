@@ -7,21 +7,15 @@ import argparse
 import logging
 import tempfile
 from pathlib import Path
-import shutil
 import sys
-import yaml
-from datetime import datetime
 import os
 import subprocess
-#from amp_bootstrap_utils import run_cmd, build_package
-import time
-import tarfile
-import io
+
+from amp.package import *
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--debug', default=False, action='store_true', help="Turn on debugging")
-    parser.add_argument('--version', default=None, help="Package Version")  
     parser.add_argument('--package', default=False, action='store_true', help="build a package instead of installing")
     parser.add_argument('destdir', help="Output directory for package or tool directory root")
     args = parser.parse_args()
@@ -66,60 +60,44 @@ def main():
         logging.debug(f"Running command: {cmd}")
         p = subprocess.run(cmd)
         if p.returncode:
-            logging.error(f"Build command failed with return code {p.returncode}")            
+            logging.error(f"Build command ({buildscript}) failed with return code {p.returncode}")          
             #exit(1)
         os.chdir(here)
 
-        if args.package:            
-            with tempfile.TemporaryDirectory(prefix='amp_mgms_pkg-', dir=tempdir) as tmpdir:
-                logging.debug(f"Temporary directory is: {tmpdir}")
-                logging.info(f"Copying . to {tmpdir}")
-                os.chdir(builddir)
-                try:
-                    subprocess.run(['cp', '-a', '.', tmpdir], check=True)
-                except Exception as e:
-                    print(f"Copy to tempdir failed: {e}")
-                    exit(1)                
-                os.chdir(here)
+        if args.package:        
+            # get the version          
+            if (buildscript.parent / "mgm_version").exists():
+                with open(buildscript.parent / "mgm_version") as f:
+                    version = f.readline().strip()
+            else:
+                version = "0.0"
 
-                buildtime = datetime.now().strftime("%Y%m%d_%H%M%S")        
-                if args.version is None:
-                    if (buildscript.parent / "mgm_version").exists():
-                        with open(buildscript.parent / "mgm_version") as f:
-                            args.version = f.readline().strip()
-                    else:
-                        args.version = buildtime
+            # Find optional things
+            options = {}
+            # defaults
+            for dtype in ('user', 'system'):
+                cfile = buildscript.parent / f"amp_config.{dtype}_defaults"
+                if cfile.exists():
+                    options[f"{dtype}_defaults"] = cfile
 
-                logging.info(f"Creating package for {buildscript.parent.stem} with version {args.version} in {destdir}")
-                basedir= f"amp_mgms-{buildscript.parent.stem}-{args.version}"
-                pkgfile = Path(destdir, f"{basedir}.tar")
-                with tarfile.TarFile(pkgfile, "w") as tfile:
-                    # create base directory
-                    base_info = tarfile.TarInfo(name=basedir)
-                    base_info.mtime = int(time.time())
-                    base_info.type = tarfile.DIRTYPE
-                    base_info.mode = 0o755
-                    tfile.addfile(base_info, None)                    
+            # hooks
+            options['hooks'] = {}
+            for hook in ('pre', 'post', 'config', 'start', 'stop'): 
+                hfile = buildscript.parent / f"amp_hook_{hook}.py"
+                if hfile.exists():
+                    options['hooks'][hook] = hfile
 
-                    # write metadata file
-                    metafile = tarfile.TarInfo(name=f"{basedir}/amp_package.yaml")
-                    metafile_data = yaml.safe_dump({
-                        'name': f'amp_mgms-{buildscript.parent.stem}',
-                        'version': args.version,
-                        'build_date': buildtime,
-                        'install_path': 'galaxy'
-                    }).encode('utf-8')
-                    metafile.size = len(metafile_data)
-                    metafile.mtime = int(time.time())
-                    metafile.mode = 0o644
-                    tfile.addfile(metafile, io.BytesIO(metafile_data))
-                    logging.debug(f"Pushing data from {builddir!s} to data in tarball")
-                    tfile.add(builddir, f'{basedir}/data', recursive=True)
-                
-                logging.info(f"New package {pkgfile!s}")
+            # arch specific
+            options['arch_specific'] = (buildscript.parent / f"amp_arch_specific").exists()
 
 
-        
+            pkgname = buildscript.parent.stem
+            pfile = create_package(f"amp_mgms-{pkgname}", version, "galaxy",
+                                   Path(destdir), builddir,
+                                   depends_on=['galaxy', 'amp_python'],
+                                   **options)
+            logging.info(f"New package in {pfile!s}")
+
 
 if __name__ == "__main__":
     main()
