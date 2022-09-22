@@ -7,8 +7,10 @@
     kept_segments: amp_kept_segments.json
   outputs:
     amp_diarization_adjusted:
-      - {test: magic, mime: [text/plain, application/json], comp: in}
-      - {test: strings, strings: [segments, numSpeakers, media]}
+      - [eq, 26.065, [json, segments.0.end]]
+      - [eq, 0, [json, numSpeakers]]
+      - [eq, 44.3, [json, media.duration]]
+      - [eq, spk_0, [json, segments.0.speakerLabel]]
 
 - name: Adjust Transcript Timestamps
   tool: mgms/adjust_transcript_timestamps.xml
