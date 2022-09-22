@@ -120,10 +120,10 @@
       - {test: magic, mime: text/plain}
       - {test: strings, strings: "celebration of specialness"}
     kaldi_transcript_json:
-      - {test: magic, mime: application/json}
+      - {test: magic, mime: text/plain}
       - {test: strings, strings: "duration"}
     amp_transcript:
-      - {test: magic, mime: application/json}
+      - {test: magic, mime: text/plain}
       - {test: strings, strings: "celebration of specialness"}
 
 - name: Keep Speech

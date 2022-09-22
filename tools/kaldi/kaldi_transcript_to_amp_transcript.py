@@ -3,7 +3,7 @@
 import sys
 import os
 import argparse
-import logging
+
 import amp.utils
 from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult, SpeechToTextWord, SpeechToTextScore
 
@@ -63,4 +63,3 @@ def convert(input_audio, kaldi_transcript_json, kaldi_transcript_text, amp_trans
 
 if __name__ == "__main__":
 	main()
-	
