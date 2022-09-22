@@ -152,15 +152,24 @@ def run_tests(test, outputs, debug=False):
             has_failures = True
             continue
 
-        cache = {}
-        sub_error = False
-        for t in test['outputs'][outname]:
-            try:
-                logging.debug(f"Running {t} on {outfile}")
-                if test_eval(outfile, t, cache):
-                    logging.info(f"{outname}: Test OK {t}")
-                else:
-                    logging.info(f"{outname}: Test failed {t}")
+        for args in test['outputs'][outname]:
+            testname = args['test']
+            comp = args.get('comp', '==')
+            setop = args.get('setop', 'all')
+            if testname == 'pass':                
+                # this test always passes
+                pass
+            elif testname == "debug":
+                # this isn't a test, so much as it is a file copy
+                if args.get("save", False):
+                    logging.info(f"Copying {outfile} to {args['save']}")
+                    shutil.copy(outfile, args["save"])
+            elif testname == 'magic':
+                # this is a file magic check
+                p = subprocess.run(['file', '-b', '--mime-type', outfile], stdout=subprocess.PIPE, encoding='utf-8')
+                mime = p.stdout.strip()                
+                if not comparitor(mime, args['mime'], comp):                
+                    logging.error(f"{outname} mime-type: {mime} {comp} {args['mime']} is false.")
                     has_failures = True
                     sub_error = True
             except Exception as e:
@@ -347,8 +356,14 @@ def coerce(data):
             except:
                 data[i] = 0
     else:
-        logging.debug(f"Cannot coerce {data} into something I understand")
-    return data
+        xml = str(data).replace('&', '&amp;')
+        xml = xml.replace('<', '&lt;')
+        xml = xml.replace('>', '&gt;')
+    return xml
+
+
+
+
 
 
 if __name__ == "__main__":
