@@ -62,7 +62,7 @@ def main():
                 runscript(tempdir)
 
                 # run the tests on the output
-                run_tests(test, outputs, tempdir)
+                run_tests(test, outputs, args.debug)
 
 
         except Exception as e:
@@ -146,7 +146,7 @@ def runscript(tempdir, debug=False):
         raise Exception(f"Runscript failed with rc {rc} and this output:\n{p.stdout}")
 
 
-def run_tests(test, outputs, tempdir):
+def run_tests(test, outputs, debug=False):
     "Run the specified tests on the output"
     has_failures = False
     for outname in outputs:
@@ -156,145 +156,177 @@ def run_tests(test, outputs, tempdir):
             has_failures = True
             continue
 
-        for args in test['outputs'][outname]:
-            testname = args['test']
-            comp = args.get('comp', '==')
-            setop = args.get('setop', 'all')
-            if testname == 'pass':                
-                # this test always passes
-                pass
-            elif testname == "debug":
-                # this isn't a test, so much as it is a file copy
-                if args.get("save", False):
-                    logging.info(f"Copying {outfile} to {args['save']}")
-                    shutil.copy(outfile, args["save"])
-            elif testname == 'magic':
-                # this is a file magic check
-                p = subprocess.run(['file', '-b', '--mime-type', outfile], stdout=subprocess.PIPE, encoding='utf-8')
-                mime = p.stdout.strip()                
-                if not comparitor(mime, args['mime'], comp):                
-                    logging.error(f"{outname} mime-type: {mime} {comp} {args['mime']} is false.")
+        cache = {}
+        sub_error = False
+        for t in test['outputs'][outname]:
+            try:
+                logging.debug(f"Running {t} on {outfile}")
+                if test_eval(outfile, t, cache):
+                    logging.info(f"{outname}: Test OK {t}")
+                else:
+                    logging.info(f"{outname}: Test failed {t}")
                     has_failures = True
-                    continue
-            elif testname == 'size':
-                # file size check
-                size = Path(outfile).stat().st_size
-                csize = int(args['size'])                
-                if not comparitor(csize, size, comp):
-                    logging.error(f"{outfile} file size: {size} {comp} {csize} is false.")
-                    has_failures = True
-                    continue
-            elif testname == 'strings':
-                # check to make sure any/all strings are present
-                data = Path(outfile).read_text(encoding='utf-8')                
-                if not isinstance(args['strings'], list):
-                    args['strings'] = [args['strings']]
-                found = set()
-                for s in args['strings']:
-                    if s in data:                        
-                        found.add(s)
-                if setop == "all" and len(found) != len(args['strings']):
-                    logging.error(f"{outfile} strings: Some strings not found: {set(args['strings']).difference(found)}")
-                    has_failures = True
-                    continue
-                if setop == "any" and len(found) == 0:
-                    logging.error(f"{outfile} strings: None of the strings were found")
-                    has_failures = True
-                    continue
+                    sub_error = True
+            except Exception as e:
+                if debug:
+                    logging.exception(f"{outname} Test {t} threw exception {e}")
+                else:
+                    logging.error(f"{outname} Test {t} threw exception {e}")
+                
+        if sub_error:
+            logging.error(f"Cache for {outname}:\n" + yaml.safe_dump(cache))
 
     if has_failures:
         raise Exception("Some tests have failed")
 
 
-def comparitor(a, b, comp='=='):
-    if comp == '==':
-        return a == b
-    if comp == '!=':
-        return a != b
-    if comp == '>':
-        return a > b
-    if comp == '>=':
-        return a >= b
-    if comp == '<':
-        return a < b
-    if comp == '<=':
-        return a <= b
-    if comp == 'in':
-        return a in b
-
-#################################################################
-
-
-
-
-ffprobes = {}
-def test_ffprobe(file, args):
-    "use ffprobe to test some aspect of the file"
-    if(file not in ffprobes):
-        logging.debug(f"Looking up ffprobe for {file}")
-        p = subprocess.run(['ffprobe', '-loglevel', 'panic', '-print_format', 'xml', '-show_streams', '-show_format', file], 
-                           stdout=subprocess.PIPE, encoding='utf-8')
-        ffprobes[file] = ET.fromstring(p.stdout)    
-        logging.debug(ET.tostring(ffprobes[file], encoding='utf-8'))
-    ffprobe = ffprobes[file]
-    return _test_xml(file, ffprobe, args)
-
-def test_xml(file, args):
-    "Just read the xml file and pass it along"
-    xml = ET.parse(file)
-    return _test_xml(file, xml, args)
-
-def _test_xml(context, xml, args):    
-    node = xml.find(args['path'])
-    if 'attrib' in args:
-        val = node.attrib[args['attrib']]
-    else:
-        val = node.text
-    val = val.strip()
-
-    if val != args['value']:
-        logging.error(f"File {context}:  got {val} but expected {args['value']}")
-        logging.debug(ET.tostring(xml, encoding='utf-8'))
-        return False
-    return True
-
-def test_json(file, args):
-    return _test_json(file, file, args)
-
-def _test_json(context, filename, args):
-    with open(filename) as f:
-        json_data = json.load(f)
-    xml_string = "<data>" + _data_to_xml_string(json_data) + "</data>"
+#######################
+# test language bits.
+#######################
+def test_eval(subject, expr, cache=None):
+    "Evaluate a test expression"
+    if cache is None:
+        cache = dict()
+    if not isinstance(expr, list):        
+        raise ValueError(f"Test expression {expr} is not a list.")
+    func, *args = expr
+    # evaluate the args in advance
+    for i in range(len(args)):
+        if isinstance(args[i], list):
+            args[i] = test_eval(subject, args[i], cache)
     
-    try:
-        xml = ET.fromstring(xml_string)
-    except Exception as e:
-        logging.error("Cannot parse XML from _data_to_xml_string:")
-        logging.error(xml_string)
-        raise e
-
-    return _test_xml(context, xml, args)
-
-
-def _data_to_xml_string(data):
-    xml = ""
-    if isinstance(data, list):
-        for k, v in enumerate(data):
-            xml += f"<i{k}>" + _data_to_xml_string(v) + f"</i{k}>"
-    elif isinstance(data, dict):
-        for k, v in data.items():
-            if k[0] in "0123456789":
-                k = "_" + k
-            xml += f"<{k}>" + _data_to_xml_string(v) + f"</{k}>"
+    # boolean functions
+    if func == 'true':
+        return True
+    elif func == 'false':
+        return False
+    elif func == 'and':
+        r = True
+        for a in args:
+            r = r and a
+        return r
+    elif func == 'or':
+        r = False
+        for a in args:
+            r = r or a
+        return r
+    elif func == 'not':
+        return not args[0]
+    
+    # comparison ops
+    elif func in ('eq', 'ne', 'lt', 'le', 'gt', 'ge'):
+        args = coerce(args)
+        if len(args) < 2:
+            raise ValueError(f"Cannot run {func} with these args: {args}")
+        if func == 'eq':
+            return args[0] == args[1]
+        elif func == 'ne':
+            return args[0] != args[1]
+        elif func == 'lt':
+            return args[0] < args[1]
+        elif func == 'le':
+            return args[0] <= args[1]
+        elif func == 'gt':
+            return args[0] > args[1]
+        elif func == 'ge':
+            return args[0] >= args[1]
+    
+    # other comparisons
+    elif func == 'any':
+        args = coerce(args)
+        return args[0] in args[1:]
+    elif func == 're':
+        return re.search(str(args[0]), str(args[1])) is not None
+    
+    # data functions
+    elif func == 'size':
+        return Path(subject).stat().st_size
+    elif func == 'mime':
+        # this is a file magic check
+        p = subprocess.run(['file', '-b', '--mime-type', subject], stdout=subprocess.PIPE, encoding='utf-8', check=True)
+        return p.stdout.strip()
+    elif func == 'json':
+        if 'json' not in cache:
+            with open(subject) as f:
+                cache['json'] = json.load(f)
+            return find_json_value(cache['json'], args[0])
+    elif func == 'xpath':
+        if 'xpath' not in cache:
+            cache['xpath'] = ET.parse(subject)
+        node = cache['xpath'].find(args[0])
+        if len(args) > 1:
+            return node.attrib[args[1]].strip()
+        else:
+            return node.text.strip()
+    elif func == 'media':
+        if 'media' not in cache:
+            mediaprobe = os.environ['AMP_ROOT'] + "/data/MediaProbe/media_probe.py"
+            p = subprocess.run([mediaprobe, '--json', subject], stdout=subprocess.PIPE, encoding='utf-8', check=True)
+            cache['media'] = json.loads(p.stdout)
+        return find_json_value(cache['media'], args[0])
+    elif func == 'data':
+        if 'data' not in cache:
+            cache['data'] = Path(subject).read_text(encoding='utf-8')
+        return cache['data']        
+    elif func == 'contains':
+        return args[0] in args[1]
+    elif func == 'int':
+        return coerce([0, args[0]])[1]
+    elif func == 'str':
+        return coerce(['', args[0]])[1]
+    elif func == 'bool':
+        return coerce([True, args[0]])[1]
+    elif func == 'float':
+        return coerce([0.0, args[0]])[1]
+    elif func == 'lower':
+        return str(args[0]).lower()
     else:
-        xml = str(data).replace('&', '&amp;')
-        xml = xml.replace('<', '&lt;')
-        xml = xml.replace('>', '&gt;')
-    return xml
+        raise ValueError(f"No such function: {func}")
 
 
+def find_json_value(data, path):
+    "find a value in the json data using dotted-path notation"
+    if isinstance(path, str):
+        path = path.split('.')
+    value = data[int(path[0])] if isinstance(data, list) else data[path[0]]
+    if len(path) > 1:
+        return find_json_value(value, list(path[1:]))
+    else:
+        return value
 
 
+def coerce(data):
+    logging.debug(f"Coerce: {data}")
+    "Convert the type of all objects to match the first item"
+    if not len(data):
+        raise ValueError("Got 0 arguments for coercion")
+    if isinstance(data[0], str):
+        data = [str(x) for x in data]
+    elif isinstance(data[0], bool):
+        # this one is special:  I also want to catch strings like 'yes'
+        for i in range(len(data)):
+            if str(data[i]).lower() in ('y', 'yes', 'true'):
+                data[i] = True
+            elif str(data[i]).lower() in ('n', 'no', 'false'):
+                data[i] = False
+            else:
+                data[i] = bool(data[i])
+        data = [bool(x) for x in data]
+    elif isinstance(data[0], float):
+        for i in range(len(data)):
+            try:
+                data[i] = float(data[i])
+            except:
+                data[i] = 0.0
+    elif isinstance(data[0], int):
+        for i in range(len(data)):
+            try:
+                data[i] = int(data[i])
+            except:
+                data[i] = 0
+    else:
+        logging.debug(f"Cannot coerce {data} into something I understand")
+    return data
 
 
 if __name__ == "__main__":
