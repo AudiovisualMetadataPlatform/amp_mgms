@@ -30,8 +30,8 @@ The boolean functions are:
 | -------- | ---- | --------- |
 | true     | none | always returns true |
 | false    | none | always returns false |
-| and      | 2+   | returns true when all are true (short circuits) |
-| or       | 2+   | returns true when any are true (short circutis) |
+| and      | 2+   | returns true when all are true |
+| or       | 2+   | returns true when any are true  |
 | not      | 1    | returns the inverse of the logic |
 
 ## Comparison
@@ -48,10 +48,13 @@ The comparison functions are as follows:
 Each take two arguments.  The data type for the arguments will be coerced to 
 the data type of the first argument.
 
-## Set functions
+## Other comparisons
+Other comparison functions
+
 | function | args | operation |
 | -------- | ---- | --------- |
 | any      | 2+   | return true if first appears in any of the rest of args |
+| re       | 2    | return true if the 1st arg regex matches the 2nd arg |
 
 ## Data functions
 | function | args | operation |
@@ -59,9 +62,12 @@ the data type of the first argument.
 | size     | none | returns the size of the subject file |
 | mime     | none | returns the mime type of the subject file |
 | json     | 1    | parses the subject file as json and returns the value at the path |
-| xpath    | 1    | parses the subject file as xml and returns the value at xpath |
+| xpath    | 1, 2    | parses the subject file as xml and returns the value at xpath in arg1. If arg2 is provided, return that attribute instead of text |
+| media    | 1    | parses the subject file via media info and returns the value at the path |
 | data     | none | returns the raw file data|
 | contains | 2+   | returns true if the first argument contains the later argument strings |
 | int      | 1    | coerce to integer |
 | str      | 1    | coerce to string |
 | bool     | 1    | coerce to boolean |
+| float    | 1    | coerce to float |
+| lower    | 1    | force the arg to lower case |

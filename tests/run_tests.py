@@ -64,6 +64,7 @@ def main():
                 # run the tests on the output
                 run_tests(test, outputs, args.debug)
 
+
         except Exception as e:
             logging.error(f"{leader} Failed: {e}")
             results['fail'] += 1
@@ -143,6 +144,7 @@ def runscript(tempdir, debug=False):
 
 
 def run_tests(test, outputs, debug=False):
+def run_tests(test, outputs, debug=False):
     "Run the specified tests on the output"
     has_failures = False
     for outname in outputs:
@@ -152,25 +154,25 @@ def run_tests(test, outputs, debug=False):
             has_failures = True
             continue
 
-        for args in test['outputs'][outname]:
-            testname = args['test']
-            comp = args.get('comp', '==')
-            setop = args.get('setop', 'all')
-            if testname == 'pass':                
-                # this test always passes
-                pass
-            elif testname == "debug":
-                # this isn't a test, so much as it is a file copy
-                if args.get("save", False):
-                    logging.info(f"Copying {outfile} to {args['save']}")
-                    shutil.copy(outfile, args["save"])
-            elif testname == 'magic':
-                # this is a file magic check
-                p = subprocess.run(['file', '-b', '--mime-type', outfile], stdout=subprocess.PIPE, encoding='utf-8')
-                mime = p.stdout.strip()                
-                if not comparitor(mime, args['mime'], comp):                
-                    logging.error(f"{outname} mime-type: {mime} {comp} {args['mime']} is false.")
+        cache = {}
+        sub_error = False
+        for t in test['outputs'][outname]:
+            try:
+                logging.debug(f"Running {t} on {outfile}")
+                if test_eval(outfile, t, cache):
+                    logging.info(f"{outname}: Test OK {t}")
+                else:
+                    logging.info(f"{outname}: Test failed {t}")
                     has_failures = True
+                    sub_error = True
+            except Exception as e:
+                if debug:
+                    logging.exception(f"{outname} Test {t} threw exception {e}")
+                else:
+                    logging.error(f"{outname} Test {t} threw exception {e}")
+                
+        if sub_error:
+            logging.error(f"Cache for {outname}:\n" + yaml.safe_dump(cache))
                     sub_error = True
             except Exception as e:
                 if debug:
@@ -184,7 +186,6 @@ def run_tests(test, outputs, debug=False):
     if has_failures:
         raise Exception("Some tests have failed")
 
-#################################################################
 
 #######################
 # test language bits.
@@ -243,6 +244,43 @@ def test_eval(subject, expr, cache=None):
         return args[0] in args[1:]
     elif func == 're':
         return re.search(str(args[0]), str(args[1])) is not None
+    elif func == 'and':
+        r = True
+        for a in args:
+            r = r and a
+        return r
+    elif func == 'or':
+        r = False
+        for a in args:
+            r = r or a
+        return r
+    elif func == 'not':
+        return not args[0]
+    
+    # comparison ops
+    elif func in ('eq', 'ne', 'lt', 'le', 'gt', 'ge'):
+        args = coerce(args)
+        if len(args) < 2:
+            raise ValueError(f"Cannot run {func} with these args: {args}")
+        if func == 'eq':
+            return args[0] == args[1]
+        elif func == 'ne':
+            return args[0] != args[1]
+        elif func == 'lt':
+            return args[0] < args[1]
+        elif func == 'le':
+            return args[0] <= args[1]
+        elif func == 'gt':
+            return args[0] > args[1]
+        elif func == 'ge':
+            return args[0] >= args[1]
+    
+    # other comparisons
+    elif func == 'any':
+        args = coerce(args)
+        return args[0] in args[1:]
+    elif func == 're':
+        return re.search(str(args[0]), str(args[1])) is not None
     
     # data functions
     elif func == 'size':
@@ -255,9 +293,7 @@ def test_eval(subject, expr, cache=None):
         if 'json' not in cache:
             with open(subject) as f:
                 cache['json'] = json.load(f)
-        if len(args) == 0:
-            return cache['json']
-        return find_json_value(cache['json'], args[0])
+            return find_json_value(cache['json'], args[0])
     elif func == 'xpath':
         if 'xpath' not in cache:
             cache['xpath'] = ET.parse(subject)
@@ -277,7 +313,7 @@ def test_eval(subject, expr, cache=None):
             cache['data'] = Path(subject).read_text(encoding='utf-8')
         return cache['data']        
     elif func == 'contains':
-        return args[1] in args[0]
+        return args[0] in args[1]
     elif func == 'int':
         return coerce([0, args[0]])[1]
     elif func == 'str':
@@ -288,29 +324,6 @@ def test_eval(subject, expr, cache=None):
         return coerce([0.0, args[0]])[1]
     elif func == 'lower':
         return str(args[0]).lower()
-    elif func == 'len':
-        return len(args[0])
-    elif func == 'haskey':
-        if isinstance(args[0], dict):
-            return args[1] in args[0]
-        elif isinstance(args[0], list):
-            return 0 < int(args[1]) < len(args[0])
-        else:
-            return False
-    elif func == 'csv':
-        if 'csv' not in cache:
-            with open(subject) as f:
-                cread = csv.reader(f)
-                cache['csv'] = list(cread)
-        if len(args) == 0:
-            return cache['csv']
-        elif len(args) == 1:
-            return cache['csv'][int(args[0])]
-        elif len(args) == 2:
-
-            return cache['csv'][int(args[0])][int(args[1])]
-        else:
-            raise ValueError("csv takes 0-3 args")
     else:
         raise ValueError(f"No such function: {func}")
 
@@ -356,14 +369,8 @@ def coerce(data):
             except:
                 data[i] = 0
     else:
-        xml = str(data).replace('&', '&amp;')
-        xml = xml.replace('<', '&lt;')
-        xml = xml.replace('>', '&gt;')
-    return xml
-
-
-
-
+        logging.debug(f"Cannot coerce {data} into something I understand")
+    return data
 
 
 if __name__ == "__main__":
