@@ -156,7 +156,6 @@ def run_tests(test, outputs, tempdir):
             has_failures = True
             continue
 
-        file_cache = {}
         for args in test['outputs'][outname]:
             testname = args['test']
             comp = args.get('comp', '==')
@@ -292,7 +291,6 @@ def _data_to_xml_string(data):
         xml = xml.replace('<', '&lt;')
         xml = xml.replace('>', '&gt;')
     return xml
-
 
 
 
