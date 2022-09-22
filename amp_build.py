@@ -60,8 +60,8 @@ def main():
         logging.debug(f"Running command: {cmd}")
         p = subprocess.run(cmd)
         if p.returncode:
-            logging.error(f"Build command ({buildscript}) failed with return code {p.returncode}")            
-            exit(1)
+            logging.error(f"Build command ({buildscript}) failed with return code {p.returncode}")          
+            #exit(1)
         os.chdir(here)
 
         if args.package:        
