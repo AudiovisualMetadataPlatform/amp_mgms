@@ -1,9 +1,9 @@
 # The testing language
 
-The test language is an s-expression-based language where the
+The test language is an s-expression-like language where the
 each list is a function call with the call first and the arguments (if any)
-are later.  The expression will result in a true or false value that 
-determines whether the test has passed or not.
+are later (ie. prefix notation).  The expression will result in a true or false 
+value that determines whether the test has passed or not.
 
 For example, the YAML-encoded expression
 ```
@@ -18,11 +18,10 @@ text/plain or application/json
 
 
 ## data types
-everything is considered to be a string, unless it is coerced by
+everything is considered to be a native data type, unless it is coerced by
 a function.  For example, boolean functions will coerce their
-arguments to booleans.  One corner case are comparison
-functions (such as '==?') -- these will coerce all of the arguments to
-match the type of the first argument.
+arguments to booleans.  Comparison functions (such as 'eq') will coerce all of 
+the arguments to match the type of the first argument.
 
 ## Boolean functions
 The boolean functions are:
@@ -71,3 +70,6 @@ Other comparison functions
 | bool     | 1    | coerce to boolean |
 | float    | 1    | coerce to float |
 | lower    | 1    | force the arg to lower case |
+| len      | 1    | return the integer length of the arg |
+| haskey   | 2    | return true if the data structure in arg1 has the key arg2 |
+| csv      | 0+   | return the 2d CSV structure if no arguments, the given row if 2 args, and the row/column value if 3 args |
