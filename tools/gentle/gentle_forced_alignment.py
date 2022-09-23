@@ -272,5 +272,6 @@ def update_confidence(words, uwords):
 	return updated
 
 
+
 if __name__ == "__main__":
 	main()
