@@ -9,9 +9,9 @@ import logging
 import re
 import xml.etree.ElementTree as ET
 import tempfile
-import shutil
 import os
 import json
+import csv
 
 def main():
     parser = argparse.ArgumentParser()
@@ -249,7 +249,9 @@ def test_eval(subject, expr, cache=None):
         if 'json' not in cache:
             with open(subject) as f:
                 cache['json'] = json.load(f)
-            return find_json_value(cache['json'], args[0])
+        if len(args) == 0:
+            return cache['json']
+        return find_json_value(cache['json'], args[0])
     elif func == 'xpath':
         if 'xpath' not in cache:
             cache['xpath'] = ET.parse(subject)
@@ -269,7 +271,7 @@ def test_eval(subject, expr, cache=None):
             cache['data'] = Path(subject).read_text(encoding='utf-8')
         return cache['data']        
     elif func == 'contains':
-        return args[0] in args[1]
+        return args[1] in args[0]
     elif func == 'int':
         return coerce([0, args[0]])[1]
     elif func == 'str':
@@ -280,6 +282,29 @@ def test_eval(subject, expr, cache=None):
         return coerce([0.0, args[0]])[1]
     elif func == 'lower':
         return str(args[0]).lower()
+    elif func == 'len':
+        return len(args[0])
+    elif func == 'haskey':
+        if isinstance(args[0], dict):
+            return args[1] in args[0]
+        elif isinstance(args[0], list):
+            return 0 < int(args[1]) < len(args[0])
+        else:
+            return False
+    elif func == 'csv':
+        if 'csv' not in cache:
+            with open(subject) as f:
+                cread = csv.reader(f)
+                cache['csv'] = list(cread)
+        if len(args) == 0:
+            return cache['csv']
+        elif len(args) == 1:
+            return cache['csv'][int(args[0])]
+        elif len(args) == 2:
+
+            return cache['csv'][int(args[0])][int(args[1])]
+        else:
+            raise ValueError("csv takes 0-3 args")
     else:
         raise ValueError(f"No such function: {func}")
 

@@ -3,7 +3,7 @@
 import argparse
 import face_recognition
 import cv2
-from distutils.util import strtobool
+from amp.miscutils import strtobool
 
 import dlib_face_training as train
 from amp.schema.facial_recognition import FaceRecognition, FaceRecognitionMedia, FaceRecognitionMediaResolution, FaceRecognitionFrame, FaceRecognitionFrameObject, FaceRecognitionFrameObjectScore, FaceRecognitionFrameObjectVertices

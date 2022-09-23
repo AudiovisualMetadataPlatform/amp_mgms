@@ -21,7 +21,7 @@ def main():
     parser.add_argument("amp_transcript", help="Input transcription file")
     parser.add_argument("aws_entities", help="Output aws entities file")
     parser.add_argument("amp_entities", help="Output amp entities file")
-    parser.add_argument("--ignore_types", default="QUANTITY, DATE", help="Types of things to ignore")
+    parser.add_argument("--ignore_types", type=str, default="QUANTITY,DATE", help="Types of things to ignore")
     parser.add_argument("--force", default=False, action="store_true", help="delete any existing jobs with this name and force a new job")
 
     args = parser.parse_args()
@@ -30,7 +30,7 @@ def main():
 
     # fixup the default arguments...
     config = load_amp_config()
-    role_arn = get_config_value(config, ['mgms', 'aws_comprehend', 'role_awn'], None)
+    role_arn = get_config_value(config, ['mgms', 'aws_comprehend', 'role_arn'], None)
     if role_arn is None:
         logging.error('mgms.aws_comprehend.role_arn is not specified in the config file')
         exit(1)
@@ -45,7 +45,7 @@ def main():
     s3_directory.strip('/')        
 
     # preprocess NER inputs and initialize AMP entities output
-    [amp_transcript_obj, amp_entities_obj, ignore_types_list] = amp.ner_helper.initialize_amp_entities(args.amp_transcript, args.amp_entities, args.ignore_types)
+    [amp_transcript_obj, amp_entities_obj, ignore_types_list] = amp.nerutils.initialize_amp_entities(args.amp_transcript, args.amp_entities, args.ignore_types)
 
     # if we reach here, further processing is needed, continue with preparation for AWS Comprehend job 
     # generate a job name, using the output filename as the basis.    

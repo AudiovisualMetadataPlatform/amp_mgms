@@ -1,0 +1,176 @@
+{
+    "media": {
+        "filename": "/home/bdwheele/work_projects/AMP-devel/src_repos/amp_mgms/tests/fixtures/video.m4v",
+        "duration": 48.46508333333333,
+        "frameRate": 23.976023976023978,
+        "numFrames": 1162.0,
+        "resolution": {
+            "width": 718.0,
+            "height": 480.0
+        }
+    },
+    "frames": [
+        {
+            "start": 26.860166666666665,
+            "objects": [
+                {
+                    "name": "not_david_byrne",
+                    "score": {
+                        "type": "confidence",
+                        "value": 0.30000000000000004
+                    },
+                    "vertices": {
+                        "xmin": 325,
+                        "ymin": 139,
+                        "xmax": 454,
+                        "ymax": 268
+                    }
+                }
+            ]
+        },
+        {
+            "start": 28.77875,
+            "objects": [
+                {
+                    "name": "not_david_byrne",
+                    "score": {
+                        "type": "confidence",
+                        "value": 0.30000000000000004
+                    },
+                    "vertices": {
+                        "xmin": 330,
+                        "ymin": 152,
+                        "xmax": 438,
+                        "ymax": 259
+                    }
+                }
+            ]
+        },
+        {
+            "start": 30.697333333333333,
+            "objects": [
+                {
+                    "name": "not_david_byrne",
+                    "score": {
+                        "type": "confidence",
+                        "value": 0.30000000000000004
+                    },
+                    "vertices": {
+                        "xmin": 325,
+                        "ymin": 125,
+                        "xmax": 454,
+                        "ymax": 254
+                    }
+                }
+            ]
+        },
+        {
+            "start": 34.534499999999994,
+            "objects": [
+                {
+                    "name": "not_david_byrne",
+                    "score": {
+                        "type": "confidence",
+                        "value": 0.30000000000000004
+                    },
+                    "vertices": {
+                        "xmin": 325,
+                        "ymin": 139,
+                        "xmax": 454,
+                        "ymax": 268
+                    }
+                }
+            ]
+        },
+        {
+            "start": 36.45308333333333,
+            "objects": [
+                {
+                    "name": "not_david_byrne",
+                    "score": {
+                        "type": "confidence",
+                        "value": 0.30000000000000004
+                    },
+                    "vertices": {
+                        "xmin": 296,
+                        "ymin": 125,
+                        "xmax": 425,
+                        "ymax": 254
+                    }
+                }
+            ]
+        },
+        {
+            "start": 38.37166666666666,
+            "objects": [
+                {
+                    "name": "not_david_byrne",
+                    "score": {
+                        "type": "confidence",
+                        "value": 0.30000000000000004
+                    },
+                    "vertices": {
+                        "xmin": 342,
+                        "ymin": 152,
+                        "xmax": 450,
+                        "ymax": 259
+                    }
+                }
+            ]
+        },
+        {
+            "start": 42.20883333333333,
+            "objects": [
+                {
+                    "name": "not_david_byrne",
+                    "score": {
+                        "type": "confidence",
+                        "value": 0.30000000000000004
+                    },
+                    "vertices": {
+                        "xmin": 342,
+                        "ymin": 163,
+                        "xmax": 450,
+                        "ymax": 271
+                    }
+                }
+            ]
+        },
+        {
+            "start": 44.12741666666666,
+            "objects": [
+                {
+                    "name": "not_david_byrne",
+                    "score": {
+                        "type": "confidence",
+                        "value": 0.30000000000000004
+                    },
+                    "vertices": {
+                        "xmin": 325,
+                        "ymin": 139,
+                        "xmax": 454,
+                        "ymax": 268
+                    }
+                }
+            ]
+        },
+        {
+            "start": 46.046,
+            "objects": [
+                {
+                    "name": "not_david_byrne",
+                    "score": {
+                        "type": "confidence",
+                        "value": 0.30000000000000004
+                    },
+                    "vertices": {
+                        "xmin": 342,
+                        "ymin": 140,
+                        "xmax": 450,
+                        "ymax": 247
+                    }
+                }
+            ]
+        }
+    ]
+}

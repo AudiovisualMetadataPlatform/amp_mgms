@@ -1,4 +1,6 @@
 #!/usr/bin/env amp_python.sif
+# TODO: This calls a getchildren() function that doesn't exist and was broken
+# prior to the refactoring.
 
 import json
 import xml.etree.ElementTree as ET
@@ -16,7 +18,7 @@ def main():
     context = json.loads(args.context_json)
     item_name = context["itemName"]
     primary_file_name = context["primaryfileName"]
-    applause_segments = read_json_file(args.applause_segments)
+    applause_segments = read_json_file(args.input_file)
     segment_start = None
     segment_count = 1
     item = ET.Element('Item')

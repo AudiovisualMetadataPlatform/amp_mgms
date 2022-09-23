@@ -1,5 +1,62 @@
 # This is the default test suite -- local tools
 
+### tools/applause_detection
+- name: Applause Detection
+  tool: applause_detection/applause_detection.xml
+  inputs:
+    input_audio: audio.mp3
+  params:
+    min_segment_duration: 3000
+  outputs:
+    amp_applause_segments:
+      - [haskey, [json], 'segments']
+      - [eq, [json, segments.0.label], non-applause]
+
+### tools/gentle
+- name: Gentle Forced Alignment
+  tool: gentle/gentle_forced_alignment.xml
+  inputs:
+    speech_audio: audio.mp3
+    amp_transcript_unaligned: amp_transcript_aws.json
+  outputs:
+    gentle_transcript:
+      - [haskey, [json], words]
+      - [contains, [json, transcript], "Many of Virgil's festivities"]
+    amp_transcript_aligned:
+      - [haskey, [json], results]    
+      - [contains, [json, results.transcript], "Many of Virgil's festivities"]
+
+### tools/ina_speech_segmenter
+- name: INA Speech Segmenter
+  tool: ina_speech_segmenter/ina_speech_segmenter.xml
+  inputs:
+    input_audio: audio.mp3
+  outputs:
+    amp_segments:
+      - [haskey, [json], segments]
+      - [eq, [json, segments.0.label], silence]
+      
+
+### tools/kaldi
+# UGH, like the AWS transcribe, this is actually testing two scripts
+- name: Kaldi
+  tool: kaldi/kaldi.xml
+  inputs:
+    input_audio: audio.mp3
+  outputs:
+    kaldi_transcript_text:
+      - [eq, [mime], text/plain]
+      - [contains, [data], celebration of specialness]
+    kaldi_transcript_json:
+      - [haskey, [json], words]
+      - [contains, [data], specialness]
+    amp_transcript:
+      - [haskey, [json], results]
+      - [contains, [json, results.transcript], celebration of specialness]
+      - [eq, [json, results.words.0.type], pronunciation]
+
+
+### tools/mgms
 - name: Adjust Diarization Timestamps
   tool: mgms/adjust_diarization_timestamps.xml
   inputs:
@@ -19,74 +76,115 @@
     kept_segments: amp_kept_segments.json
   outputs:
     amp_transcript_adjusted:
-      - {test: magic, mime: text/plain}
-      - {test: strings, strings: [results, words, score, start, end]}
+      - [haskey, [json], results]
+      - [contains, [json, results.transcript], "Many of Virgil's festivities"]
+      - [eq, [json, results.words.0.type], pronunciation]
+      
 
-
-- name: Applause Detection
-  tool: applause_detection/applause_detection.xml
+- name: Applause Detection to Avalon XML
+  tool: mgms/applause_detection_to_avalon_xml.xml
+  skip: The code was broken prior to the refactoring.
   inputs:
-    input_audio: audio.mp3
-  params:
-    min_segment_duration: 3000
+    amp_applause_segments: applause_detection_segments.json
+  params: 
+    context_json: '{"itemName": "the item name", "primaryfileName": "The primary file name"}'
   outputs:
-    amp_applause_segments:
-      - {test: magic, mime: application/json}
-      - {test: strings, strings: [segments, label, start, end]}      
+    avalon_applause_sme:
+      # Need to write tests once this is fixed.
+      - ['true']
+    
 
-#- name: Contact Sheets - shot
-#  tool: contact_sheets.xml
-#  inputs:
-#    input_video: video.m4v
-#    amp_shots: amp_shots.json
-#  params:
-#    type: shot
-#    amp_faces: none
-#    frame_seconds: 0
-#    frame_quantity: 0
-#    number_of_columns: 4
-#    photo_width: 300
-#    margin: 10
-#    padding: 3
-#  outputs:
-#    contact_sheet:
-#      - {test: magic, mime: image/png}
+- name: Adjust Transcript Timestamps
+  tool: mgms/adjust_transcript_timestamps.xml
+  inputs:
+    amp_transcript_unadjusted: amp_transcript_aws.json
+    kept_segments: amp_kept_segments.json
+  outputs:
+    amp_transcript_adjusted:
+      - [haskey, [json], results]
+      - [contains, [json, results.transcript], "Many of Virgil's festivities"]
+      - [eq, [json, results.words.0.type], pronunciation]
 
-#- name: Contact Sheets - time
-#  tool: contact_sheets.xml
-#  inputs:
-#    input_video: video.m4v    
-#  params:
-#    type: time
-#    amp_shots: ""
-#    amp_faces: ""
-#    frame_seconds: 10
-#    frame_quantity: 0
-#    number_of_columns: 4
-#    photo_width: 300
-#    margin: 10
-#    padding: 3
-#  outputs:
-#    contact_sheet:
-#      - {test: magic, mime: image/png}
 
-#- name: Contact Sheets - quantity
-#  tool: contact_sheets.xml
-#  inputs:
-#    input_video: video.m4v    
-#  params:
-#    type: quantity
-#    amp_shots: ""
-#    amp_faces: ""
-#    frame_seconds: 0
-#    frame_quantity: 10
-#    number_of_columns: 4
-#    photo_width: 300
-#    margin: 10
-#    padding: 3
-#  outputs:
-#    contact_sheet:
-#      - {test: magic, mime: image/png}
+- name: Contact Sheet - face
+  tool: mgms/contact_sheet_face.xml
+  inputs:
+    input_video: video.m4v
+    amp_faces: amp_faces.json
+  params:
+    type: faces
+    margin: 10
+    padding: 3
+    columns: 4
+    width: 300
+  outputs:
+    contact_sheet:
+      - [eq, [media, container.mime_type], image/png]
+      - [eq, [media, streams.image.0.codec], png]
+
+
+- name: Contact Sheet - frame
+  tool: mgms/contact_sheet_frame.xml
+  inputs:
+    input_video: video.m4v    
+  params:    
+    margin: 10
+    padding: 3
+    columns: 4
+    width: 300
+    frame_interval: 0
+    frame_quantity: 12
+  outputs:
+    contact_sheet:
+      - [eq, [media, container.mime_type], image/png]
+      - [eq, [media, streams.image.0.codec], png]
+
+
+- name: Contact Sheet - shot
+  tool: mgms/contact_sheet_shot.xml
+  inputs:
+    input_video: video.m4v
+    amp_shots: amp_shots.json
+  params:
+    type: shot
+    margin: 10
+    padding: 3
+    columns: 4
+    width: 300
+  outputs:
+    contact_sheet:
+      - [eq, [media, container.mime_type], image/png]
+      - [eq, [media, streams.image.0.codec], png]
+      
+
+- name: Contact Sheet - vocr
+  tool: mgms/contact_sheet_vocr.xml
+  inputs:
+    input_video: video.m4v
+    amp_vocr: vocr.json
+  params:
+    type: shot
+    margin: 10
+    padding: 3
+    columns: 4
+    width: 300
+  outputs:
+    contact_sheet:
+      - [eq, [media, container.mime_type], image/png]
+      - [eq, [media, streams.image.0.codec], png]
+
+
+- name: Dlib Face Recognition
+  tool: mgms/dlib_face_recognition.xml
+  inputs:
+    input_video: video.m4v
+    training_photos: faces.zip
+  params:
+    reuse_trained: "no"
+    tolerance: 0.6
+  outputs:
+    amp_faces:
+      - [haskey, [json], frames]
 
 
 - name: Extract Audio
@@ -95,39 +193,15 @@
     input_av: video.m4v
   outputs:
     audio_extracted:
-      - {test: ffprobe, path: "streams/stream[1]", attrib: 'codec_name', value: "pcm_s16le"}
-      - {test: ffprobe, path: "streams/stream[1]", attrib: 'sample_rate', value: "44100"}
-      - {test: ffprobe, path: "streams/stream[1]", attrib: 'channels', value: "1"}
-      - {test: ffprobe, path: "format", attrib: "format_name", value: "wav"}
+      - [eq, [media, container.format], wav]
+      - [eq, [media, streams.audio.0.channels], 1]
+      - [eq, [media, streams.audio.0.codec], pcm_s16le]
+      - [eq, [media, streams.audio.0.sample_rate], 44100]
   params:    
     rate: 44100
     channels: 1
     sample_format: pcm_s16le
 
-
-- name: INA Speech Segmenter
-  tool: ina_speech_segmenter/ina_speech_segmenter.xml
-  inputs:
-    input_audio: audio.mp3
-  outputs:
-    amp_segments:
-      - {test: magic, mime: [text/plain, application/json], comp: in}
-      - {test: strings, strings: [segments, silence, gender, start, end]}
-
-- name: Kaldi
-  tool: kaldi/kaldi.xml
-  inputs:
-    input_audio: audio.mp3
-  outputs:
-    kaldi_transcript_text:
-      - {test: magic, mime: text/plain}
-      - {test: strings, strings: "celebration of specialness"}
-    kaldi_transcript_json:
-      - {test: magic, mime: [text/plain, application/json], comp: in}
-      - {test: strings, strings: "duration"}
-    amp_transcript:
-      - {test: magic, mime: [text/plain, application/json], comp: in}
-      - {test: strings, strings: "celebration of specialness"}
 
 - name: Keep Speech
   tool: mgms/keep_speech.xml
@@ -136,9 +210,9 @@
     amp_segments: amp_segments.json
   outputs:
     speech_audio:
-      - {test: pass, status: true}
+      - [eq, [media, container.format], wav]
     kept_segments:
-      - {test: magic, mime: [text/plain, application/json], comp: in}  
+      - [any, [mime], text/plain, application/json]      
 
 
 - name: NER to CSV
@@ -147,8 +221,13 @@
     amp_entities: amp_entities.ner
   outputs:
     amp_csv_entities:
-      - {test: magic, mime: text/plain}
-      - {test: strings, strings: [Type, Text, Begin Offset, End Offset, Start Time, Score Type, Score Value]}
+      - [eq, [csv, 0, 0], Type]
+      - [eq, [csv, 0, 1], Text]
+      - [eq, [csv, 0, 2], Begin Offset]
+      - [eq, [csv, 0, 3], End Offset]
+      - [eq, [csv, 0, 4], Start Time]
+      - [eq, [csv, 0, 5], Score Type]
+      - [eq, [csv, 0, 6], Score Value]
 
 
 - name: PyScene Detect
@@ -159,12 +238,17 @@
     threshold: 30
   outputs:
     amp_shots:
-      - {test: magic, mime: text/plain}
-      - {test: json, path: shots/i0/type, value: shot}
-      - {test: json, path: shots/i0/start, value: "0.0"}
+      - [haskey, [json], shots]
+      - [eq, [json, shots.0.type], shot]
+      - [eq, [json, shots.0.start], 0.0]      
     frame_stats:
-      - {test: magic, mime: text/plain}
-      - {test: strings, strings: [Frame Number, Timecode, content_val, delta_hue, delta_lum, delta_sat]}
+      - [eq, [csv, 0, 0], Frame Number]
+      - [eq, [csv, 0, 1], Timecode]
+      - [eq, [csv, 0, 2], content_val]
+      - [eq, [csv, 0, 3], delta_hue]
+      - [eq, [csv, 0, 4], delta_lum]
+      - [eq, [csv, 0, 5], delta_sat]
+
 
 - name: Remove Silence Music Speech
   tool: mgms/remove_silence_speech.xml
@@ -173,44 +257,58 @@
     amp_segments: amp_segments.json
   outputs:
     music_audio:
-      - {test: pass, status: true}
+      - [eq, [media, container.format], wav]
     kept_segments:
-      - {test: magic, mime: [text/plain, application/json], comp: in}
-
+      - [any, [mime], text/plain, application/json]
+      
 
 - name: Remove Trailing Silence
   tool: mgms/remove_trailing_silence.xml
   inputs:
     input_av: audio.mp3
   outputs:
-    audio_trimed:
-      - {test: ffprobe, path: "format", attrib: "format_name", value: "wav"}
-      - {test: ffprobe, path: "format", attrib: "duration", value: "42.994875"}
+    audio_trimmed:
+      - [eq, [media, container.format], wav]
+      - [lt, [media, streams.audio.0.duration], 48]
     
+
 - name: Spacy
   tool: mgms/spacy.xml
   inputs:
     amp_transcript: amp_transcript_aws.json
   params:
-    ignore_types: QUANTITIES
+    ignore_types: QUANTITY
   outputs:
     spacy_entities:
-      - {test: magic, mime: text/plain}
-      - {test: strings, strings: [sents, tokens]}
+      - [haskey, [json], text]
+      - [haskey, [json], ents]
+      - [contains, [json, text], "Many of Virgil's festivities"]
+      - [eq, [json, ents.0.label], PERSON]
     amp_entities:
-      - {test: magic, mime: text/plain}
-      - {test: strings, strings: [media, entities]}
+      - [haskey, [json], entities]
+      - [eq, [json, entities.0.type], PERSON]
+
+
+# Supplement doesn't really do anything, so skipping it.
+#./mgms/supplement.xml
 
 
 - name: Tesseract
   tool: mgms/tesseract.xml
   inputs:
     input_video: video.m4v
+  params:
+    vocr_interval: 1.0
+    dedupe: "yes"
+    dup_gap: 5
   outputs:
     amp_vocr:
-      - {test: magic, mime: text/plain}
-      - {test: size, size: 61388}      
-      - {test: strings, strings: ["TRUE", "STORIES", "VIRGIL"]}
+      - [haskey, [json], frames]
+      - [contains, [data], TRUE STORIES]
+    amp_vocr_dedupe:
+      - [haskey, [json], frames]
+      - [contains, [data], TRUE STORIES]
+
 
 - name: Transcript to WebVTT
   tool: mgms/transcript_to_webvtt.xml
@@ -219,8 +317,9 @@
     amp_transcript: amp_transcript_aws.json
   outputs:
     web_vtt:
-      - {test: magic, mime: text/plain}
-      - {test: strings, strings: [WEBVTT, spk_0, multipurpose]}
+      - [contains, [data], WEBVTT]
+      - [contains, [data], "Many of Virgil's festivities"]
+      
 
 - name: Vocabulary Tagging
   tool: mgms/vocabulary_tagging.xml
@@ -229,17 +328,23 @@
     tag_vocabulary: amp_words.txt
   outputs:
     tagged_words:
-      - {test: magic, mime: [text/plain, text/csv], comp: in}
-      - {test: strings, strings: [Word, Start]}
+      - [eq, [csv, 0, 0], Word]
+      - [eq, [csv, 0, 1], Start]
+
 
 - name: VOCR to CSV
   tool: mgms/vocr_to_csv.xml
-  skip: This was broken in the pre-refactored code, and remains so now.
   inputs:
     amp_vocr: vocr.json
   outputs:
     amp_vocr_csv:
-      - {test: magic, mime: text/plain}
-      # probably should add more tests when this actually works...
-
-
+      - [eq, [csv, 0, 0], Start Time]
+      - [eq, [csv, 0, 1], Text]
+      - [eq, [csv, 0, 2], Language]
+      - [eq, [csv, 0, 3], X Min]
+      - [eq, [csv, 0, 4], Y Min]
+      - [eq, [csv, 0, 5], X Max]
+      - [eq, [csv, 0, 6], Y Max]
+      - [eq, [csv, 0, 7], Score Type]
+      - [eq, [csv, 0, 8], Score Value]
+      
