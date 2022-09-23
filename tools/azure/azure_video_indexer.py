@@ -34,7 +34,8 @@ def main():
     s3_bucket = get_config_value(config, ['mgms', 'azure_video_indexer', 's3_bucket'])
     
     # Turn on HTTP debugging here
-    http_client.HTTPConnection.debuglevel = 1
+    if args.debug:
+        http_client.HTTPConnection.debuglevel = 1
 
     aws_creds = get_cloud_credentials(config, 'aws')
 
