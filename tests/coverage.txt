@@ -1,13 +1,16 @@
 ./applause_detection/applause_detection.xml - Done
-./aws/aws_comprehend.xml
+
+./aws/aws_comprehend.xml - Done
 ./aws/aws_transcribe.xml - Done
 
-./azure/azure_shot_detection.xml
-./azure/azure_video_ocr.xml
-./azure/azure_video_indexer.xml
+./azure/azure_shot_detection.xml - Done
+./azure/azure_video_ocr.xml - Done
+./azure/azure_video_indexer.xml - Done
 
 ./gentle/gentle_forced_alignment.xml - Done
 
+*** I'm going to skip the HMGMS since there's some voodoo magick
+*** that's required to make them do their thing.
 ./hmgms/hmgm_ner.xml
 ./hmgms/hmgm_segmentation.xml
 ./hmgms/hmgm_transcript.xml

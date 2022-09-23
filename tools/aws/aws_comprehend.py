@@ -74,7 +74,7 @@ def main():
         aws_entities_list = aws_entities_json["Entities"]
 
         # populate AMP Entities list based on input AMP transcript words list and output AWS Entities list  
-        amp.ner_helper.populate_amp_entities(amp_transcript_obj, aws_entities_list, amp_entities_obj, ignore_types_list)
+        amp.nerutils.populate_amp_entities(amp_transcript_obj, aws_entities_list, amp_entities_obj, ignore_types_list)
 
         # write the output AMP entities to JSON file
         write_json_file(amp_entities_obj, args.amp_entities)

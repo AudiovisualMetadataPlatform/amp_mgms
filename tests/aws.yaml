@@ -6,11 +6,11 @@
     ignore_types: QUANTITY
   outputs:
     aws_entities:
-      - {test: magic, mime: text/plain}
-      - {test: strings, strings: [Entities, BeginOffset, EndOffset, Score, Virgil]}
+      - [haskey, [json], Entities]
+      - [eq, [json, Entities.0.Text], Virgil]
     amp_entities:
-      - {test: magic, mime: text/plain}
-      - {test: strings, strings: [media, characters, entities]}
+      - [haskey, [json], entities]
+      - [eq, [json, entities.0.text], Virgil]
 
 
 # Transcribe.xml really calls two tools (unfortunately) so this test ends up

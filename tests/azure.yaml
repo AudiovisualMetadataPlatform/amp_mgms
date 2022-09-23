@@ -4,15 +4,15 @@
     input_video: video.m4v
   outputs:
     azure_video_index: 
-      - {test: magic, mime: text/plain}
-      - {test: json, path: state, value: Processed}
-      - {test: json, path: summarizedInsights/faces/i0/name, value: David Byrne}
+      - [eq, [json, state], Processed]
+      - [haskey, [json], summarizedInsights]
+      - [eq, [json, summarizedInsights.faces.0.name], David Byrne]
     azure_artifact_ocr:
-      - {test: magic, mime: text/plain}
-      - {test: strings, strings: [A FILM ABOUT A, BUNCH OF PEOPLE, IN VIRGIL TEXAS.]}
+      - [haskey, [json], Results]
+      - [contains, [data], BUNCH OF PEOPLE]
   params:
     include_ocr: "true"
-    location: eastus2
+
 
 - name: Azure Video OCR
   tool: azure/azure_video_ocr.xml  
@@ -20,11 +20,18 @@
     input_video: video.m4v
     azure_video_index: azure_video_index.json
     azure_artifact_ocr: azure_artifact_ocr.json
+  params:
+    dedupe: "yes"
+    dup_gap: 5
   outputs:
     amp_vocr:
-      - {test: magic, mime: text/plain}
-      - {test: strings, strings: [frames, media, duration, resolution]}
-      
+      - [haskey, [json], frames]
+      - [contains, [data], TRUE STORIES]
+    amp_vocr_dedupe:
+      - [haskey, [json], frames]
+      - [contains, [data], TRUE STORIES]
+
+
 - name: Azure Shot Detection
   tool: azure/azure_shot_detection.xml
   inputs:
@@ -32,6 +39,7 @@
     azure_video_index: azure_video_index.json
   outputs:
     amp_shots:
-      - {test: magic, mime: text/plain}
-      - {test: json, path: shots/i0/type, value: shot}
-      - {test: json, path: shots/i0/start, value: "0.0"}
+      - [haskey, [json], shots]
+      - [eq, [json, shots.0.type], shot]
+      - [eq, [json, shots.0.start], 0.0]
+      

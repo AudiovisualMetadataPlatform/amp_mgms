@@ -1,13 +1,12 @@
 #!/usr/bin/env amp_python.sif
 import logging
-from distutils.util import strtobool
 import argparse
 import logging
 import amp.logging
 from amp.timeutils import frameToSecond
 from amp.fileutils import read_json_file, write_json_file, valid_file
 from amp.schema.video_ocr import VideoOcr, VideoOcrMedia, VideoOcrResolution, VideoOcrFrame, VideoOcrObject, VideoOcrObjectScore, VideoOcrObjectVertices
-
+from amp.miscutils import strtobool
 
 def main():
 	parser = argparse.ArgumentParser()
@@ -15,7 +14,7 @@ def main():
 	parser.add_argument("input_video", help="Video input file")
 	parser.add_argument("azure_video_index", help="Azure Video Index input file")
 	parser.add_argument("azure_artifact_ocr", help="Azure Artifact OCRinput file")
-	parser.add_argument("--dedupe", type=strtobool, default=True, help="Whether to dedupe consecutive frames with same texts")
+	parser.add_argument("--dedupe", type=strtobool, default='yes', help="Whether to dedupe consecutive frames with same texts")
 	parser.add_argument("--dup_gap", type=int, default=5, help="Gap in seconds within which adjacent VOCR frames with same text are considered duplicates")	
 	parser.add_argument("amp_vocr", help="Original AMP Video OCR output file")
 	parser.add_argument("amp_vocr_dedupe", help="Deduped AMP Video OCR output file")
