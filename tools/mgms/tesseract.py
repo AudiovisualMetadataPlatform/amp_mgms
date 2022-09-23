@@ -10,7 +10,7 @@ import shlex
 import subprocess
 import tempfile
 import time
-from distutils.util import strtobool
+
 import pytesseract
 from pytesseract import Output
 from PIL import Image
@@ -19,6 +19,7 @@ from amp.schema.video_ocr import VideoOcr, VideoOcrMedia, VideoOcrResolution, Vi
 import amp.logging
 
 from amp.fileutils import write_json_file
+from amp.miscutils import strtobool
 
 def main():
 	with tempfile.TemporaryDirectory(dir = "/tmp") as tmpdir:
@@ -36,7 +37,7 @@ def main():
 
 		# ffmpeg extracts the frames from the video input
 		dateTimeObj = datetime.now()
-		fps = 1 / amp.vocr_interval
+		fps = 1 / args.vocr_interval
 		command = f"ffmpeg -i {args.input_video} -an -vf fps={fps} '{tmpdir}/frame_%05d_{dateTimeObj}.jpg'"
 		logging.info(f"Extracting frames for VOCR with command {command}")
 		subprocess.call(command, shell=True)

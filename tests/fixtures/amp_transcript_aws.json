@@ -1,544 +1,579 @@
 {
     "media": {
         "duration": 44.3,
-        "filename": "/srv/scratch/amp_mgms/tests/fixtures//audio.mp3"
+        "filename": "/home/bdwheele/work_projects/AMP-devel/src_repos/amp_mgms/tests/fixtures/audio.mp3"
     },
     "results": {
-        "transcript": "Many of Virgil's festivities are sponsored by very core. It's a major public relations effort. They're calling it a celebration of special mess. But this place is completely normal anyway. This is the very court building just outside Virgil. It's cool. It's a multipurpose shape, a box.",
+        "transcript": "Many of Virgil's festivities are sponsored by very core. It's a major public relations effort. They're calling it a celebration of special mess. But this place is completely normal anyway. This is the very court building just outside Virgil. It's cool. It's a multipurpose shape box.",
         "words": [
             {
+                "type": "pronunciation",
+                "text": "Many",
+                "start": 23.46,
+                "end": 23.73,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 1.0
                 },
-                "type": "pronunciation",
-                "start": 23.44,
-                "end": 23.72,
-                "text": "Many"
+                "offset": 0
             },
             {
+                "type": "pronunciation",
+                "text": "of",
+                "start": 23.73,
+                "end": 23.82,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 1.0
                 },
-                "type": "pronunciation",
-                "start": 23.72,
-                "end": 23.81,
-                "text": "of"
+                "offset": 5
             },
             {
+                "type": "pronunciation",
+                "text": "Virgil's",
+                "start": 23.82,
+                "end": 24.18,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 1.0
                 },
-                "type": "pronunciation",
-                "start": 23.81,
-                "end": 24.16,
-                "text": "Virgil's"
+                "offset": 8
             },
             {
+                "type": "pronunciation",
+                "text": "festivities",
+                "start": 24.18,
+                "end": 24.8,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 1.0
                 },
-                "type": "pronunciation",
-                "start": 24.16,
-                "end": 24.79,
-                "text": "festivities"
+                "offset": 17
             },
             {
+                "type": "pronunciation",
+                "text": "are",
+                "start": 24.8,
+                "end": 24.88,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.9925
+                    "value": 0.9926
                 },
-                "type": "pronunciation",
-                "start": 24.79,
-                "end": 24.87,
-                "text": "are"
+                "offset": 29
             },
             {
+                "type": "pronunciation",
+                "text": "sponsored",
+                "start": 24.88,
+                "end": 25.34,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 1.0
                 },
-                "type": "pronunciation",
-                "start": 24.87,
-                "end": 25.33,
-                "text": "sponsored"
+                "offset": 33
             },
             {
+                "type": "pronunciation",
+                "text": "by",
+                "start": 25.34,
+                "end": 25.47,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 1.0
                 },
-                "type": "pronunciation",
-                "start": 25.33,
-                "end": 25.46,
-                "text": "by"
+                "offset": 43
             },
             {
+                "type": "pronunciation",
+                "text": "very",
+                "start": 25.47,
+                "end": 25.77,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.4176
+                    "value": 0.5162
                 },
-                "type": "pronunciation",
-                "start": 25.46,
-                "end": 25.76,
-                "text": "very"
+                "offset": 46
             },
             {
+                "type": "pronunciation",
+                "text": "core",
+                "start": 25.77,
+                "end": 26.06,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.4213
+                    "value": 0.504
                 },
-                "type": "pronunciation",
-                "start": 25.76,
-                "end": 26.05,
-                "text": "core"
+                "offset": 51
             },
             {
-                "score": {
-                    "type": "confidence",
-                    "scoreValue": 0.0
-                },
                 "type": "punctuation",
-                "text": "."
-            },
-            {
+                "text": ".",
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.9864
+                    "value": 0.0
                 },
+                "offset": 55
+            },
+            {
                 "type": "pronunciation",
-                "start": 26.84,
+                "text": "It's",
+                "start": 26.82,
                 "end": 27.03,
-                "text": "It's"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 0.9863
                 },
+                "offset": 57
+            },
+            {
                 "type": "pronunciation",
+                "text": "a",
                 "start": 27.03,
                 "end": 27.09,
-                "text": "a"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 1.0
                 },
+                "offset": 62
+            },
+            {
                 "type": "pronunciation",
+                "text": "major",
                 "start": 27.09,
                 "end": 27.49,
-                "text": "major"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 1.0
                 },
+                "offset": 64
+            },
+            {
                 "type": "pronunciation",
+                "text": "public",
                 "start": 27.49,
-                "end": 27.81,
-                "text": "public"
-            },
-            {
+                "end": 27.8,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.9966
+                    "value": 1.0
                 },
+                "offset": 70
+            },
+            {
                 "type": "pronunciation",
+                "text": "relations",
                 "start": 27.81,
                 "end": 28.27,
-                "text": "relations"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.9702
+                    "value": 0.9975
                 },
+                "offset": 77
+            },
+            {
                 "type": "pronunciation",
+                "text": "effort",
                 "start": 28.27,
-                "end": 28.66,
-                "text": "effort"
-            },
-            {
+                "end": 28.59,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.0
+                    "value": 0.9531
                 },
+                "offset": 87
+            },
+            {
                 "type": "punctuation",
-                "text": "."
-            },
-            {
+                "text": ".",
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.9836
+                    "value": 0.0
                 },
+                "offset": 93
+            },
+            {
                 "type": "pronunciation",
-                "start": 30.54,
+                "text": "They're",
+                "start": 30.53,
                 "end": 30.69,
-                "text": "They're"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 0.9934
                 },
+                "offset": 95
+            },
+            {
                 "type": "pronunciation",
+                "text": "calling",
                 "start": 30.69,
                 "end": 30.99,
-                "text": "calling"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.9989
+                    "value": 1.0
                 },
+                "offset": 103
+            },
+            {
                 "type": "pronunciation",
+                "text": "it",
                 "start": 30.99,
                 "end": 31.06,
-                "text": "it"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 0.9989
                 },
+                "offset": 111
+            },
+            {
                 "type": "pronunciation",
+                "text": "a",
                 "start": 31.06,
                 "end": 31.11,
-                "text": "a"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 1.0
                 },
+                "offset": 114
+            },
+            {
                 "type": "pronunciation",
+                "text": "celebration",
                 "start": 31.11,
                 "end": 31.68,
-                "text": "celebration"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 1.0
                 },
+                "offset": 116
+            },
+            {
                 "type": "pronunciation",
+                "text": "of",
                 "start": 31.68,
                 "end": 31.76,
-                "text": "of"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.9999
+                    "value": 1.0
                 },
+                "offset": 128
+            },
+            {
                 "type": "pronunciation",
+                "text": "special",
                 "start": 31.76,
                 "end": 32.11,
-                "text": "special"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.7355
+                    "value": 1.0
                 },
+                "offset": 131
+            },
+            {
                 "type": "pronunciation",
+                "text": "mess",
                 "start": 32.11,
                 "end": 32.55,
-                "text": "mess"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.0
+                    "value": 0.7699
                 },
+                "offset": 139
+            },
+            {
                 "type": "punctuation",
-                "text": "."
-            },
-            {
+                "text": ".",
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 0.0
                 },
+                "offset": 143
+            },
+            {
                 "type": "pronunciation",
-                "start": 33.94,
-                "end": 34.12,
-                "text": "But"
-            },
-            {
+                "text": "But",
+                "start": 33.91,
+                "end": 34.11,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 0.9989
                 },
+                "offset": 145
+            },
+            {
                 "type": "pronunciation",
-                "start": 34.12,
-                "end": 34.25,
-                "text": "this"
-            },
-            {
+                "text": "this",
+                "start": 34.11,
+                "end": 34.24,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.9997
+                    "value": 1.0
                 },
+                "offset": 149
+            },
+            {
                 "type": "pronunciation",
-                "start": 34.25,
-                "end": 34.46,
-                "text": "place"
-            },
-            {
+                "text": "place",
+                "start": 34.24,
+                "end": 34.45,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.9997
+                    "value": 0.9998
                 },
+                "offset": 154
+            },
+            {
                 "type": "pronunciation",
-                "start": 34.46,
-                "end": 34.58,
-                "text": "is"
-            },
-            {
+                "text": "is",
+                "start": 34.45,
+                "end": 34.57,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 0.9998
                 },
+                "offset": 160
+            },
+            {
                 "type": "pronunciation",
-                "start": 34.58,
-                "end": 35.0,
-                "text": "completely"
-            },
-            {
+                "text": "completely",
+                "start": 34.57,
+                "end": 34.99,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 1.0
                 },
+                "offset": 163
+            },
+            {
                 "type": "pronunciation",
-                "start": 35.0,
-                "end": 35.46,
-                "text": "normal"
-            },
-            {
+                "text": "normal",
+                "start": 34.99,
+                "end": 35.43,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.9906
+                    "value": 1.0
                 },
+                "offset": 174
+            },
+            {
                 "type": "pronunciation",
-                "start": 36.44,
-                "end": 36.86,
-                "text": "anyway"
-            },
-            {
+                "text": "anyway",
+                "start": 36.43,
+                "end": 36.9,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.0
+                    "value": 0.9865
                 },
+                "offset": 181
+            },
+            {
                 "type": "punctuation",
-                "text": "."
-            },
-            {
+                "text": ".",
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 0.0
                 },
+                "offset": 187
+            },
+            {
                 "type": "pronunciation",
-                "start": 37.84,
+                "text": "This",
+                "start": 37.82,
                 "end": 38.0,
-                "text": "This"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 1.0
                 },
+                "offset": 189
+            },
+            {
                 "type": "pronunciation",
+                "text": "is",
                 "start": 38.0,
                 "end": 38.11,
-                "text": "is"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 1.0
                 },
+                "offset": 194
+            },
+            {
                 "type": "pronunciation",
+                "text": "the",
                 "start": 38.11,
                 "end": 38.2,
-                "text": "the"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.5951
+                    "value": 1.0
                 },
+                "offset": 197
+            },
+            {
                 "type": "pronunciation",
+                "text": "very",
                 "start": 38.2,
                 "end": 38.46,
-                "text": "very"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.9075
+                    "value": 0.913
                 },
+                "offset": 201
+            },
+            {
                 "type": "pronunciation",
+                "text": "court",
                 "start": 38.46,
                 "end": 38.69,
-                "text": "court"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 0.758
                 },
+                "offset": 206
+            },
+            {
                 "type": "pronunciation",
+                "text": "building",
                 "start": 38.7,
                 "end": 39.02,
-                "text": "building"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 1.0
                 },
+                "offset": 212
+            },
+            {
                 "type": "pronunciation",
+                "text": "just",
                 "start": 39.03,
                 "end": 39.28,
-                "text": "just"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 1.0
                 },
+                "offset": 221
+            },
+            {
                 "type": "pronunciation",
+                "text": "outside",
                 "start": 39.28,
-                "end": 39.66,
-                "text": "outside"
-            },
-            {
+                "end": 39.67,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 1.0
+                    "value": 1.0
                 },
+                "offset": 226
+            },
+            {
                 "type": "pronunciation",
-                "start": 39.66,
-                "end": 40.06,
-                "text": "Virgil"
-            },
-            {
+                "text": "Virgil",
+                "start": 39.67,
+                "end": 40.08,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.0
+                    "value": 1.0
                 },
+                "offset": 234
+            },
+            {
                 "type": "punctuation",
-                "text": "."
-            },
-            {
+                "text": ".",
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.9043
+                    "value": 0.0
                 },
+                "offset": 240
+            },
+            {
                 "type": "pronunciation",
-                "start": 40.74,
-                "end": 40.93,
-                "text": "It's"
-            },
-            {
+                "text": "It's",
+                "start": 40.61,
+                "end": 40.92,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.9998
+                    "value": 0.992
                 },
+                "offset": 242
+            },
+            {
                 "type": "pronunciation",
-                "start": 40.93,
-                "end": 41.28,
-                "text": "cool"
-            },
-            {
+                "text": "cool",
+                "start": 40.92,
+                "end": 41.26,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.0
+                    "value": 1.0
                 },
+                "offset": 247
+            },
+            {
                 "type": "punctuation",
-                "text": "."
-            },
-            {
+                "text": ".",
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.9935
+                    "value": 0.0
                 },
+                "offset": 251
+            },
+            {
                 "type": "pronunciation",
-                "start": 41.94,
+                "text": "It's",
+                "start": 41.89,
                 "end": 42.07,
-                "text": "It's"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.9995
+                    "value": 0.9914
                 },
+                "offset": 253
+            },
+            {
                 "type": "pronunciation",
+                "text": "a",
                 "start": 42.07,
                 "end": 42.13,
-                "text": "a"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.5865
+                    "value": 0.999
                 },
+                "offset": 258
+            },
+            {
                 "type": "pronunciation",
+                "text": "multipurpose",
                 "start": 42.13,
                 "end": 42.76,
-                "text": "multipurpose"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.953
+                    "value": 0.6069
                 },
+                "offset": 260
+            },
+            {
                 "type": "pronunciation",
+                "text": "shape",
                 "start": 42.76,
-                "end": 43.05,
-                "text": "shape"
-            },
-            {
+                "end": 43.13,
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.0
+                    "value": 0.7498
                 },
-                "type": "punctuation",
-                "text": ","
+                "offset": 273
             },
             {
-                "score": {
-                    "type": "confidence",
-                    "scoreValue": 0.7894
-                },
                 "type": "pronunciation",
-                "start": 43.64,
-                "end": 43.76,
-                "text": "a"
-            },
-            {
-                "score": {
-                    "type": "confidence",
-                    "scoreValue": 1.0
-                },
-                "type": "pronunciation",
-                "start": 43.76,
+                "text": "box",
+                "start": 43.68,
                 "end": 44.3,
-                "text": "box"
-            },
-            {
                 "score": {
                     "type": "confidence",
-                    "scoreValue": 0.0
+                    "value": 0.999
                 },
+                "offset": 279
+            },
+            {
                 "type": "punctuation",
-                "text": "."
+                "text": ".",
+                "score": {
+                    "type": "confidence",
+                    "value": 0.0
+                },
+                "offset": 282
             }
         ]
     }

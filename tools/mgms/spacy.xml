@@ -6,7 +6,7 @@
     <requirement type="package" version="2.2">spacy</requirement>
   </requirements>
   <command detect_errors="exit_code">
-    '$__tool_directory__/spacy_ner.py' '$amp_transcript' '$spacy_entities' '$amp_entities' '$ignore_types'
+    '$__tool_directory__/spacy_ner.py' '$amp_transcript' '$spacy_entities' '$amp_entities' --ignore_types '$ignore_types'
   </command>
   <inputs>
     <param name="amp_transcript" type="data" format="transcript" label="AMP Transcript" help="AMP Transcript file from speech-to-text with timestamp adjusted"/>

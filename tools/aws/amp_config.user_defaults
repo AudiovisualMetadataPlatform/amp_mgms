@@ -5,9 +5,10 @@ cloud:
         region_name: us-east-2    
 mgms:
     aws_comprehend:
-        default_bucket: my-bucket
-        default_access_arn: arn:aws:iam::<some_number>:role/AwsComprehend
+        s3_bucket: my-bucket
+        s3_directory: my-directory
+        role_arn: arn:aws:iam::<some_number>:role/AwsComprehend
 
     aws_transcribe:
-        default_bucket: my-bucket
-        default_directory: 
+        s3_bucket: my-bucket
+        s3_directory: 

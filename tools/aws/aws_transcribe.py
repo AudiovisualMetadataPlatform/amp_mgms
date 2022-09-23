@@ -23,7 +23,7 @@ def main():
     parser.add_argument("input_audio", help="Input audio file")
     parser.add_argument("aws_transcript", help="Output AWS Transcript JSON")
     parser.add_argument("--audio_format", default="wav", help="Format for the audio input")
-    parser.add_argument("--lwlw", default=True, action="store_true", help="Use LWLW protocol")
+    parser.add_argument("--lwlw", default=False, action="store_true", help="Use LWLW protocol")
     parser.add_argument("--force", default=False, action="store_true", help="delete any existing jobs with this name and force a new job")
     
     args = parser.parse_args()
@@ -69,8 +69,10 @@ def main():
     else:
         # synchronous operation (for testing)
         rc = submit_job(aws_creds, job_name, args.input_audio, args.audio_format, s3_bucket, object_name)
+        logging.debug(f"Submit job returned rc={rc}")
         while rc == 255:
             rc = check_job(aws_creds, job_name, s3_bucket, object_name, args.aws_transcript)
+            logging.debug(f"Check job returned rc={rc}")
             sleep(10)
         exit(rc)
         
@@ -112,7 +114,7 @@ def submit_job(creds, job_name, input_audio, audio_format, bucket, object_name):
         return 255
     except Exception as e:
         logging.exception(f"Failed to submit transcription job!")
-        cleanup_job(job_name, bucket, object_name)
+        cleanup_job(creds, job_name, bucket, object_name)
         return 1
 
 
@@ -120,19 +122,19 @@ def check_job(creds, job_name, bucket, object_name, aws_transcript):
     "Check on the status of the running job"
     transcribe_client = boto3.client('transcribe', **creds)
     s3_client = boto3.client('s3', **creds) 
-    job = get_job(job_name)
+    job = get_job(creds, job_name)
     job_status = job['TranscriptionJob']['TranscriptionJobStatus']
     logging.debug(f"Transcoding job status: {job_status}")
     if job_status == 'COMPLETED':
         transcription_uri = job['TranscriptionJob']['Transcript']['TranscriptFileUri']
         logging.info(f"Result URI: {transcription_uri}.  Result bucket: {bucket}, Key: {job_name + '.json'}")
         s3_client.download_file(Bucket=bucket, Key=job_name + ".json", Filename=aws_transcript)
-        cleanup_job(job_name, bucket, object_name)
+        cleanup_job(creds, job_name, bucket, object_name)
         logging.info(f"Job {job_name} completed in success!")
         return 0
     elif job_status == 'FAILED':
         logging.error(f"Transcription failed: {job['TranscriptionJob']['FailureReason']}")
-        cleanup_job(job_name, bucket, object_name)
+        cleanup_job(creds, job_name, bucket, object_name)
         return 1
     # Job is still pending.
     return 255
@@ -149,7 +151,7 @@ def cleanup_job(creds, job_name, bucket, object_name):
         logging.warning(f"Cannot remove source file {bucket}/{object_name} for job {job_name}:\n{e}")
         
     # remove the job (and generated data) from AWS
-    job = get_job(job_name)
+    job = get_job(creds, job_name)
     if job:
         try:
             transcribe_client = boto3.client('transcribe', **creds)
