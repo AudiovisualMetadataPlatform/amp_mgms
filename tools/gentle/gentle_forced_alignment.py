@@ -10,7 +10,9 @@ import logging
 
 # NOTE: since this doesn't use amp_python.sif, this may need some fixups to
 # find the amp libraries.
-import amp.logging
+if 'AMP_ROOT' in os.environ:
+	sys.path.insert(1, os.environ['AMP_ROOT'] + "/amp_bootstrap")
+
 from amp.fileutils import write_json_file, read_json_file
 
 def main():
@@ -20,8 +22,8 @@ def main():
 	parser.add_argument("amp_transcript_unaligned")
 	parser.add_argument("gentle_transcript")
 	parser.add_argument("amp_transcript_aligned")
-	args = parser.parse_args()
-	amp.logging.setup_logging("gentle_forced_alignment", args.debug)
+	args = parser.parse_args()	
+	logging.basicConfig(format="%(asctime)s [%(levelname)-8s] (%(filename)s:%(lineno)d:%(process)d)  %(message)s", level=logging.DEBUG if args.debug else logging.INFO)   
 	logging.info(f"Starting with args={args}")	
 
 	try:
@@ -268,7 +270,6 @@ def update_confidence(words, uwords):
 		i = i + 1
 
 	return updated
-
 
 
 if __name__ == "__main__":

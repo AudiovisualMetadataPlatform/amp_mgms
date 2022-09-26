@@ -1,3 +1,27 @@
+# The test suite format
+
+Each test suite is a yaml file that represents an array of tests to run, each
+of which have these toplevel keys:
+* name - The name of the test
+* tool - The path to the galaxy tool file
+* inputs - a dictionary of input name to fixture name
+* params - a dictionary of key/value pairs for MGM parameters
+* outputs - a dictionary of test arrays
+
+A sample MGM test might look like:
+```
+- name: Applause Detection
+  tool: applause_detection/applause_detection.xml
+  inputs:
+    input_audio: audio.mp3
+  params:
+    min_segment_duration: 3000
+  outputs:
+    amp_applause_segments:
+      - [haskey, [json], segments]
+      - [eq, [json, segments.0.label], non-applause]
+```
+
 # The testing language
 
 The test language is an s-expression-like language where the

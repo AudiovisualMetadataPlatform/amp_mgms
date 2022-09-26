@@ -13,12 +13,6 @@ import atexit
 import os
 import time
 
-# NOTE: this will need likely need some fixups to find the amp modules
-# since this uses the python3.
-
-import amp.logging
-
-
 # The run_kaldi.sh script is assumed to be in a directory called kaldi-pua-singularity, which is a peer to the
 # galaxy install.  It can either be a check out of that repo, or just the script and the appropriate .sif file.
 # by default the cwd is somewhere near: 
@@ -33,8 +27,8 @@ def main():
     parser.add_argument("kaldi_transcript_text", help="Output Kaldi Transcript Text file")
     parser.add_argument("--gpu", default=False, action="store_true", help="Use GPU kaldi")
     parser.add_argument("--overlay_dir", default=None, nargs=1, help="Directory for the overlay file (default to cwd)")
-    args = parser.parse_args()
-    amp.logging.setup_logging("kaldi", args.debug)
+    args = parser.parse_args()    
+    logging.basicConfig(format="%(asctime)s [%(levelname)-8s] (%(filename)s:%(lineno)d:%(process)d)  %(message)s", level=logging.DEBUG if args.debug else logging.INFO)   
     logging.info(f"Starting with args {args}")
 
     # copy the input file to a temporary directory
