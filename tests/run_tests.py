@@ -64,7 +64,6 @@ def main():
                 # run the tests on the output
                 run_tests(test, outputs, args.debug)
 
-
         except Exception as e:
             logging.error(f"{leader} Failed: {e}")
             results['fail'] += 1
