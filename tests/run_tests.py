@@ -64,16 +64,11 @@ def main():
                 # run the tests on the output
                 run_tests(test, outputs, args.debug)
 
-
         except Exception as e:
             logging.error(f"{leader} Failed: {e}")
             results['fail'] += 1
 
-
-
-
     logging.info(f"Results:  {total_tests} tests, {results['pass']} passed, {results['fail']} failed, {results['skip']} skipped.")
-
 
 
 def build_script(test, mgm_dir, fixtures, tempdir):
@@ -128,6 +123,7 @@ set -e
     logging.debug(f"Runscript text:\n{script}")
 
     return outputs
+
 
 def runscript(tempdir, debug=False):
     "Run the runscript.sh in the directory specified"
