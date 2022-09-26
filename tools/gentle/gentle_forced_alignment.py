@@ -22,8 +22,8 @@ def main():
 	parser.add_argument("amp_transcript_unaligned")
 	parser.add_argument("gentle_transcript")
 	parser.add_argument("amp_transcript_aligned")
-	args = parser.parse_args()
-	amp.logging.setup_logging("gentle_forced_alignment", args.debug)
+	args = parser.parse_args()	
+	logging.basicConfig(format="%(asctime)s [%(levelname)-8s] (%(filename)s:%(lineno)d:%(process)d)  %(message)s", level=logging.DEBUG if args.debug else logging.INFO)   
 	logging.info(f"Starting with args={args}")	
 
 	try:
@@ -270,7 +270,6 @@ def update_confidence(words, uwords):
 		i = i + 1
 
 	return updated
-
 
 
 if __name__ == "__main__":
