@@ -5,11 +5,11 @@ class EntityExtraction:
 		if media is None:
 			self.media = EntityExtractionMedia()
 		else:
-			 self.media = media
+			self.media = media
 		if entities is None:
 			self.entities = []
 		else:
-			 self.entities = entities
+			self.entities = entities
 
 	def addEntity(self, type, text, beginOffset, endOffset, start = None, end = None, scoreType = None, scoreValue = None):
 		entity = EntityExtractionEntity(type, text, beginOffset, endOffset, start, end)
@@ -79,7 +79,7 @@ class EntityExtractionEntity:
 			start = json_data['start']
 		if 'end' in json_data.keys():
 			end = json_data['end']
-		if 'score' in json_data.keys():
+		if 'score' in json_data.keys() and json_data['score'] is not None:
 			score = EntityExtractionEntityScore.from_json(json_data['score'])
 		return cls(json_data['type'], json_data['text'], json_data['beginOffset'], json_data['endOffset'], start, end, score)
 
