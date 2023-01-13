@@ -9,7 +9,7 @@ dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-
 dnf update -y
 dnf install -y python3 pip ffmpeg cmake g++ gcc python-devel jq
 pip install awscli boto3 face-recognition ffmpeg-python jira opencv-python pillow pytesseract requests scenedetect spacy trello
-python -m spacy download en_core_web_lg
+python3 -m spacy download en_core_web_lg
 dnf erase -y cmake g++ gcc python-devel
 dnf clean all
 
