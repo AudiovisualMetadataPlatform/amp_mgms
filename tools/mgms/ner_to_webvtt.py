@@ -18,19 +18,19 @@ def main():
     logging.info(f"Starting with args {args}")
     (amp_entities, web_vtt) = (args.amp_entities, args.web_vtt)
 
-    # Open the file and create the ner object
+    # Open the input file and create the ner object
     with open(amp_entities, 'r') as file:
         ner = EntityExtraction.from_json(json.load(file))
 
     # write header to output vtt file
     vtt_file = open(web_vtt, "w")
-    vtt_file.write(amp.vtt_helper.getHeader())
+    vtt_file.write(amp.vtt_helper.get_header())
     
     # Write the vtt lines
     for e in ner.entities:
-        vtt_file.write(amp.vtt_helper.getEmptyLine())        
-        vtt_file.write(amp.vtt_helper.getTime(e.start, e.end))
-        vtt_file.write(amp.vtt_helper.getLine(None, e.text))
+        vtt_file.write(amp.vtt_helper.get_empty_line())        
+        vtt_file.write(amp.vtt_helper.get_time(e.start, e.end))
+        vtt_file.write(amp.vtt_helper.get_line(None, e.text))
     
     vtt_file.close()
     logging.info("Finished.")

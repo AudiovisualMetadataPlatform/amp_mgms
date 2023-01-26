@@ -1,5 +1,6 @@
 import json
 
+
 def foo():
     print ("in face_rec")
 
@@ -13,6 +14,12 @@ class FaceRecognition:
             self.frames = []
         else:
             self.frames = frames
+     
+    @classmethod
+    def from_json(cls, json_data):
+        media = FaceRecognitionMedia.from_json(json_data["media"])
+        frames = list(map(FaceRecognitionFrame.from_json, json_data["frames"]))
+        return cls(media, frames)
              
 class FaceRecognitionMedia:
     def __init__(self, filename = "", duration = 0, frameRate = 0, numFrames = 0, resolution = None):
@@ -26,8 +33,10 @@ class FaceRecognitionMedia:
             self.resolution = resolution
 
     @classmethod
-    def from_json(cls, json_data):
-        return cls(**json_data)
+    def from_json(cls, json_data: dict):
+        media = cls(**json_data)
+        media.resoluation = FaceRecognitionMediaResolution.from_json(json_data["resolution"])
+        return media
 
 class FaceRecognitionMediaResolution:
     def __init__(self, width = 0, height = 0):
@@ -35,7 +44,7 @@ class FaceRecognitionMediaResolution:
         self.height = height
 
     @classmethod
-    def from_json(cls, json_data):
+    def from_json(cls, json_data: dict):
         return cls(**json_data)
 
 class FaceRecognitionFrame:
@@ -47,8 +56,10 @@ class FaceRecognitionFrame:
             self.objects = objects
 
     @classmethod
-    def from_json(cls, json_data: dict):
-        return cls(**json_data)
+    def from_json(cls, json_data):
+        start = json_data["start"]
+        objects = list(map(FaceRecognitionFrameObject.from_json, json_data["objects"]))
+        return cls(start, objects)
 
 class FaceRecognitionFrameObject:
     def __init__(self, name = "", score = None, vertices = None):
@@ -64,7 +75,9 @@ class FaceRecognitionFrameObject:
 
     @classmethod
     def from_json(cls, json_data: dict):
-        return cls(**json_data)
+        score = FaceRecognitionFrameObjectScore.from_json(json_data["score"])
+        vertices = FaceRecognitionFrameObjectVertices.from_json(json_data["vertices"])
+        return cls(json_data["name"], score, vertices)
 
 class FaceRecognitionFrameObjectScore:
     def __init__(self, type = "", value = 0):

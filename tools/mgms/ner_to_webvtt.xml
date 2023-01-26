@@ -17,7 +17,7 @@
   <help>
 .. class:: infomark
 
-Generates a VTT file from the input AMP NER JSON file
+Generates a WebVTT file from the input AMP name entities JSON file
 
   </help>
 </tool>

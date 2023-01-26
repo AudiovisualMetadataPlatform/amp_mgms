@@ -7,6 +7,9 @@ import argparse
 import logging
 import amp.logger
 
+import amp.vtt_helper
+
+
 MIN_WORD_COUNT = 6	# minimum number of words per line
 MAX_WORD_COUNT = 10	# maximum number of words per line
 MIN_SEGMENT_GAP = 5.00	# minimum gap in seconds between segment for speaker switch
@@ -37,7 +40,7 @@ def main():
 	
 	# write header to output vtt file
 	out_file = open(vtt_file, "w")
-	out_file.write(writeHeader())
+	out_file.write(amp.vtt_helper.get_header())
 
 	# initialize status before first (new) line
 	nword = 0	# number of pronunciation words in current line so far 
@@ -69,9 +72,9 @@ def main():
 			# write the current line (if any word) before starting a new line
 			# note that punctuation words before the very first pronunciation word (in which case nword = 0) will be ignored 
 			if (nword > 0):
-				out_file.write(writeEmptyLine())
-				out_file.write(writeTime(start, end))
-				out_file.write(writeLine(getSegmentSpeaker(segments, curseg), line))
+				out_file.write(amp.vtt_helper.get_empty_line())
+				out_file.write(amp.vtt_helper.get_time(start, end))
+				out_file.write(amp.vtt_helper.get_line(getSegmentSpeaker(segments, curseg), line))
 			# reset status for the new line
 			nword = 0 
 			# new line always starts with a pronunciation, use its start time as line start time
@@ -95,9 +98,9 @@ def main():
 	# write the last line to file if any word in it; note that 
 	# the last line should always contain some pronunciation words unless the whole words list contains no pronunciation
 	if nword > 0:
-		out_file.write(writeEmptyLine())
-		out_file.write(writeTime(start, end))
-		out_file.write(writeLine(getSegmentSpeaker(segments, curseg), line))
+		out_file.write(amp.vtt_helper.get_empty_line())
+		out_file.write(amp.vtt_helper.get_time(start, end))
+		out_file.write(amp.vtt_helper.get_line(getSegmentSpeaker(segments, curseg), line))
 	out_file.close()
 	logging.info("Finished.")
 		
@@ -154,26 +157,6 @@ def getSegmentTime(segments, iseg,  forstart):
 		return segments[iseg]['start']
 	else:
 		return segments[iseg]['end']
-	
-def writeHeader():
-	#this fuction writes the header of the vtt file
-	return "WEBVTT"+"\n"
-		
-def writeLine(speaker, text):
-	#This function writes a new line to the vtt output
-	return "<v "+speaker+">"+text+"\n"
-
-def writeEmptyLine():
-	# This function writes an empty line to the vtt output
-	return "\n"
-
-def writeTime(start_time, end_time):
-	#This function writes a time entry to the vtt output
-	return str(convert(start_time))+" --> "+str(convert(end_time))+"\n"
-	
-# convert seconds to HH:MM:SS
-def convert(seconds): 
-    return time.strftime("%H:%M:%S", time.gmtime(seconds)) 
    
    
 if __name__ == "__main__":

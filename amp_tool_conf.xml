@@ -49,6 +49,7 @@
     <tool file="amp_mgms/spacy.xml"/>
     <tool file="amp_mgms/aws_comprehend.xml"/>
     <tool file="amp_mgms/ner_to_csv.xml"/>
+    <tool file="amp_mgms/ner_to_webvtt.xml"/>
   </section>
 
   <section id="video_indexing" name="Video Indexing">
@@ -69,6 +70,7 @@
 
   <section id="facial_recognition" name="Facial Recognition">
     <tool file="amp_mgms/dlib_face_recognition.xml"/>  
+    <tool file="amp_mgms/fr_to_webvtt.xml"/>  
   </section>
 
   <section id="video_ocr" name="Video Optical Charater Recognition">
