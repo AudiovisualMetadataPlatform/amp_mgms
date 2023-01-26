@@ -1,0 +1,23 @@
+<tool id="ner_to_webvtt" name="AMP Named Entities to WebVTT" version="1.0.0">
+  <description>Convert AMP named entities JSON file to WebVTT</description>
+  <requirements>
+	<requirement type="package" version="3.8">python</requirement>
+  </requirements>
+  <command detect_errors="exit_code">
+  	'$__tool_directory__/ner_to_webvtt.py' '$amp_entities' '$web_vtt'
+  </command>
+  <inputs>
+    <param name="amp_entities" type="data" format="ner" label="AMP Named Entities" help="AMP Named Entities JSON file" ></param>
+  </inputs>
+  <outputs>
+    <data name="web_vtt" format="vtt" label="WebVTT Generated" />
+  </outputs>
+  <tests>
+  </tests>
+  <help>
+.. class:: infomark
+
+Generates a VTT file from the input AMP NER JSON file
+
+  </help>
+</tool>
