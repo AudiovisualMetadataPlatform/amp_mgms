@@ -28,8 +28,9 @@ def main():
     
     # Write the vtt lines
     for e in ner.entities:
-        vtt_file.write(amp.vtt_helper.get_empty_line())        
-        vtt_file.write(amp.vtt_helper.get_time(e.start, e.end))
+        vtt_file.write(amp.vtt_helper.get_empty_line())  
+        # there is no end timestamp per entity. just set it same as start time, as the duration is likely very short      
+        vtt_file.write(amp.vtt_helper.get_time(e.start, e.start))
         vtt_file.write(amp.vtt_helper.get_line(None, e.text))
     
     vtt_file.close()
