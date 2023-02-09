@@ -15,5 +15,5 @@ dnf clean all
 
 
 %runscript
-exec python "$@"
+exec python3 "$@"
 
