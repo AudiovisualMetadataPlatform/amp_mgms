@@ -1,0 +1,23 @@
+<tool id="fr_to_webvtt" name="AMP Faces Recognized to WebVTT" version="1.0.0">
+  <description>Convert AMP faces recognized JSON file to WebVTT</description>
+  <requirements>
+	<requirement type="package" version="3.8">python</requirement>
+  </requirements>
+  <command detect_errors="exit_code">
+  	'$__tool_directory__/fr_to_webvtt.py' '$amp_faces' '$web_vtt'
+  </command>
+  <inputs>
+    <param name="amp_faces" type="data" format="face" label="AMP Faces Recognized" help="AMP Faces Recognized JSON file" ></param>
+  </inputs>
+  <outputs>
+    <data name="web_vtt" format="vtt" label="WebVTT Generated" />
+  </outputs>
+  <tests>
+  </tests>
+  <help>
+.. class:: infomark
+
+Generates a WebVTT file from the input AMP faces recognized JSON file
+
+  </help>
+</tool>
