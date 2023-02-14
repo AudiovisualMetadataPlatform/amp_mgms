@@ -44,3 +44,8 @@ s3_directory =  your_comprehend_s3_directory
 [aws_transcribe]
 s3_bucket = your_transcribe_s3_bucket
 s3_directory =  your_transcribe_s3_directory
+
+[trello]
+api_key = api_key
+api_token = api_token
+board_id = board_id

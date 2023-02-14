@@ -11,6 +11,7 @@ import traceback
 
 import amp.logger
 from amp.task.jira import TaskJira
+from amp.task.trello import TaskTrello
 from amp.task.manager import TaskManager
 from amp.task.openproject import TaskOpenproject 
 from amp.task.redmine import TaskRedmine
@@ -22,6 +23,7 @@ HMGM_OUTPUT_SUFFIX = ".complete"
 JIRA = "Jira"
 OPEN_PROJECT = "OpenProject"
 REDMINE = "Redmine"
+TRELLO = "Trello"
 
 
 # Usage: hmgm_main.py task_type root_dir input_json output_json task_json context_json 
@@ -215,7 +217,7 @@ def get_editor_input_path(config, dataset_file):
 # Create subclass of task manager instance based on task platform specified in the given context.
 def get_task_manager(config, context):
 	manager = context["taskManager"]
-	assert manager in (JIRA, OPEN_PROJECT, REDMINE), f"taskManager {manager} is not one of ({JIRA}, {OPEN_PROJECT}, {REDMINE})" 
+	assert manager in (JIRA, OPEN_PROJECT, REDMINE, TRELLO), f"taskManager {manager} is not one of ({JIRA}, {OPEN_PROJECT}, {REDMINE}, {TRELLO})" 
 	
 	# create subclass of task instance based on task platform specified in context
 	if manager == JIRA:
@@ -223,7 +225,9 @@ def get_task_manager(config, context):
 	elif manager == OPEN_PROJECT:
 		taskManager = TaskOpenproject(config)
 	elif manager == REDMINE:
-		taskManager = TaskRedmine(config)            
+		taskManager = TaskRedmine(config) 
+	elif manager == TRELLO:
+		taskManager = TaskTrello(config)           
 	return taskManager
 
 
