@@ -14,7 +14,6 @@ import logging
 
 import amp.logger
 import amp.utils
-from amp.schema.entity_extraction import EntityExtraction, EntityExtractionMedia, EntityExtractionEntity, EntityExtractionEntityScore
 
 
 def main():
