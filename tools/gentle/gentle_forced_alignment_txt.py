@@ -84,13 +84,13 @@ def gentle_transcript_to_amp_transcript(gentle_transcript, speech_audio, amp_tra
     lenw = len(gwords)
     if lenw > 0:
         lastword = gwords[lenw-1]
-        duration = gword["end"]
+        duration = lastword["end"]
     else:
         duration = 0
     
     # initialize amp_transcript
-    media = SpeechToTextMedia(speech_audio, duration)        
-    results = SpeechToTextResult(transcript, words)
+    media = SpeechToTextMedia(duration, speech_audio)        
+    results = SpeechToTextResult(words, transcript)
     amp_transcript = SpeechToText(media, amp_results)
     
     # populate amp_transcript words list, based on gentle_transcript words list
@@ -108,23 +108,23 @@ def gentle_transcript_to_amp_transcript(gentle_transcript, speech_audio, amp_tra
         
         # insert punctuation between the current and previous word if any, based on their offsets;
         # this is needed as Gentle doen't include punctuation in the words list, but the transcript does
-        insert_punctuations(amp_transcript, transcript, preoffset, offset)
+        insert_punctuations(results, transcript, preoffset, offset)
             
         # append the current word to the AMP words list
         results.addWord(type, text, offset, start, end, scoreType, scoreValue) 
         preoffset = gword["endOffset"]                                     
         
     # append punctuation after the last word if any text left
-    offset = len(transcript) - 1
-    insert_punctuations(amp_transcript, transcript, preoffset, offset)
+    offset = len(transcript)
+    insert_punctuations(results, transcript, preoffset, offset)
     logging.info(f"Successfully added {len(words)} words into AMP aligned transcript, including {len(gwords)} words from Gentle words, and {len(words)-len(gwords)} punctuations inserted from Gentle transcript.")
     
     # write final amp_transcript_aligned_json to file
     amp.utils.write_json_file(amp_transcript, amp_transcript_aligned)
         
         
-# Insert punctuations to the given amp_transcript object, if there is any in the given transcript between the previous word offset and current word offset.
-def insert_punctuations(amp_transcript, transcript, preoffset, offset):                
+# Insert punctuations to the given results object, if there is any in the given transcript between the previous offset and current offset.
+def insert_punctuations(results, transcript, preoffset, offset):                
     # scan transcript between end of previous word and start of current word        
     for i in range(preoffset, offset):
         text = transcript[i]
@@ -141,7 +141,7 @@ def insert_punctuations(amp_transcript, transcript, preoffset, offset):
             
             # append the current punctuations to the AMP words list
             results.addWord(type, text, offset, start, end, scoreType, scoreValue)     
-            logging.info(f"Insert punctuation as AMP words[{len(words)-1}]={text} after Gentle words[{gi}]={gword}")
+            logging.debug(f"Insert punctuation as AMP words[{len(words)-1}]={text} at offset {offset}")
 
         
 if __name__ == "__main__":
