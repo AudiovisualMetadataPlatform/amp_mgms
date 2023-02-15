@@ -18,7 +18,7 @@ class TaskTrello (TaskManager):
          trello_board_id = config["trello"]["board_id"]    
          self.trello = TrelloClient(api_key=trello_api_key, token=trello_api_token)
          self.board = self.trello.get_board(trello_board_id)
-         self.todo_list = self.get_list_by_name('todo')
+         self.todo_list = self.get_list_by_name('to do')
          self.done_list = self.get_list_by_name('done')
 
 
