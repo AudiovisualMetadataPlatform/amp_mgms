@@ -57,7 +57,6 @@ class TaskTrello (TaskManager):
 
      def get_list_by_name(self, name):
          lists = self.board.list_lists()
-        #  lists = self.board.get_list(self.trello_board_id)
          for list in lists:
              if list.name.lower() == name:
                  return list
