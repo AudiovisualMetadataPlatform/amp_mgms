@@ -10,7 +10,7 @@ import subprocess
 import sys
 import uuid
 
-import amp.logger
+# import amp.logger
 from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult, SpeechToTextWord, SpeechToTextScore
 import amp.utils
 
@@ -79,6 +79,7 @@ def gentle_transcript_to_amp_transcript(gentle_transcript, speech_audio, amp_tra
     gwords = gentle_transcript_json["words"]
     words = list()
     preoffset = 0    # end offset of previous word
+    pend = 0;   # end timestamp of previous word
 
     # use last word's end timestamp as the duration 
     lenw = len(gwords)
@@ -91,7 +92,7 @@ def gentle_transcript_to_amp_transcript(gentle_transcript, speech_audio, amp_tra
     # initialize amp_transcript
     media = SpeechToTextMedia(duration, speech_audio)        
     results = SpeechToTextResult(words, transcript)
-    amp_transcript = SpeechToText(media, amp_results)
+    amp_transcript = SpeechToText(media, results)
     
     # populate amp_transcript words list, based on gentle_transcript words list
     for gword in gwords:
@@ -99,12 +100,20 @@ def gentle_transcript_to_amp_transcript(gentle_transcript, speech_audio, amp_tra
         type = "pronunciation"  
         text = gword["word"]
         offset = gword["startOffset"]
-        start = gword["start"]
-        end = gword["end"]
         scoreType = "confidence"            
-        
-        # set score value to 1 if word is aligned in success, 0 otherwise
-        scoreValue = 1.0 if gword["case"] == "success" else 0.0              
+                
+        # if word is aligned in success, set score value to 1, and obtain start/end time stamp
+        # otherwise, set score value to 0, and use previous end time as start/end, since start/end time won't exist in Gentle word  
+        case = gword["case"]
+        if case == "success":
+            scoreValue = 1.0  
+            start = gword["start"]
+            end = gword["end"]            
+        else:
+            scoreValue = 0.0              
+            start = pend
+            end = pend
+            logging.warning(f"Word {text} at offset {offset} was {case}!")
         
         # insert punctuation between the current and previous word if any, based on their offsets;
         # this is needed as Gentle doen't include punctuation in the words list, but the transcript does
@@ -112,7 +121,10 @@ def gentle_transcript_to_amp_transcript(gentle_transcript, speech_audio, amp_tra
             
         # append the current word to the AMP words list
         results.addWord(type, text, offset, start, end, scoreType, scoreValue) 
-        preoffset = gword["endOffset"]                                     
+        
+        # update previous word end offset and end timestamp
+        preoffset = gword["endOffset"] 
+        pend = end                                    
         
     # append punctuation after the last word if any text left
     offset = len(transcript)
@@ -141,16 +153,10 @@ def insert_punctuations(results, transcript, preoffset, offset):
             
             # append the current punctuations to the AMP words list
             results.addWord(type, text, offset, start, end, scoreType, scoreValue)     
-            logging.debug(f"Insert punctuation as AMP words[{len(words)-1}]={text} at offset {offset}")
+            logging.debug(f"Insert punctuation as AMP words[{len(results.words)-1}]={text} at offset {offset}")
 
         
 if __name__ == "__main__":
     main()
+#     gentle_transcript_to_amp_transcript("gentle_transcript.json", "speech_audio.wav", "amp_transcript.json")
 
-#     transcript_txt = "amp_un.json"
-#     gentle_transcript = "amp_gen.json"
-#     amp_transcript_aligned = "amp_al.json"
-#      
-#     with open(transcript_txt, "r") as transcript_txt_file:
-#         transcript_txt_text = json.load(transcript_txt_file)
-#     gentle_transcript_to_amp_transcript(gentle_transcript, transcript_txt_text, amp_transcript_aligned)
