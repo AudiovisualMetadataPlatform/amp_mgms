@@ -250,27 +250,30 @@ def update_confidence(words, uwords):
 			ui = ui + 1
 			
 			# check boundary of unaligned words
-			if ui == len(uwords):
+			if ui >= len(uwords):
 				logging.warning(f"Warning: Reaching the end of unaligned words at length {ui} while updating confidence for aligned word {word} at index {i}.")
-			
-			# check current word
-			type = uwords[ui]["type"]
-			stext = uwords[ui]["text"]
-			
-			# for pronunciation, split by space
-			if (type == "pronunciation"):
-				stexts = stext.split()
-			# for punctuation, split into each char
 			else:
-				stexts = list(stext)
+				# check current word
+				type = uwords[ui]["type"]
+				stext = uwords[ui]["text"]
+				
+				# for pronunciation, split by space
+				if (type == "pronunciation"):
+					stexts = stext.split()
+				# for punctuation, split into each char
+				else:
+					stexts = list(stext)
 		
 		# compare aligned/unaligned words and update confidence
 		text = word["text"]
 		if text != stexts[si]:
 			logging.warning(f"Warning: Algined words[{i}] = {text} does not match unaligned words[{ui}][{si}] = {stexts[si]}, using default confidence for it.")
-		elif "score" in uwords[ui]:
-			word["score"]["value"] = uwords[ui]["score"]["value"]
-			updated = updated + 1
+		elif ui < len(uwords) and "score" in uwords[ui]:
+			if "value" in uwords[ui]["score"]:
+				if "score" not in word:
+					word["score"] = {}
+				word["score"]["value"] = uwords[ui]["score"]["value"]
+				updated = updated + 1
 			
 		# move on to the next word in both the unaligned multi-word sublist and the aligned words list
 		si = si + 1	
