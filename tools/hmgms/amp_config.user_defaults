@@ -11,5 +11,5 @@ mgms:
         api_key: api_key
         api_token: api_token
         board_id: board_id
-     amppd:
+    amppd:
         server: https://amp.dlib.edu/rest
