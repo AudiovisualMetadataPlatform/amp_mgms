@@ -8,8 +8,8 @@ mgms:
         password: jira_password
         project: jira_project_key
     trello:
-        api_key: api_key
-        api_token: api_token
-        board_id: board_id
+        api_key: trello_api_key
+        api_token: trello_api_token
+        board_id: trello_board_id
     amppd:
         server: https://amp.dlib.edu/rest
