@@ -20,7 +20,7 @@ def get_time(start_time, end_time):
 # Convert seconds to HH:MM:SS.fff string
 def convert(seconds): 
     # get milliseconds str
-    ms = str(int(seconds * 1000))[-3:]    
+    ms = str(int(seconds * 1000))[-3:] if seconds else "000"    
     # get %H:%M:%S timestamp
     ts = time.strftime("%H:%M:%S", time.gmtime(seconds))
     return ts + "." + ms
