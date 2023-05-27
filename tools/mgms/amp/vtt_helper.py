@@ -15,9 +15,13 @@ def get_empty_line():
 
 # Get a time entry to the vtt output
 def get_time(start_time, end_time):
-    return str(convert(start_time))+" --> "+str(convert(end_time))+"\n"
+    return convert(start_time) + " --> "+ convert(end_time) + "\n"
     
-# Convert seconds to HH:MM:SS
+# Convert seconds to HH:MM:SS.fff string
 def convert(seconds): 
-    return time.strftime("%H:%M:%S", time.gmtime(seconds)) 
+    # get milliseconds str
+    ms = str(int(seconds * 1000))[-3:]
+    # get %H:%M:%S timestamp
+    ts = time.strftime("%H:%M:%S", time.gmtime(seconds)) + "." + ms
+    return ts
    
