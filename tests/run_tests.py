@@ -63,7 +63,7 @@ def main():
 
                 # run the tests on the output
                 run_tests(test, outputs, args.debug)
-
+                results['pass'] += 1
         except Exception as e:
             logging.error(f"{leader} Failed: {e}")
             results['fail'] += 1
@@ -143,7 +143,6 @@ def runscript(tempdir, debug=False):
 
 
 def run_tests(test, outputs, debug=False):
-def run_tests(test, outputs, debug=False):
     "Run the specified tests on the output"
     has_failures = False
     for outname in outputs:
@@ -169,16 +168,8 @@ def run_tests(test, outputs, debug=False):
                     logging.exception(f"{outname} Test {t} threw exception {e}")
                 else:
                     logging.error(f"{outname} Test {t} threw exception {e}")
-                
-        if sub_error:
-            logging.error(f"Cache for {outname}:\n" + yaml.safe_dump(cache))
                     sub_error = True
-            except Exception as e:
-                if debug:
-                    logging.exception(f"{outname} Test {t} threw exception {e}")
-                else:
-                    logging.error(f"{outname} Test {t} threw exception {e}")
-                
+           
         if sub_error:
             logging.error(f"Cache for {outname}:\n" + yaml.safe_dump(cache))
 

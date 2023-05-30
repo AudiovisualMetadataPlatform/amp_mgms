@@ -5,6 +5,7 @@ import time
 import argparse
 import logging
 import amp.logging
+import amp.vtt_helper
 
 MIN_WORD_COUNT = 6	# minimum number of words per line
 MAX_WORD_COUNT = 10	# maximum number of words per line
@@ -35,7 +36,7 @@ def main():
 	
 	# write header to output vtt file
 	out_file = open(args.vtt_file, "w")
-	out_file.write(writeHeader())
+	out_file.write(amp.vtt_helper.get_header())
 
 	# initialize status before first (new) line
 	nword = 0	# number of pronunciation words in current line so far 

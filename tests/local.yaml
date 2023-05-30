@@ -256,9 +256,10 @@
       - [eq, [csv, 0, 0], Frame Number]
       - [eq, [csv, 0, 1], Timecode]
       - [eq, [csv, 0, 2], content_val]
-      - [eq, [csv, 0, 3], delta_hue]
-      - [eq, [csv, 0, 4], delta_lum]
-      - [eq, [csv, 0, 5], delta_sat]
+      - [eq, [csv, 0, 3], delta_edges]
+      - [eq, [csv, 0, 4], delta_hue]
+      - [eq, [csv, 0, 5], delta_lum]
+      - [eq, [csv, 0, 6], delta_sat]
 
 
 - name: Remove Silence Music Speech

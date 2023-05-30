@@ -63,7 +63,8 @@ def main():
         overlay_file = f"{args.overlay_dir}/kaldi-overlay-{os.getpid()}-{time.time()}.img"
         
         if not args.debug:
-            atexit.register(lambda: Path(overlay_file).unlink(missing_ok=True))
+            # make sure to erase the overlay at the end.  This is kind of an abuse of lambda...
+            atexit.register(lambda: Path(overlay_file).unlink() if Path(overlay_file).exists() else None)
         try:
             subprocess.run(["singularity", "overlay", "create", "--size", str(overlay_size), overlay_file], check=True)
             logging.debug(f"Created overlay file {overlay_file} {overlay_size}MB")
