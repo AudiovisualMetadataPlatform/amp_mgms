@@ -234,44 +234,7 @@ def test_eval(subject, expr, cache=None):
         return args[0] in args[1:]
     elif func == 're':
         return re.search(str(args[0]), str(args[1])) is not None
-    elif func == 'and':
-        r = True
-        for a in args:
-            r = r and a
-        return r
-    elif func == 'or':
-        r = False
-        for a in args:
-            r = r or a
-        return r
-    elif func == 'not':
-        return not args[0]
-    
-    # comparison ops
-    elif func in ('eq', 'ne', 'lt', 'le', 'gt', 'ge'):
-        args = coerce(args)
-        if len(args) < 2:
-            raise ValueError(f"Cannot run {func} with these args: {args}")
-        if func == 'eq':
-            return args[0] == args[1]
-        elif func == 'ne':
-            return args[0] != args[1]
-        elif func == 'lt':
-            return args[0] < args[1]
-        elif func == 'le':
-            return args[0] <= args[1]
-        elif func == 'gt':
-            return args[0] > args[1]
-        elif func == 'ge':
-            return args[0] >= args[1]
-    
-    # other comparisons
-    elif func == 'any':
-        args = coerce(args)
-        return args[0] in args[1:]
-    elif func == 're':
-        return re.search(str(args[0]), str(args[1])) is not None
-    
+       
     # data functions
     elif func == 'size':
         return Path(subject).stat().st_size

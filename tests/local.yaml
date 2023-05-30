@@ -33,9 +33,16 @@
     input_audio: audio.mp3
   outputs:
     amp_segments:
+      - [any, [mime], text/plain, application/json]
       - [haskey, [json], segments]
+      - [haskey, [json, segments.0], label]
+      - [haskey, [json, segments.0], gender]
+      - [haskey, [json, segments.0], start]
+      - [haskey, [json, segments.0], end]
+      - [haskey, [json, segments.0], speakerLabel]  
       - [eq, [json, segments.0.label], silence]
-      
+
+
 
 ### tools/kaldi
 # UGH, like the AWS transcribe, this is actually testing two scripts
@@ -204,15 +211,7 @@
     sample_format: pcm_s16le
 
 
-- name: INA Speech Segmenter
-  tool: ina_speech_segmenter/ina_speech_segmenter.xml
-  inputs:
-    input_audio: audio.mp3
-  outputs:
-    amp_segments:
-      - {test: magic, mime: [text/plain, application/json], comp: in}
-      - {test: strings, strings: [segments, silence, gender, start, end]}
-
+                            
 
 - name: Keep Speech
   tool: mgms/keep_speech.xml
