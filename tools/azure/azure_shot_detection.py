@@ -1,5 +1,4 @@
 #!/usr/bin/env amp_python.sif
-
 import logging
 import argparse
 import logging
