@@ -6,7 +6,7 @@
 #
 # This is based on a combination of the debian 10 Dockerfile on
 # at https://github.com/kaldi-asr/kaldi/blob/master/docker/debian10-cpu/Dockerfile
-# and the Singularity.in at https://github.com/AudiovisualMetadataPlatform/kaldi-pua-singularity/blob/master/Singularity.in
+# and the Apptainer.in at https://github.com/AudiovisualMetadataPlatform/kaldi-pua-apptainer/blob/master/Apptainer.in
 # which merged the Pop Up Archive data with the kaldi runtime
 
 Bootstrap: docker

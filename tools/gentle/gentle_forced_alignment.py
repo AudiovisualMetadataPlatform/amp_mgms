@@ -27,13 +27,13 @@ def main():
 	logging.info(f"Starting with args={args}")	
 
 	try:
-		# prefix random id to original filenames to ensure uniqueness for the tmp Gentle singularity input files 
+		# prefix random id to original filenames to ensure uniqueness for the tmp Gentle apptainer input files 
 		id = str(uuid.uuid4())
 		tmp_speech_audio_name = "gentle-" + id + "-" + os.path.basename(args.speech_audio)
 		tmp_amp_transcript_unaligned_name = "gentle-" + id + "-" + os.path.basename(args.amp_transcript_unaligned)
 		tmp_gentle_transcript_name = "gentle-" + id + "-" + os.path.basename(args.gentle_transcript)
 
-		# define directory accessible to singularity container
+		# define directory accessible to apptainer container
 		tmpdir = '/tmp'
 
 		# define tmp filepaths
@@ -45,13 +45,13 @@ def main():
 		amp_transcript_unaligned_json = read_json_file(args.amp_transcript_unaligned)
 		write_json_file(amp_transcript_unaligned_json["results"]["transcript"], tmp_amp_transcript_unaligned)
 			
-		# Copy the audio file to a location accessible to the singularity container
+		# Copy the audio file to a location accessible to the apptainer container
 		shutil.copy(args.speech_audio, tmp_speech_audio)
 
 		# Run gentle
 		logging.info(f"Running Gentle... tmp_speech_audio: {tmp_speech_audio}, tmp_amp_transcript_unaligned: {tmp_amp_transcript_unaligned}, tmp_gentle_transcript: {tmp_gentle_transcript}")
 		sif = sys.path[0] + "/gentle_forced_alignment.sif"
-		r = subprocess.run(["singularity", "run", sif, tmp_speech_audio, tmp_amp_transcript_unaligned, "-o", tmp_gentle_transcript], stdout=subprocess.PIPE)
+		r = subprocess.run(["apptainer", "run", sif, tmp_speech_audio, tmp_amp_transcript_unaligned, "-o", tmp_gentle_transcript], stdout=subprocess.PIPE)
 		logging.info(f"Finished running Gentle with return Code: {r.returncode}")
 
 		# if Gentle completed in success, continue with transcript conversion

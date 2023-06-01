@@ -40,6 +40,6 @@ From: ubuntu:20.04
 	Version 0.1
     
 %help
-	Applause Detection using Tensorflow, integrated into AMP/Galaxy as Singularity
+	Applause Detection using Tensorflow, integrated into AMP/Galaxy as Apptainer
 
     

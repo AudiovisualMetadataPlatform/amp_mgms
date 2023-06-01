@@ -64,16 +64,16 @@ The processed results are stored as JSON file in the target directory named afte
 ]
 ```
 
-## Run as Singularity
+## Run as Apptainer
 
 To build as root:
 ```
-sudo singularity build applause-detection.sif applause-detection.def
+sudo apptainer build applause-detection.sif applause-detection.def
 ```
 
 To build as non-admin:
 ```
-singularity build --fakeroot applause-detection.sif applause-detection.def
+apptainer build --fakeroot applause-detection.sif applause-detection.def
 ```
 
 To run:

@@ -13,7 +13,7 @@ import atexit
 import os
 import time
 
-# The run_kaldi.sh script is assumed to be in a directory called kaldi-pua-singularity, which is a peer to the
+# The run_kaldi.sh script is assumed to be in a directory called kaldi-pua-apptainer, which is a peer to the
 # galaxy install.  It can either be a check out of that repo, or just the script and the appropriate .sif file.
 # by default the cwd is somewhere near: 
 #    galaxy/database/jobs_directory/000/4/working
@@ -40,11 +40,11 @@ def main():
             logging.error(f"Kaldi SIF file {sif!s} doesn't exist!")
             exit(1)
 
-        # By default, singularity will map $HOME, /var/tmp and /tmp to somewhere outside
+        # By default, apptainer will map $HOME, /var/tmp and /tmp to somewhere outside
         # the container.  That's good.  
         # The authors of the kaldi docker image assumed that they could write anywhere
         # they pleased on the container image.  That's bad.
-        # With the --writable-tmpfs, singularity will produce a 16M overlay filesystem that
+        # With the --writable-tmpfs, apptainer will produce a 16M overlay filesystem that
         # handles writes everywhere else.  That's good.
         # BUT kaldi writes big files all over the place...and they will routinely exceed
         # 16M.  That's bad.  
@@ -66,15 +66,15 @@ def main():
             # make sure to erase the overlay at the end.  This is kind of an abuse of lambda...
             atexit.register(lambda: Path(overlay_file).unlink() if Path(overlay_file).exists() else None)
         try:
-            subprocess.run(["singularity", "overlay", "create", "--size", str(overlay_size), overlay_file], check=True)
+            subprocess.run(["apptainer", "overlay", "create", "--size", str(overlay_size), overlay_file], check=True)
             logging.debug(f"Created overlay file {overlay_file} {overlay_size}MB")
         except subprocess.CalledProcessError as e:
             logging.exception(f"Cannot create the overlay image of {overlay_size} bytes as {overlay_file}!")            
             exit(1)
 
-        # build the singularity command line
-        cmd = ['singularity', 'run', '-B', f"{tmpdir}:/audio_in", '--overlay', overlay_file, str(sif) ]
-        logging.debug(f"Singularity Command: {cmd}")
+        # build the apptainer command line
+        cmd = ['apptainer', 'run', '-B', f"{tmpdir}:/audio_in", '--overlay', overlay_file, str(sif) ]
+        logging.debug(f"Apptainer Command: {cmd}")
         p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding='utf-8')        
         if p.returncode != 0:
             logging.error("KALDI failed")

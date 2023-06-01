@@ -24,7 +24,7 @@ def main():
 	shutil.copy(args.input_file, temp_input_file)
 	
 	sif = sys.path[0] + "/ina_speech_segmenter.sif"
-	#r = subprocess.run(["singularity", "run", sif, temp_input_file, temp_output_file])
+	#r = subprocess.run(["apptainer", "run", sif, temp_input_file, temp_output_file])
 	r = subprocess.run([sif, temp_input_file, temp_output_file])
 
 	shutil.copy(temp_output_file, args.json_file)

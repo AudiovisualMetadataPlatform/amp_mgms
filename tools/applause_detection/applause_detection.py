@@ -19,17 +19,17 @@ def main():
     logging.basicConfig(format="%(asctime)s [%(levelname)-8s] (%(filename)s:%(lineno)d:%(process)d)  %(message)s", level=logging.DEBUG if args.debug else logging.INFO)    
     logging.info(f"Starting with args={args}")    
 
-    # use a tmp directory accessible to the singularity for input/output
+    # use a tmp directory accessible to the apptainer for input/output
     with tempfile.TemporaryDirectory() as tmpdir:
         # copy the input audio file to the tmp directory
         filename = os.path.basename(args.input_audio)
         shutil.copy(args.input_audio, f"{tmpdir}/{filename}")        
         
-        # The applause_detection singularity file is assumed to be next to the 
+        # The applause_detection apptainer file is assumed to be next to the 
         # script.
         sif = sys.path[0] + "/applause_detection.sif"
 
-        # run singularity
+        # run apptainer
         subprocess.run([sif, tmpdir, str(args.min_segment_duration)], check=True)
 
         # copy the corresponding temporary output file to the output AMP segments JSON        

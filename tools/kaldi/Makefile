@@ -1,22 +1,22 @@
-Singularity.cpu: Singularity.in
-	sed -e "s/__TAG__/latest/g" < Singularity.in >Singularity.cpu
+Apptainer.cpu: Apptainer.in
+	sed -e "s/__TAG__/latest/g" < Apptainer.in >Apptainer.cpu
 
-Singularity.gpu: Singularity.in 
-	sed -e "s/__TAG__/gpu-latest/g" < Singularity.in >Singularity.gpu
+Apptainer.gpu: Apptainer.in 
+	sed -e "s/__TAG__/gpu-latest/g" < Apptainer.in >Apptainer.gpu
 
-kaldi-pua-cpu.sif: Singularity.cpu
+kaldi-pua-cpu.sif: Apptainer.cpu
 	if [ ! -e exp2.tar.gz ] || ! sha1sum -c exp2.tar.gz.sha1 ; then \
 		rm -f exp2.tar.gz; \
 		curl -o exp2.tar.gz https://dlib.indiana.edu/AMP-packages/resources/exp2.tar.gz; \
 	fi
-	singularity build --force --fakeroot kaldi-pua-cpu.sif Singularity.cpu
+	apptainer build --force --fakeroot kaldi-pua-cpu.sif Apptainer.cpu
 
-kaldi-pua-gpu.sif: kaldi-pua-singularity/Singularity.gpu
+kaldi-pua-gpu.sif: kaldi-pua-apptainer/Apptainer.gpu
 	if [ ! -e exp2.tar.gz ] || ! sha1sum -c exp2.tar.gz.sha1 ; then \
 		rm -f exp2.tar.gz; \
 		curl -o exp2.tar.gz https://dlib.indiana.edu/AMP-packages/resources/exp2.tar.gz; \
 	fi
-	singularity build --force --fakeroot kaldi-pua-gpu.sif Singularity.gpu
+	apptainer build --force --fakeroot kaldi-pua-gpu.sif Apptainer.gpu
 
 
 # Kaldi's GPU verison doesn't seem to be building -- skip it.

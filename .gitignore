@@ -1,12 +1,12 @@
 # pua data
 exp2.tar.gz
 
-# singularity containers
+# apptainer containers
 *.sif
 
 
-Singularity.cpu
-Singularity.gpu
+Apptainer.cpu
+Apptainer.gpu
 
 # ini files
 *.ini

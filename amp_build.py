@@ -23,21 +23,21 @@ def main():
                         level=logging.DEBUG if args.debug else logging.INFO)
 
     # build anything that needs to be built...
-    # Singularity builds need a lot of disk space. If 
-    # SINGULARITY_TMPDIR isn't set, we'll use the temp
+    # Apptainer builds need a lot of disk space. If 
+    # APPTAINER_TMPDIR isn't set, we'll use the temp
     # directory next to this script.  Same for the
-    # singularity cache.
+    # apptainer cache.
     tempdir = Path(sys.path[0], 'temp')
     logging.info(f"Setting tempdir to {tempdir}")
     tempdir.mkdir(exist_ok=True)
-    if 'SINGULARITY_TMPDIR' not in os.environ:
-        os.environ['SINGULARITY_TMPDIR'] = sys.path[0] + "/temp"
-        Path(os.environ['SINGULARITY_TMPDIR']).mkdir(exist_ok=True)
-        logging.info(f"Setting SINGULARITY_TMPDIR = {os.environ['SINGULARITY_TMPDIR']}")
-    if 'SINGULARITY_CACHEDIR' not in os.environ:
-        os.environ['SINGULARITY_CACHEDIR'] = sys.path[0] + "/temp/singularity_cache"
-        Path(os.environ['SINGULARITY_CACHEDIR']).mkdir(exist_ok=True, parents=True)
-        logging.info(f"Setting SINGULARITY_CACHEDIR = {os.environ['SINGULARITY_CACHEDIR']}")
+    if 'APPTAINER_TMPDIR' not in os.environ:
+        os.environ['APPTAINER_TMPDIR'] = sys.path[0] + "/temp"
+        Path(os.environ['APPTAINER_TMPDIR']).mkdir(exist_ok=True)
+        logging.info(f"Setting APPTAINER_TMPDIR = {os.environ['APPTAINER_TMPDIR']}")
+    if 'APPTAINER_CACHEDIR' not in os.environ:
+        os.environ['APPTAINER_CACHEDIR'] = sys.path[0] + "/temp/apptainer_cache"
+        Path(os.environ['APPTAINER_CACHEDIR']).mkdir(exist_ok=True, parents=True)
+        logging.info(f"Setting APPTAINER_CACHEDIR = {os.environ['APPTAINER_CACHEDIR']}")
 
 
 

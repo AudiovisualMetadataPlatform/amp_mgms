@@ -11,7 +11,7 @@ git clone --recursive <this_repo>
 ````
 
 ### requirements
-* singularity
+* apptainer
 * python 3.6+
 * make
 

@@ -28,13 +28,13 @@ def main():
 
     exception = False
     try:
-        # prefix random id to original filenames to ensure uniqueness for the tmp Gentle singularity input files 
+        # prefix random id to original filenames to ensure uniqueness for the tmp Gentle apptainer input files 
         id = str(uuid.uuid4())
         tmp_speech_audio_name = "gentle-" + id + "-" + os.path.basename(speech_audio)
         tmp_transcript_txt_name = "gentle-" + id + "-" + os.path.basename(transcript_txt)
         tmp_gentle_transcript_name = "gentle-" + id + "-" + os.path.basename(gentle_transcript)
 
-        # define directory accessible to singularity container
+        # define directory accessible to apptainer container
         tmpdir = '/tmp'
 
         # define tmp filepaths
@@ -42,14 +42,14 @@ def main():
         tmp_transcript_txt = f"{tmpdir}/{tmp_transcript_txt_name}"
         tmp_gentle_transcript = f"{tmpdir}/{tmp_gentle_transcript_name}"
 
-        # Copy the audio file and transcript text file to a location accessible to the singularity container
+        # Copy the audio file and transcript text file to a location accessible to the apptainer container
         shutil.copy(speech_audio, tmp_speech_audio)
         shutil.copy(transcript_txt, tmp_transcript_txt)
 
         # Run gentle
         logging.info(f"Running Gentle... tmp_speech_audio: {tmp_speech_audio}, tmp_transcript_txt: {tmp_transcript_txt}, tmp_gentle_transcript: {tmp_gentle_transcript}")
         sif = sys.path[0] + "/gentle_forced_alignment.sif"
-        r = subprocess.run(["singularity", "run", sif, tmp_speech_audio, tmp_transcript_txt, "-o", tmp_gentle_transcript], stdout=subprocess.PIPE)
+        r = subprocess.run(["apptainer", "run", sif, tmp_speech_audio, tmp_transcript_txt, "-o", tmp_gentle_transcript], stdout=subprocess.PIPE)
         logging.info(f"Finished running Gentle with return Code: {r.returncode}")
 
         # if Gentle completed in success, continue with transcript conversion
