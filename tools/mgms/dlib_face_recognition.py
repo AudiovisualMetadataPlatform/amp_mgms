@@ -11,6 +11,7 @@ from amp.schema.facial_recognition import FaceRecognition, FaceRecognitionMedia,
 import logging
 import amp.logging
 from amp.fileutils import write_json_file
+import numpy
 
 FR_SCORE_TYPE = "confidence"
 FR_DEFAULT_TOLERANCE = 0.6
@@ -91,8 +92,8 @@ def recognize_faces(input_video, known_names, known_faces, tolerance):
             continue
         
         # convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
-        rgb_frame = cv2_frame[:, :, ::-1]
-
+        rgb_frame = numpy.array(cv2_frame[:, :, ::-1])
+        
         # find all the faces locations and face encodings in the current frame of video
         face_locations = face_recognition.face_locations(rgb_frame)
         face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
