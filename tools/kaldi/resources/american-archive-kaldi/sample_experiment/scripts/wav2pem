@@ -4,20 +4,23 @@ WAV=$1
 PEM=$2
 CMUSEG=$3/CMUseg_0.5
 
-TMP=./tmp-`basename $0`-$$
+TMPFILE=$TMP/tmp-`basename $0`-$$
 
 # convert wav
-sox $WAV -t sph $TMP.sph
+sox $WAV -t sph $TMPFILE.sph
 
 # create dummy UEM file covering all audio
-echo $TMP 1 0.0 `soxi -d $WAV | awk -F ":" '{print (3600*$1)+(60*$2)+$3}' | awk '{print $1 - 0.100}'` > $TMP.uem
+echo $TMPFILE 1 0.0 `soxi -d $WAV | awk -F ":" '{print (3600*$1)+(60*$2)+$3}' | awk '{print $1 - 0.100}'` > $TMPFILE.uem
+
+# wavdir
+WAVDIR=$(dirname $WAV)
 
 # run CMUseg
-mkdir $TMP
-perl $CMUSEG/scripts/CMUseg.pl -r $CMUSEG -t $TMP -a linux $TMP.uem $PEM 
+mkdir $TMPFILE
+perl $CMUSEG/scripts/CMUseg.pl -r $CMUSEG -t $TMPFILE -a linux -w $WAVDIR/ $TMPFILE.uem $PEM 
 
 # clean up
-rm -rf $TMP
-rm $TMP.sph $TMP.uem
+rm -rf $TMPFILE
+rm $TMPFILE.sph $TMPFILE.uem
 
 exit 0

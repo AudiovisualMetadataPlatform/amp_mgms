@@ -2,11 +2,20 @@
 
 # Written by Cantab Research Ltd for use by American Public Media (APM), June 2014.
 # Dependencies: Kaldi, CMUseg_0.5, sox
+#
+# Relocatable rewrite bdwheele
+
+# check the debugging sentinel
+if [ -e /writable/temp/.debug ]; then
+  set -x
+fi
 
 PREFIX=$(dirname $0)
 PATHSETTER=$PREFIX/set-kaldi-path.sh
 . $PATHSETTER
-TMPDIR=/var/extra/audio/work
+
+# TMPDIR is set elsewhere, let's not disturb that.
+#TMPDIR=/var/extra/audio/work
 
 nj=1
 decode_nj=1
@@ -43,7 +52,8 @@ mkdir -p $WORK
 
 echo "=================== Segmenting audio ================="
 cp $INPUT $WORK/$wavName.wav
-echo $wavName | perl -pe "s:^:$WORK/tmp-rec/:" | perl -pe 's:^(.*)/.*$:$1:' | sort -u | xargs --no-run-if-empty mkdir -p
+#echo $wavName | perl -pe "s:^:$WORK/tmp-rec/:" | perl -pe 's:^(.*)/.*$:$1:' | sort -u | xargs --no-run-if-empty mkdir -p
+mkdir $WORK/tmp-rec
 
 rm -f $WORK/splitFiles.dbl
 $PREFIX/scripts/wav2pem $WORK/$wavName.wav $WORK/tmp-rec/$wavName.pem $PREFIX/tools
@@ -84,14 +94,16 @@ paste $dataPrep/nums $dataPrep/nums > $dataPrep/utt2spk
 # PATH is wonky so just run relative to our tools
 cd $PREFIX
 cat $dataPrep/utt2spk | sort -k 2 | utils/utt2spk_to_spk2utt.pl > $dataPrep/spk2utt
-steps/make_mfcc.sh --nj $nj --cmd "$train_cmd" --mfcc-config exp/mfcc.conf $dataPrep exp/make_mfcc/test $WORK/mfcc
-steps/compute_cmvn_stats.sh $dataPrep exp/make_mfcc/test $WORK/mfcc
+
+mkdir $TMP/mfcc_log
+steps/make_mfcc.sh --nj $nj --cmd "$train_cmd" --mfcc-config exp/mfcc.conf $dataPrep $TMP/mfcc_log $WORK/mfcc
+steps/compute_cmvn_stats.sh $dataPrep $TMP/mfcc_log $WORK/mfcc
 
 echo "=================== Decoding ===================="
-decodeDirF=exp/tri3/decode-$wavName
-decodeDir=exp/tri3_mmi_b0.1/decode-$wavName
-decodeDirR=exp/tri3_rescore/decode-$wavName
-mkdir $decodeDirR
+decodeDirF=$TMP/exp/tri3/decode-$wavName
+decodeDir=$TMP/exp/tri3_mmi_b0.1/decode-$wavName
+decodeDirR=$TMP/exp/tri3_rescore/decode-$wavName
+mkdir -p $decodeDirR
 steps/decode_fmllr.sh --nj $decode_nj --cmd "$decode_cmd" --acwt $amw --skip_scoring true exp/tri3/graph $dataPrep $decodeDirF
 steps/decode.sh --transform-dir $decodeDirF --nj $decode_nj --cmd "$decode_cmd" --acwt $amw --skip_scoring true exp/tri3/graph $dataPrep $decodeDir
 steps/lmrescore_const_arpa.sh --cmd "$decode_cmd" --skip_scoring true exp/lang_newlm exp/lang_lmrescore $dataPrep $decodeDir $decodeDirR

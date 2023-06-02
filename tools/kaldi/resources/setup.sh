@@ -1,39 +1,40 @@
 #!/bin/bash
-# Please don't blame me (bdwheele) for this script.  It's pretty much as-is from what I found at the
+# Original: Please don't blame me (bdwheele) for this script.  It's pretty much as-is from what I found at the
 # american archive kaldi repo.  So very, very, wrong.
+# New:  Yeah, you can blame me now.
 
-cd /audio_in/
+# Let's make sure that anything that looks like a temporary envrionment
+# variable ends up in /writable/temp!
+export TMP=/writable/temp
+export TMPDIR=$TMP
+export TEMP=$TMP
 
-## Now add media files to /audio_in/
+# check for the debugging sentinel
+if [ -e $TMP/.debug ]; then
+    set -x
+fi
 
-for file in *.{wav,mp3,mp4,WAV,MP3,MP4}; do
-if [ ${file: -4} == ".mp3" ]; then
-base=$(basename """$file""" .mp3);
-fi
-if [ ${file: -4} == ".MP3" ]; then
-base=$(basename """$file""" .MP3);
-fi
-if [ ${file: -4} == ".mp4" ]; then
-base=$(basename """$file""" .MP4);
-fi
-if [ ${file: -4} == ".MP4" ]; then
-base=$(basename """$file""" .MP4);
-fi
-if [ ${file: -4} == ".wav" ]; then
-base=$(basename """$file""" .wav);
-fi
-if [ ${file: -4} == ".WAV" ]; then
-base=$(basename """$file""" .WAV);
-fi
-ffmpeg -i """$file""" -ac 1 -ar 16000 """$base"""_16kHz.wav;
+
+# make sure that the media files are 16kHz wav
+cd /writable/input
+mkdir $TMP/audio_in_16kHz
+for file in *; do
+    for s in .wav .WAV .mp3 .MP3 .mp4 MP4; do
+        if [ ${file: -4} == $s ]; then
+            base=$(basename $file $s)
+            ffmpeg -i $file -ac 1 -ar 16000 $TMP/audio_in_16kHz/${base}.wav;
+        fi
+    done
 done
 
-#mkdir /audio_in_16khz/
-mv *_16kHz.wav /audio_in_16khz/
-
 ######### Starting the batch transcription run ##########
+python /kaldi/egs/american-archive-kaldi/run_kaldi.py \
+    /kaldi/egs/american-archive-kaldi/sample_experiment/ \
+    $TMP/audio_in_16kHz/ 
+    
 
-python /kaldi/egs/american-archive-kaldi/run_kaldi.py /kaldi/egs/american-archive-kaldi/sample_experiment/ /audio_in_16khz/ && \
-rsync -a /kaldi/egs/american-archive-kaldi/sample_experiment/output/ /audio_in/transcripts/
-
-rm -rf /audio_in_16khz/*
+# check for the shell sentinel
+if [ -e $TMP/.start_shell ]; then
+    echo "Starting a shell in the container"
+    /bin/bash
+fi

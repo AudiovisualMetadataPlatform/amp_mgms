@@ -18,21 +18,15 @@ print 'Valid experiment dir'
 print "Experiment directory (cwd): ", expt_dir 
 print "Wav dir: ", wav_dir
 
-if not os.path.exists('output'):
-	os.mkdir('output')
-	os.mkdir('output/json')
-	os.mkdir('output/txt')
-
 # print 'Running kaldi on each file'
 #run kaldi and convert output to txt file
 for f in os.listdir(wav_dir):
-	print f
+	print "Processing file ", f
 	f_base = f[:-4]
-	f_path = os.path.join(wav_dir, f)
-	json_file = 'output/json/{}.json'.format(f_base)
-	json_file = os.path.join(os.getcwd(), 
-		'output', 'json', '{}.json'.format(f_base))
-	subprocess.call(['./run.sh', f_path, json_file]) #main kaldi call
-	txt_file = os.path.join(os.getcwd(), 
-		'output', 'txt', '{}.txt'.format(f_base))
+	json_file = "/writable/output/" + f_base + ".json"
+	txt_file = "/writable/output/" + f_base + ".txt"
+	# call kaldi
+	subprocess.call(["./run.sh", wav_dir + "/" + f, json_file])
+	# create text file
 	json2txt.convert(json_file, txt_file)
+	

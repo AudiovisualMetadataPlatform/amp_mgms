@@ -72,16 +72,16 @@ $usage ="Usage: CMUseg.pl <OPTIONS> -t tmpdir -r root_dir in.uem out.pem\n".
 ####################  GLOBAL VARIABLES   #######################
 $Arch=$ENV{"arch"};
 $SphExt="sph";
-$WavDir=".";
-$TmpDir=".";
+$WavDir="";
+$TmpDir=$ENV{"TMP"};
 $CMUsegDir="";
 $UEM = "";
 $PEM = "";
-$Vb = 0;
+$Vb = 1;
 @UEM_Segs = ();
 $MaxLen="";
 $comline="$0 ".join(" ",@ARGV);
-$ShowCom=0;
+$ShowCom=1;
 ####################  End of Global Variables ##################
 
 
@@ -159,7 +159,7 @@ sub load_UEM{
 	    if ($chan != 1)  { die("Error: UEM segment '$_' has a channel id != 1"); }
 
 	    ### Check the existence of the waveform
-	    $fp = "${WavDir}/${file}.${SphExt}";
+	    $fp = "${WavDir}${file}.${SphExt}";
 	    if (! -r $fp) { die("Error: UEM Segment '$_', can not locate waveform $fp"); }
 	    
 	    ### make the table of Segments
@@ -181,13 +181,13 @@ sub parameterize_speech{
     }
     foreach $seg(@UEM_Segs){
 	($file, $chan, $bt, $et) = split(/\s+/,$seg);
-	$wavfp = "${WavDir}/${file}.${SphExt}";
-	$mfcfp = "${TmpDir}/${file}.mfc";
-	$mfclog = "${TmpDir}/${file}.mfc.log";
+	$wavfp = "${WavDir}${file}.${SphExt}";
+	$mfcfp = "${file}.mfc";
+	$mfclog = "${TmpDir}/mfc.log";
 	if (! -e $mfcfp) {
 	    if ($Vb) { print "   Computing MFCC File for $file\n"; }
 	    local ($com) = "${CMUsegDir}/bin/${Arch}/wave2mfcc -i $wavfp -sphere ".
-		"-sphinx -o $mfcfp 1> $mfclog 2>&1";
+		"-sphinx -o $mfcfp # 1> $mfclog 2>&1";
 	    if ($ShowCom) {print "Exec: $com\n";}
 	    $exit = system $com;
 	    if ($exit != 0) { 
@@ -225,7 +225,7 @@ sub run_UTT_Kseg{
 	if ($Vb) { printf("   Executing UTT_Kseg on Segment $seg\n"); }
 	$com = "${CMUsegDir}/bin/${Arch}/UTT_Kseg -c $ctlfile ".
 	    "-h 100 -w 250 -s 500 -v -m 0.05 -f 0.1 ".
-		"-r $tmpfile 1>> $logfile 2>&1";
+		"-r $tmpfile # 1>> $logfile 2>&1";
 	if ($ShowCom) {print "Exec: $com\n";}
 	$exit = system $com;
 	if ($exit != 0) { 

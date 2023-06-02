@@ -17,10 +17,34 @@ which are copied to their respective output locations
 For some reason the script overall is failing because somewhere in the mix
 the overlay is returning -ENODATA when trying to write to the container
 
+NEW METHODOLOGY:
+A single /writable path is bound to the container which will provide space for
+all of the input, output, and temp things needed for the container.
+
+The structure is:
+````
+/writable/
+  input/
+    xxx.wav - our input file
+  output/
+    xxx.txt - output text
+    xxx.json - output json
+  temp/
+    * - don't care!
+````
+
+Additionally two sentinels are set in /writable/temp:
+.start_shell:  Start an interactive shell in the container prior to exiting
+.debug: enable debugging where possible
+
 ## run_kaldi.sh
 This is the old start script and it is unused.  It does effectively the same
 thing as kaldi.py, except that it always makes a 100M file and binds an input
 directory directly instead of creating a tmpdir and copying files in/out of it
+
+NEW METHODOLOGY:
+Ignore.
+
 
 # Inside the container
 
@@ -61,6 +85,10 @@ rsync -a /kaldi/egs/american-archive-kaldi/sample_experiment/output/ /audio_in/t
 which runs the transcription and then copies the files if the transcription was
 successful.  It then removes all of the files in /audio_in_16khz
 
+NEW METHODOLOGY:
+The script was rewritten to use the /writable directory tree and notice the
+sentinel files. 
+
 ## /kaldi/egs/american-archive-kaldi/run_kaldi.py 
 (src: resources/american-archive-kaldi/sample_experiment/run_kaldi.py)
 
@@ -95,6 +123,12 @@ looks to be home built.  It converts the json file (specified as output/json/xxx
 Both of these output files are rsync'd to /audio_in/transcripts by the
 start_transcription.sh script
 
+NEW METHODOLOGY:
+Nearly the same, except simplify the code and force the output to 
+/writable/output/(basename).{json,txt} since that's where the final output
+should go anyway.
+
+
 ## /kaldi/egs/american-archive-kaldi/sample_experiment/run.sh 
 (src: resources/american-archive-kaldi/sample_experiment/run.sh)
 
@@ -120,6 +154,10 @@ $TMPDIR is set as /var/extra/audio/work and a $WORK directory
 for the file is created at $TMPDIR/audio-tmp-$wavName-$$
 That would expand to:
 /var/extra/audio/work/audio-tmp-xxx_16kHz-$$
+
+NEW METHODOLOGY:
+* Check for the debug sentinel.
+* don't set TMPDIR -- inherit it from parent process (which is /writable/temp)
 
 ### Segmenting audio
 
@@ -157,6 +195,12 @@ there's something notable.
 * sox is used to create a bunch of wav files that are chunks of the source
 * the filename/duration data is written to $WORK/splitFiles.dbl
 
+NEW METHODOLOGY:
+* Get rid of that crazy mkdir!
+* wav2pem tries to do things relative to . so make it relative
+* fix the CMUseg.pl perl script because it uses relative directories and a bad
+  concatenation of $WavDir that breaks things.
+
 ### Preparing data
 
 $dataPrep is set to $WORK/dataPrep and is created as a directory.  There's some
@@ -171,6 +215,10 @@ run.
   mfcc directory, but it is passed exp/make_mfcc/test as its log directory. That
   should probably be made to use a $WORK-based path
 * steps/compute_cmvn_stats.sh looks to be the same situation as above.
+
+NEW METHODOLOGY:
+* make_mfcc.sh and compute_cmvn_stats.sh use non-exp path for logs
+
 
 ### Decoding
 
@@ -188,13 +236,10 @@ There are several decodeDir variables that are set up:
 The scripts seem to be OK to use a $WORK-based pathname, but in run.sh they're
 set to paths in exp, so that's bad.
 
+NEW METHODOLOGY:
+* The decodeDir vars are now set to something relative to $TMP
+
+
 ### Writing output
 This section already seems to be relocatable since it pulls data from $dataPrep
 and $WORK and outputs to $WORK. until finally writing to $OUTPUT.
-
-
-# So...what to do?
-
-Let's reconfigure this a bit so a single bind handles all of the cases.
-
-See AMP-2234-kaldi branch!
