@@ -73,7 +73,8 @@ def main():
             exit(1)
 
         # build the apptainer command line
-        cmd = ['apptainer', 'run', '-B', f"{tmpdir}:/audio_in", '--overlay', overlay_file, str(sif) ]
+        cmd = ['apptainer', '--debug', 'run', '--security=SELinux', '--overlay', overlay_file, '-B', f"{tmpdir}:/audio_in",  str(sif) ]
+        
         logging.debug(f"Apptainer Command: {cmd}")
         p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding='utf-8')        
         if p.returncode != 0:
