@@ -1,0 +1,44 @@
+** local.yaml
+applause_detection/applause_detection.xml - done
+gentle/gentle_forced_alignment_txt.xml
+gentle/gentle_forced_alignment.xml - done
+ina_speech_segmenter/ina_speech_segmenter.xml - done
+kaldi/kaldi.xml - Skipping, replaced by whisper
+mgms/adjust_diarization_timestamps.xml - done
+mgms/adjust_transcript_timestamps.xml - done
+mgms/applause_detection_to_avalon_xml.xml - broken prior to refactoring
+mgms/contact_sheet_face.xml - done
+mgms/contact_sheet_frame.xml - done
+mgms/contact_sheet_shot.xml - done
+mgms/contact_sheet_vocr.xml - done
+mgms/dlib_face_recognition.xml - done
+mgms/extract_audio.xml - done
+mgms/fr_to_webvtt.xml - done
+mgms/keep_speech.xml - done
+mgms/ner_to_csv.xml - done
+mgms/ner_to_webvtt.xml - done
+mgms/pyscenedetect.xml - done
+mgms/remove_silence_speech.xml - done
+mgms/remove_trailing_silence.xml - done
+mgms/spacy.xml - done
+mgms/supplement.xml - Skipping, doesn't do anything
+mgms/tesseract.xml - done
+mgms/transcript_to_webvtt.xml - done
+mgms/vocabulary_tagging.xml - done
+mgms/vocr_to_csv.xml - done
+
+
+** AWS
+aws/aws_comprehend.xml
+aws/aws_transcribe.xml
+
+** azure
+azure/azure_shot_detection.xml
+azure/azure_video_indexer.xml
+azure/azure_video_ocr.xml
+
+** HMGMS
+hmgms/hmgm_ner.xml
+hmgms/hmgm_segmentation.xml
+hmgms/hmgm_transcript.xml
+

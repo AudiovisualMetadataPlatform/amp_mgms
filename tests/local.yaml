@@ -48,6 +48,7 @@
 # UGH, like the AWS transcribe, this is actually testing two scripts
 - name: Kaldi
   tool: kaldi/kaldi.xml
+  skip: Kaldi has been disabled and replaced by whisper in another repository
   inputs:
     input_audio: audio.mp3
   outputs:
@@ -210,7 +211,14 @@
     channels: 1
     sample_format: pcm_s16le
 
-
+- name: Facial Recognition to VTT
+  tool: mgms/fr_to_webvtt.xml
+  inputs:
+    amp_faces: amp_faces.json
+  outputs:
+    web_vtt:
+      - [contains, [data], WEBVTT]
+      - [contains, [data], "not_david_byrne"]      
                             
 
 - name: Keep Speech
@@ -238,6 +246,15 @@
       - [eq, [csv, 0, 4], Start Time]
       - [eq, [csv, 0, 5], Score Type]
       - [eq, [csv, 0, 6], Score Value]
+
+
+- name: NER to WebVTT
+  tool: mgms/ner_to_webvtt.xml
+  inputs:
+    amp_entities: amp_entities.ner
+  outputs:
+    web_vtt:
+      - [contains, [data], WEBVTT]    
 
 
 - name: PyScene Detect
@@ -300,8 +317,9 @@
       - [eq, [json, entities.0.type], PERSON]
 
 
-# Supplement doesn't really do anything, so skipping it.
-#./mgms/supplement.xml
+- name: Supplement
+  tool: mgms/supplement.xml
+  skip: Supplement doesn't really do anything
 
 
 - name: Tesseract
