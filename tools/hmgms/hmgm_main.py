@@ -14,7 +14,7 @@ from task.jira import TaskJira
 from task.manager import TaskManager
 from task.openproject import TaskOpenproject 
 from task.redmine import TaskRedmine
-
+from task.trello import TaskTrello
 
 
 # It's assumed that all HMGMs generate the output file in the same directory as the input file with ".completed" suffix added to the original filename
