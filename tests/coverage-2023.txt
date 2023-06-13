@@ -33,9 +33,9 @@ aws/aws_comprehend.xml - done
 aws/aws_transcribe.xml - done
 
 ** azure
-azure/azure_shot_detection.xml
-azure/azure_video_indexer.xml
-azure/azure_video_ocr.xml
+azure/azure_shot_detection.xml - done
+azure/azure_video_indexer.xml - 
+azure/azure_video_ocr.xml - done
 
 ** HMGMS
 hmgms/hmgm_ner.xml
