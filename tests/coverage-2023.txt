@@ -29,8 +29,8 @@ mgms/vocr_to_csv.xml - done
 
 
 ** AWS
-aws/aws_comprehend.xml
-aws/aws_transcribe.xml
+aws/aws_comprehend.xml - done
+aws/aws_transcribe.xml - done
 
 ** azure
 azure/azure_shot_detection.xml
