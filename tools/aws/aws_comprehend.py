@@ -1,11 +1,7 @@
 #!/usr/bin/env amp_python.sif
 
 import tempfile
-import shutil
 import tarfile
-import socket
-import time
-from datetime import datetime
 import boto3
 import argparse
 import tempfile
@@ -61,11 +57,9 @@ class AWS_Comprehend(LWLW):
     def submit(self):
         "Submit the comprehension job"
         try:
-            # convert the amp_transcript to proper input for comprehend and upload it as the job name        
-            # pulled this one line from nerutils since I don't want the rest of the side effects.
-            amp_transcript_obj = SpeechToText().from_json(read_json_file(self.transcript))            
-            # that default is there because there's non-serializable data in the SpeechToText data.
-            self.s3_client.put_object(Body=json.dumps(amp_transcript_obj, default=lambda x: x.__dict__), Bucket=self.s3_bucket, Key=self.job_name + ".json")
+            # get things formatted correctly
+            (amp_transcript_obj, amp_entities_obj, ignore_types_list) = amp.nerutils.initialize_amp_entities(self.transcript, self.amp_entities, self.ignore_types)
+            self.s3_client.put_object(Body=json.dumps(amp_transcript_obj.results.transcript, default=lambda x: x.__dict__), Bucket=self.s3_bucket, Key=self.job_name + ".json")
 
             # submit the job
             inputs3uri = f"s3://{self.s3_bucket}/{self.job_name}.json"
@@ -134,8 +128,29 @@ class AWS_Comprehend(LWLW):
         return LWLW.OK
 
 
-    
+    def cleanup(self):
+        "Clean up the input, output, and job"
+        job = self.exists()
+        if job is None:
+            logging.error(f"The job {self.job_name} should exist but it doesn't!")
+            return LWLW.ERROR
+        
+        try:
+            # delete the input document
+            self.s3_client.delete_object(Bucket=self.s3_bucket, Key=self.job_name + ".json")
 
+            # delete the output document
+            (_, _, bucket, key) = job['OutputDataConfig']['S3Uri'].split('/', 3)
+            self.s3_client.delete_object(Bucket=bucket, Key=key)
+
+            # delete the job
+            # TODO: not sure how to do this.
+            #self.comprehend_client.delete_job(jobId=job['JobId'])     
+            return LWLW.OK
+        
+        except Exception as e:
+            logging.error(f"Error deleting the job and files {self.job_name}: {e}")
+            return LWLW.ERROR
 
 
 def main():
@@ -156,12 +171,5 @@ def main():
     exit(aws_comprehend.run(lwlw=args.lwlw, pre_cleanup=args.force))
 
     
-
-
-
-
-
-
-
 if __name__ == "__main__":
     main()
