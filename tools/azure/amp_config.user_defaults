@@ -1,6 +1,10 @@
-mgms:
+cloud:
     azure:
-        accountId: azure_account_id
-        apiKey: azure_api_key
-        s3Bucket: my-bucket
+        account_id: azure_account_id
+        api_key: azure_api_key
+        region_name: azure_region
+
+mgms:
+    azure_video_indexer:
+        s3_bucket: my-bucket
         

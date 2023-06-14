@@ -1,17 +1,13 @@
-#!/usr/bin/env python3
-import sys
+#!/usr/bin/env amp_python.sif
 import logging
 import json
-import os
-from datetime import datetime
 import math
 import argparse
 
 from amp.schema.video_ocr import VideoOcr, VideoOcrMedia, VideoOcrResolution, VideoOcrFrame, VideoOcrObject, VideoOcrObjectScore, VideoOcrObjectVertices
-import amp.utils
 import logging
-import amp.logger
-
+import amp.logging
+from amp.fileutils import write_json_file
 
 def main():
 	parser = argparse.ArgumentParser()
@@ -24,6 +20,7 @@ def main():
 	parser.add_argument("amp_vocr", help="Original AMP Video OCR output file")
 	parser.add_argument("amp_vocr_dedupe", help="Deduped AMP Video OCR output file")
 	args = parser.parse_args()
+	amp.logging.setup_logging("azure_video_ocr", args.debug)
 	logging.info(f"Starting with args {args}")
 	(input_video, azure_video_index, azure_artifact_ocr, dedupe, dup_gap, amp_vocr, amp_vocr_dedupe) = (args.input_video, args.azure_video_index, args.azure_artifact_ocr, args.dedupe, args.dup_gap, args.amp_vocr, args.amp_vocr_dedupe)
 	
@@ -39,13 +36,13 @@ def main():
 	amp_vocr_obj = create_amp_ocr(input_video, azure_index_json, azure_ocr_json)
 	
 	# write AMP Video OCR JSON file
-	amp.utils.write_json_file(amp_vocr_obj, amp_vocr)
+	write_json_file(amp_vocr_obj, amp_vocr)
 	
 	# if dedupe, create the deduped AMP VOCR
 	if dedupe:
 		vocr_dedupe = amp_vocr_obj.dedupe(int(dup_gap))
 		logging.info(f"Successfully deduped AMP VOCR to {len(vocr_dedupe.frames)} frames.")
-		amp.utils.write_json_file(vocr_dedupe, amp_vocr_dedupe)
+		write_json_file(vocr_dedupe, amp_vocr_dedupe)
 			
 	logging.info(f"Successfully generated AMP VOCR with {len(amp_vocr_obj.frames)} original frames.")
 	

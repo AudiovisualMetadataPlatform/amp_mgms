@@ -1,0 +1,23 @@
+# build a kaldi singularity that doesn't use PUA and uses the stock
+# upstream container
+Bootstrap: docker
+From: kaldiasr/kaldi:cpu-debian10-2023-04-24
+
+
+%help
+Official kaldi build as of 4/24/2023
+
+%labels
+Maintainer bdwheele@indiana.edu
+Version 0.1
+
+%environment
+
+%setup
+
+%files
+
+%post
+
+
+%runscript

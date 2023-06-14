@@ -1,25 +1,21 @@
-#!/usr/bin/env mgm_python.sif
-# need the mgm_python environment because we call ffmpeg.
+#!/usr/bin/env amp_python.sif
+# need the amp_python environment because we call ffmpeg.
 
-import json
 import math
 import os
-from pathlib import Path
 import subprocess
-import sys
 import time
 from shutil import copyfile
 import argparse
-
 from amp.schema.segmentation import Segmentation
 import logging
-import amp.logger
+import amp.logging
+from amp.fileutils import read_json_file, write_json_file
 
 # Seconds to buffer beginning and end of audio segments by
 buffer = 5
 
 def main():
-	#(input_file, input_segmentation_json, remove_type, output_file, kept_segments_file) = sys.argv[1:6]
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 	parser.add_argument("input_file")
@@ -28,22 +24,20 @@ def main():
 	parser.add_argument("output_file")
 	parser.add_argument("kept_segments_file")
 	args = parser.parse_args()
-	logging.info(f"Starting with args {args}")
-	(input_file, input_segmentation_json, remove_type, output_file, kept_segments_file) = (args.input_file, args.input_segmentation_json, args.remove_type, args.output_file, args.kept_segments_file)
-
+	amp.logging.setup_logging("keep_speech", args.debug)
+	logging.info(f"Starting with args {args}")	
 
 	logging.info("Reading segmentation file")
 	# Turn segmentation json file into segmentation object
-	with open(input_segmentation_json, 'r') as file:
-		seg_data = Segmentation().from_json(json.load(file))
+	seg_data = Segmentation().from_json(read_json_file(args.input_segmentation_json))
 	
 	logging.info("Removing silence to get a list of kept segments")
 	# Remove silence and get a list of kept segments
-	kept_segments = remove_silence(remove_type, seg_data, input_file, output_file)
+	kept_segments = remove_silence(args.remove_type, seg_data, args.input_file, args.output_file)
 
 	logging.info("Writing  output json file")
 	# Write kept segments to json file
-	write_kept_segments_json(kept_segments, kept_segments_file)
+	write_json_file(kept_segments, args.kept_segments_file)	
 	logging.info("Finished.")
 	exit(0)
 
@@ -194,11 +188,6 @@ def should_remove_segment(remove_type, segment, start_block):
 			return True
 	return False
 
-# Serialize obj and write it to output file
-def write_kept_segments_json(kept_segments, kept_segments_file):
-	# Serialize the segmentation object
-	with open(kept_segments_file, 'w') as outfile:
-		json.dump(kept_segments, outfile, default=lambda x: x.__dict__)
 
 if __name__ == "__main__":
 	main()

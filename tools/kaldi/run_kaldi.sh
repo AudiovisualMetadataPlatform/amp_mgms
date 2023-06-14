@@ -14,7 +14,7 @@ ENV=$1
 case $ENV in
     [cg]pu)
         if [ ! -e $HERE/kaldi-pua-$ENV.sif ]; then
-            echo "The container for this environment has not been built -- build it using build_singularity.sh"
+            echo "The container for this environment has not been built -- build it using mgm_build.sh"
             exit 3
         fi
 
@@ -46,9 +46,9 @@ OVERLAY=$TMPDIR/kaldi-overlay-$$.ext3
 dd if=/dev/zero of=$OVERLAY bs=1K count=1 seek=100M 
 mkfs.ext3 -F $OVERLAY
 
-# run the singularity container
+# run the apptainer container
 echo "Running $ENV version of kaldi"
-singularity run -B $SOURCE:/audio_in --overlay $OVERLAY $HERE/kaldi-pua-$ENV.sif 
+apptainer run -B $SOURCE:/audio_in --overlay $OVERLAY $HERE/kaldi-pua-$ENV.sif 
 
 
 # clean up

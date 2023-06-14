@@ -1,15 +1,10 @@
-#!/usr/bin/env mgm_python.sif
+#!/usr/bin/env amp_python.sif
 #
-# Simple singularity container to extract an audio stream from an a/v file.
-#
-# Since this uses ffmpeg that isn't part of the default install, it has to be wrapped in a
-# singularity container.
 
 import argparse
 import logging
-from pathlib import Path
 import subprocess
-import amp.logger
+import amp.logging
 
 def main():
     parser = argparse.ArgumentParser(description="Extract the audio stream from a file as-is")
@@ -17,6 +12,7 @@ def main():
     parser.add_argument('avfile', help="Input A/V file")
     parser.add_argument('trimmedfile', help="Output filename")
     args = parser.parse_args()
+    amp.logging.setup_logging("remove_trailing_silence", args.debug)
     # use ffmpeg to remove trailing silence
     logging.info(f"Remove Trailing Silence args={args}")
     p = subprocess.run(['ffmpeg', '-y', 
