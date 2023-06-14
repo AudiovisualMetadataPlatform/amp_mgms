@@ -4,197 +4,182 @@ import requests
 import logging
 import time
 import json
-import uuid
 import boto3
 from distutils.util import strtobool
 import logging
 import http.client as http_client
+from pathlib import Path
 
 import amp.logging
 from amp.config import load_amp_config, get_config_value, get_cloud_credentials
 from amp.fileutils import write_json_file
+from amp.lwlw import LWLW
+from amp.cloudutils import generate_persistent_name
 
 def main():
-    apiUrl = "https://api.videoindexer.ai"
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("input_video", help="Input video file")
     parser.add_argument("--include_ocr", type=strtobool, default=True, help="Include OCR")
     parser.add_argument("azure_video_index", help="Azure Video Index JSON")
     parser.add_argument("azure_artifact_ocr", help="Azure Artifact OCR JSON")
+    parser.add_argument("--force", default=False, action="store_true", help="delete any existing jobs with this name and force a new job")
+    parser.add_argument("--lwlw", default=False, action="store_true", help="Use LWLW protocol")    
     args = parser.parse_args()
     amp.logging.setup_logging("azure_video_indexer", args.debug)
     logging.info(f"Starting with args {args}")
-    
-    config = load_amp_config()
-    azure = get_cloud_credentials(config, 'azure')
-    account_id = azure['account_id']
-    api_key = azure['api_key']
-    region_name = azure['region_name']
-    s3_bucket = get_config_value(config, ['mgms', 'azure_video_indexer', 's3_bucket'])
-    
-    # Turn on HTTP debugging here
+
+    # turn on debugging for http_client
     if args.debug:
         http_client.HTTPConnection.debuglevel = 1
 
-    aws_creds = get_cloud_credentials(config, 'aws')
-    if args.debug:
-        http_client.HTTPConnection.debuglevel = 1
+    avi = AzureVideoIndexer(args.input_video, args.azure_video_index, args.azure_artifact_ocr if args.include_ocr else None)
+    exit(avi.run(lwlw=args.lwlw, pre_cleanup=args.force, pause=90))
 
-    aws_creds = get_cloud_credentials(config, 'aws')
 
-    # upload video to S3
-    s3_path = upload_to_s3(aws_creds, args.input_video, s3_bucket)
-    
-    # Get an authorization token for subsequent requests
-    auth_token = get_auth_token(apiUrl, region_name, account_id, api_key)
-    
-    # Upload the video and get the ID to reference for indexing status and results
-    video_url = "https://" + s3_bucket + ".s3.us-east-2.amazonaws.com/" + s3_path
-    videoId = index_video(apiUrl, region_name, account_id, auth_token, args.input_video, video_url)
+class AzureVideoIndexer(LWLW):
+    def __init__(self, input_video, azure_video_index, azure_artifact_ocr=None):
+        "Initialize the AVI"
+        self.input_video = input_video
+        self.azure_video_index = azure_video_index
+        self.azure_artifact_ocr = azure_artifact_ocr
 
-    # Check on the indexing status
-    while True:
-        # The token expires after an hour.  Let's just refresh every iteration
-        video_auth_token = get_video_auth_token(apiUrl, region_name, account_id, api_key, videoId)
-        state = get_processing_status(apiUrl, region_name, account_id, videoId, video_auth_token)
-        
-        # We have a status other than uploaded or processing, it is complete
-        if state != "Uploaded" and state != "Processing":
-            break
-        
-        # Wait a bit before checking again
-        time.sleep(60)
+        self.config = load_amp_config()
+        # AWS Stuff
+        self.s3_bucket = get_config_value(self.config, ['mgms', 'azure_video_indexer', 's3_bucket'])
+        self.aws_creds = get_cloud_credentials(self.config, 'aws')
+        self.s3_client = boto3.client("s3", **self.aws_creds)
 
-    # Turn on HTTP debugging here
-    http_client.HTTPConnection.debuglevel = 1
+        # Azure Stuff
+        self.azure_creds = get_cloud_credentials(self.config, 'azure')
+        self.api_url_base = f"https://api.videoindexer.ai/{self.azure_creds['region_name']}/Accounts/{self.azure_creds['account_id']}"
+        self.auth_token = None
+        self.auth_token_expire = 0
 
-    # Get the simple video index json
-    auth_token = get_auth_token(apiUrl, region_name, account_id, api_key)
-    index_json = get_video_index_json(apiUrl, region_name, account_id, videoId, auth_token, api_key)
-    write_json_file(index_json, args.azure_video_index)
+        self.job_name = generate_persistent_name("AzureVideoIndexer-", self.input_video, self.azure_video_index)
 
-    # Get the advanced OCR json via the artifact URL if requested
-    if args.include_ocr:
+
+    def exists(self):
+        "Get information about the job or None if it doesn't exist"
+        check_url = f"{self.api_url_base}/Videos"
+        r = requests.get(check_url,
+                            params={'accessToken': self._get_request_token()})
+        data = json.loads(r.text)
+        for r in data['results']:
+            logging.debug(f"{r['id']}: {r['name']} ({r['externalId']}) {r['state']}")
+            if r['externalId'] == self.job_name:
+                return r
+
+        return None        
+
+
+    def submit(self):
+        "Submit the job to AVI"
+        # upload the source video
         try:
-            artifacts_url = get_artifacts_url(apiUrl, region_name, account_id, videoId, auth_token, 'ocr')
-            download_artifacts(artifacts_url, args.azure_artifact_ocr)
-            logging.info(f"Downloaded OCR artifact to {args.azure_artifact_ocr}")
-        # When the video doesn't contain OCR, no OCR artifact will be generated, and the above download will result in exception.
-        # Since we may not know before hand if a video contains OCR or not, this should be a normal case and not cause job failure;
-        # instead, we can generate an empty OCR output, and the next job should handle such case and generate empty AMP VOCR.
-        # However, the exception could also be caused by system errors, in which case job should fail.
-        # TODO should we fail the job or generate an empty OCR file ?
-        except:
-            logging.exception(f"Failed to download OCR artifact to {args.azure_artifact_ocr}!")    
-    
-    delete_from_s3(aws_creds, s3_path, s3_bucket)
-    logging.info("Finished.")
-
-
-# Retrieve the "artifacts" (ocr json) from the specified url
-def download_artifacts(artifacts_url, output_name):
-    r = requests.get(url = artifacts_url)
-    with open(output_name, 'wb') as f:
-        f.write(r.content)
-    return output_name
-
-# Get the url where the artifacts json is stored
-def get_artifacts_url(apiUrl, region_name, account_id, videoId, auth_token, type):
-    url = apiUrl + "/" + region_name + "/Accounts/" + account_id + "/Videos/" + videoId + "/ArtifactUrl"
-    params = {'accessToken':auth_token, 'type':type}
-    r = requests.get(url = url, params = params)
-    return r.text.replace("\"", "")
-
-# Get the video index json, which contains OCR data
-def get_video_index_json(apiUrl, region_name, account_id, videoId, auth_token, api_key):
-    url = apiUrl + "/" + region_name + "/Accounts/" + account_id + "/Videos/" + videoId + "/Index"
-    params = {'accessToken':auth_token }
-    headers = {"Ocp-Apim-Subscription-Key": api_key}
-    r = requests.get(url = url, params=params, headers = headers) 
-    return json.loads(r.text)
-
-# Get the processing status of the video
-def get_processing_status(apiUrl, region_name, account_id, videoId, video_auth_token):
-    video_url = apiUrl + "/" + region_name + "/Accounts/" + account_id + "/Videos/" + videoId + "/Index"
-    params = {'accessToken':video_auth_token,
-                'language':'English'}
-    r = requests.get(url = video_url, params = params)
-    data = json.loads(r.text)
-    if 'videos' in data.keys():
-        videos = data['videos']
-        if 'state' in videos[0].keys():
-            return videos[0]['state']
-    return "Error"
-
-# Create the auth token request
-def request_auth_token(url, api_key):
-    params = {'allowEdit':True} 
-    headers = {"Ocp-Apim-Subscription-Key": api_key}
-    # sending get request and saving the response as response object 
-    r = requests.get(url = url, params = params, headers=headers) 
-    if r.status_code == 200:
-        return r.text.replace("\"", "")
-    else:
-        logging.error(f"Auth failure: {r}")
-        exit(1)
-
-# Get general auth token
-def get_auth_token(apiUrl, region_name, account_id, api_key):
-    token_url = apiUrl + "/auth/" + region_name + "/Accounts/" + account_id + "/AccessToken"
-    return request_auth_token(token_url, api_key)
-
-# Get video auth token
-def get_video_auth_token(apiUrl, region_name, account_id, api_key, videoId):
-    token_url = apiUrl + "/auth/" + region_name + "/Accounts/" + account_id + "/Videos/" + videoId + "/AccessToken"
-    return request_auth_token(token_url, api_key)
-
-# Index the video using multipart form upload.
-def index_video(apiUrl, region_name, account_id, auth_token, input_video, video_url):
-    # Create a unique file name 
-    millis = int(round(time.time() * 1000))
-    upload_url = apiUrl + "/" + region_name +  "/Accounts/" + account_id + "/Videos"    
-    data = {}
-    
-    with open(input_video, 'rb') as f:
-        params = {'accessToken':auth_token,
-                'name':'amp_video_' + str(millis),
-                'description':'AMP File Upload',
-                'privacy':'private',
-                'partition':'No Partition',
-                'videoUrl':video_url}
-        r = requests.post(upload_url, params = params)
+            self.s3_client.upload_file(self.input_video, self.s3_bucket, self.job_name,
+                                       ExtraArgs={'ACL': 'public-read'})
+            logging.info(f"Uploaded source file {self.input_video} to s3://{self.s3_bucket}/{self.job_name}")
+        except Exception as e:
+            logging.error(f"Failed to upload source file {self.input_video} to s3://{self.s3_bucket}/{self.job_name}: {e}")
+            return LWLW.ERROR
         
-        if r.status_code != 200:
-            logging.error("Upload failure:" + r)            
-            exit(1)
-        else:
+        # submit the job.
+        try:
+            # construct an AWS S3 video URL for AVI
+            video_url = f"https://{self.s3_bucket}.s3.{self.aws_creds['region_name']}.amazonaws.com/{self.job_name}"
+            upload_url = self.api_url_base + "/Videos"
+            r = requests.post(upload_url,
+                            params={
+                                'accessToken': self._get_request_token(),
+                                'name': Path(self.input_video).name,
+                                'description': 'AMP File Upload',
+                                'privacy': 'private',
+                                'partition': 'No Partition',
+                                'videoUrl': video_url,
+                                'externalId': self.job_name
+                            })
+            if r.status_code != 200:
+                logging.error(f"Failed to submit job: {r.text}")
+                return LWLW.ERROR
+            
+            # log the ID of the job.
             data = json.loads(r.text)
-            if 'id' in data.keys():
-                return data['id']
-            else:
-                logging.error("No id in data")
-                exit(1)
+            logging.info(f"Azure Video Indexer job id: {data['id']}")
+            return LWLW.WAIT
+        
+        except Exception as e:
+            logging.error(f"Exception submitting job: {e}")
+            return LWLW.ERROR
+        
 
-def upload_to_s3(creds, input_video, bucket):
-    s3_client = boto3.client('s3', **creds)
-    jobname = str(uuid.uuid1())
-    try:
-        response = s3_client.upload_file(input_video, bucket, jobname, ExtraArgs={'ACL': 'public-read'})
-        logging.info(f"Uploaded file {input_video} to S3 bucket {bucket}")
-        return jobname
-    except Exception as e:
-        logging.exception(f"Failed to upload file {input_video} to S3 bucket {bucket}!")
-        exit(1)
+    def check(self):
+        "Check on the status and handle results if ready"
+        job = self.exists()
+        if job is None:
+            logging.error(f"The job {self.job_name} should exist but it doesn't!")
+            return LWLW.ERROR
+        
+        if job['state'] in ('Uploaded', 'Processing'):
+            # it's still in flight.  just wait.
+            return LWLW.WAIT
+        
+        # write the Azure Video Index data to a file
+        write_json_file(job, self.azure_video_index)
+        
+        # if OCR was requested, handle it.
+        if self.azure_artifact_ocr:
+            get_artifact_url = f"{self.api_url_base}/Videos/{job['id']}/ArtifactUrl"
+            r = requests.get(url=get_artifact_url, 
+                             params={'type': 'ocr',
+                                     'accessToken': self._get_request_token()})
+            if r.status_code != 200:
+                logging.error(f"Cannot get URL for OCR Download: {r.text}")
+                return LWLW.ERROR
+            ocr_url = json.loads(r.text)
+            logging.info(f"OCR URL: {ocr_url}")
+            r = requests.get(url=ocr_url)
+            with open(self.azure_artifact_ocr, "wb") as f:
+                f.write(r.content)
+            logging.info(f"OCR output written to {self.azure_artifact_ocr}")
 
-def delete_from_s3(creds, s3_path, bucket):
-    s3_client = boto3.resource('s3', **creds)
-    try:
-        obj = s3_client.Object(bucket, s3_path)
-        obj.delete()
-        logging.info(f"Deleted file {s3_path} from S3 bucket {bucket}")
-    except Exception as e:
-        logging.warning(f"Failed to delete file {s3_path} from S3 bucket {bucket}:\n{e}")
+        return LWLW.OK
+        
+
+    def cleanup(self):
+        "Clean up the job artifacts"
+        try:
+            # delete the AWS S3 file        
+            logging.info("Removing S3 Video source")
+            self.s3_client.delete_object(Bucket=self.s3_bucket, Key=self.job_name)
+            
+            # delete the Azure stuff
+            logging.info("Removing Video Indexer Job")
+            job = self.exists()
+            if job:
+                video_url = f"{self.api_url_base}/Videos/{job['id']}"
+                requests.delete(url=video_url,
+                                params={'accessToken': self._get_request_token()})
+                
+        except Exception as e:
+            logging.error(f"Failed to clean up job artifacts: {e}")
+            return LWLW.ERROR
+
+
+    def _get_request_token(self):
+        "Request an auth token"
+        if time.time() > self.auth_token_expire or self.auth_token is None:
+            logging.info("Requesting new auth token")
+            auth_url = f"https://api.videoindexer.ai/Auth/{self.azure_creds['region_name']}/Accounts/{self.azure_creds['account_id']}/AccessToken"
+            r = requests.get(url=auth_url, params={'allowEdit': True},
+                            headers={'Ocp-Apim-Subscription-Key': self.azure_creds['api_key']} )
+            if r.status_code != 200:
+                raise Exception(f"Auth failure on {self.api_auth_base}: {r}")
+
+            self.auth_token = r.text.replace('"', '')
+            self.auth_token_expire = time.time() + 1800  # 30 minutes
+            
+        return self.auth_token
 
 
 if __name__ == "__main__":
