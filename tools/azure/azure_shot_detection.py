@@ -1,18 +1,14 @@
-#!/usr/bin/env python3
-import sys
+#!/usr/bin/env amp_python.sif
 import logging
-import json
-import os
 import argparse
 import logging
-
-import amp.logger
-import amp.utils
+import amp.logging
+from amp.fileutils import write_json_file, read_json_file
+from amp.timeutils import timestampToSecond
 from amp.schema.shot_detection import ShotDetection, ShotDetectionMedia, ShotDetectionShot
 
 
 def main():
-	#(input_video, azure_video_index, amp_shots) = sys.argv[1:4]
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
 	parser.add_argument("input_video")
@@ -20,18 +16,18 @@ def main():
 	parser.add_argument("amp_shots")
 	args = parser.parse_args()
 	logging.info(f"Starting with args {args}")
+	amp.logging.setup_logging("azure_shot_detection", args.debug)
 	(input_video, azure_video_index, amp_shots) = (args.input_video, args.azure_video_index, args.amp_shots)
 
 
 	# Get Azure video indexer json
-	with open(azure_video_index, 'r') as azure_index_file:
-		azure_index_json = json.load(azure_index_file)
-
+	azure_index_json = read_json_file(args.azure_video_index)
+	
 	# Create AMP Shot object
-	amp_shots_obj = create_amp_shots(input_video, azure_index_json)
+	amp_shots_obj = create_amp_shots(args.input_video, azure_index_json)
 	
 	# write AMP Video OCR JSON file
-	amp.utils.write_json_file(amp_shots_obj, amp_shots)
+	write_json_file(amp_shots_obj, args.amp_shots)
 	logging.info(f"Successfully generated AMP Shot with {len(amp_shots_obj.shots)} shots.")
 
 
@@ -63,8 +59,8 @@ def addShots(amp_shot_list, azure_shot_list, type):
 	for shot in azure_shot_list:
 		for instance in shot['instances']:
 			logging.debug(f"start = {instance['start']}, end = {instance['end']}")
-			start = amp.utils.timestampToSecond(instance['start'])
-			end = amp.utils.timestampToSecond(instance['end'])
+			start = timestampToSecond(instance['start'])
+			end = timestampToSecond(instance['end'])
 			shot = ShotDetectionShot(type, start, end)
 			amp_shot_list.append(shot)
 	# Note: 

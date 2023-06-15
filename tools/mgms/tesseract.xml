@@ -7,7 +7,7 @@
     <requirement type="package" version="0.3">pytesseract</requirement>
   </requirements>
   <command detect_errors="exit_code">
-  	'$__tool_directory__/mgm_python.sif' '$__tool_directory__/tesseract.py' '$input_video' '$vocr_interval' '$dedupe' '$dup_gap' '$amp_vocr' '$amp_vocr_dedupe'
+  	'$__tool_directory__/tesseract.py' '$input_video' --vocr_interval '$vocr_interval' --dedupe '$dedupe' --dup_gap '$dup_gap' '$amp_vocr' '$amp_vocr_dedupe'
   </command>
   <inputs>
 	<param name="input_video" type="data" format="video" label="Input Video" help="An input video file"/>

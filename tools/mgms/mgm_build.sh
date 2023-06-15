@@ -7,6 +7,6 @@ if [ $destdir == "unspecified" ]; then
     exit 1
 fi
 
-mkdir -p $destdir/tools/amp_mgms
-cp -av amp *.py *.xml $destdir/tools/amp_mgms
+mkdir -p $destdir/tools/mgms
+cp -av *.py *.xml $destdir/tools/mgms
 

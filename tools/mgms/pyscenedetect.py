@@ -1,9 +1,5 @@
-#!/usr/bin/env mgm_python.sif
+#!/usr/bin/env amp_python.sif
 
-import sys
-import traceback
-import os
-import json
 import datetime
 import argparse
 
@@ -16,38 +12,33 @@ from scenedetect.stats_manager import StatsManager
 # For content-aware scene detection:
 from scenedetect.detectors.content_detector import ContentDetector
 
-from amp.logger import MgmLogger
-import amp.utils
 import logging
-import amp.logger
+import amp.logging
+from amp.fileutils import write_json_file
 
 def main():
-    #(input_video, threshold, amp_shots, frame_stats) = sys.argv[1:5]
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("input_video", help="Input video file")
-    parser.add_argument("threshold", type=int, default=30, help="Detection sensitivity threshold")
+    parser.add_argument("--threshold", type=int, default=30, help="Detection sensitivity threshold")
     parser.add_argument("amp_shots", help="AMP Shots Generated")
     parser.add_argument("frame_stats", help="Frame Statistics")
     args = parser.parse_args()
+    amp.logging.setup_logging("pyscenedetect", args.debug)
     logging.info(f"Starting with args {args}")
-    (input_video, threshold, amp_shots, frame_stats) = (args.input_video, args.threshold, args.amp_shots, args.frame_stats)
 
     # Get a list of scenes as tuples (start, end) 
-#     if threshold is None or isinstance(threshold, int) == False:
-#         threshold = 30
-#         logging.info("Setting threshold to default because it wasn't a valid integer")
-    shots = find_shots(input_video, frame_stats, threshold)
+    shots = find_shots(args.input_video, args.frame_stats, args.threshold)
 
     # Print for debugging purposes
     for shot in shots:
         logging.debug("start: " + str(shot[0]) + "  end: " + str(shot[1]))
     
     # Convert the result to json,
-    shots_dict = convert_to_json(shots, input_video)
+    shots_dict = convert_to_json(shots, args.input_video)
     
     # save the output json file    
-    amp.utils.write_json_file(shots_dict, amp_shots)
+    write_json_file(shots_dict, args.amp_shots)
     logging.info("Finished.")
 
 # Get the duration based on the last output
@@ -66,9 +57,7 @@ def find_shots(video_path, stats_file, threshold):
     # takes detector options, e.g. threshold).
     scene_manager.add_detector(ContentDetector(threshold=threshold))
     base_timecode = video_manager.get_base_timecode()
-
     scene_list = []
-
     try:
         # Set downscale factor to improve processing speed.
         video_manager.set_downscale_factor()

@@ -1,35 +1,27 @@
-#!/usr/bin/env python3
+#!/usr/bin/env amp_python.sif
 
-import json
-import sys
 import argparse
-
 from amp.schema.segmentation import Segmentation
 from amp.adjustment import Adjustment
-
 import logging
-import amp.logger
-import amp.utils
-
+import amp.logging
+from amp.fileutils import write_json_file, read_json_file
 
 def main():
-    #(segmentation_json, adj_json, output_json) = sys.argv[1:4]
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("segmentation_json")
     parser.add_argument("adj_json")
     parser.add_argument("output_json")
     args = parser.parse_args()
-    (segmentation_json, adj_json, output_json) = (args.segmentation_json, args.adj_json, args.output_json)
+    amp.logging.setup_logging("adjust_diarization_timestamps", args.debug)
     logging.info(f"Starting with args {args}")
 
     # Turn adjustment data into list of kept segments
-    with open(adj_json, 'r') as file:
-        adj_data = json.load(file)
+    adj_data = read_json_file(args.adj_json)
 
     # Turn segmentation json into objects
-    with open(segmentation_json, 'r') as file:
-        seg = Segmentation().from_json(json.load(file))
+    seg = Segmentation().from_json(read_json_file(args.segmentation_json))
     
     # List of adjustments (start, end, adjustment)
     offset_adj = []
@@ -59,7 +51,7 @@ def main():
         adjust_segment(segment, offset_adj)
         
     # Write the resulting json
-    amp.utils.write_json_file(seg, output_json)
+    write_json_file(seg, args.output_json)
     logging.info("Finished.")
 
 def adjust_segment(segment, offset_adj):

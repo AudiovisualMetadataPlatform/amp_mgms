@@ -15,6 +15,9 @@ for p in expected:
 		raise Exception('Invalid experiment setup. Required: exp, run.sh, scripts, steps, tools, utils')
 print 'Valid experiment dir'
 
+print "Experiment directory (cwd): ", expt_dir 
+print "Wav dir: ", wav_dir
+
 if not os.path.exists('output'):
 	os.mkdir('output')
 	os.mkdir('output/json')

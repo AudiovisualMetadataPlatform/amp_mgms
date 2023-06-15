@@ -13,18 +13,13 @@ import atexit
 import os
 import time
 
-import amp.utils
-import amp.logger
-
-
-# The run_kaldi.sh script is assumed to be in a directory called kaldi-pua-singularity, which is a peer to the
+# The run_kaldi.sh script is assumed to be in a directory called kaldi-pua-apptainer, which is a peer to the
 # galaxy install.  It can either be a check out of that repo, or just the script and the appropriate .sif file.
 # by default the cwd is somewhere near: 
 #    galaxy/database/jobs_directory/000/4/working
 
 
 def main():
-    #(root_dir, input_audio, kaldi_transcript_json, kaldi_transcript_text) = sys.argv[1:5]
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("input_audio", help="Input audio file")
@@ -32,24 +27,24 @@ def main():
     parser.add_argument("kaldi_transcript_text", help="Output Kaldi Transcript Text file")
     parser.add_argument("--gpu", default=False, action="store_true", help="Use GPU kaldi")
     parser.add_argument("--overlay_dir", default=None, nargs=1, help="Directory for the overlay file (default to cwd)")
-    args = parser.parse_args()
+    args = parser.parse_args()    
+    logging.basicConfig(format="%(asctime)s [%(levelname)-8s] (%(filename)s:%(lineno)d:%(process)d)  %(message)s", level=logging.DEBUG if args.debug else logging.INFO)   
     logging.info(f"Starting with args {args}")
 
     # copy the input file to a temporary directory
     with tempfile.TemporaryDirectory() as tmpdir:        
         shutil.copy(args.input_audio, f"{tmpdir}/xxx.wav")
-        tmp = Path(tmpdir)
         # find the right Kaldi SIF and set up things to make it work...
         sif = Path(sys.path[0], f"kaldi-pua-{'gpu' if args.gpu else 'cpu'}.sif")
         if not sif.exists():
             logging.error(f"Kaldi SIF file {sif!s} doesn't exist!")
             exit(1)
 
-        # By default, singularity will map $HOME, /var/tmp and /tmp to somewhere outside
+        # By default, apptainer will map $HOME, /var/tmp and /tmp to somewhere outside
         # the container.  That's good.  
         # The authors of the kaldi docker image assumed that they could write anywhere
         # they pleased on the container image.  That's bad.
-        # With the --writable-tmpfs, singularity will produce a 16M overlay filesystem that
+        # With the --writable-tmpfs, apptainer will produce a 16M overlay filesystem that
         # handles writes everywhere else.  That's good.
         # BUT kaldi writes big files all over the place...and they will routinely exceed
         # 16M.  That's bad.  
@@ -68,18 +63,19 @@ def main():
         overlay_file = f"{args.overlay_dir}/kaldi-overlay-{os.getpid()}-{time.time()}.img"
         
         if not args.debug:
-            atexit.register(lambda: Path(overlay_file).unlink(missing_ok=True))
+            # make sure to erase the overlay at the end.  This is kind of an abuse of lambda...
+            atexit.register(lambda: Path(overlay_file).unlink() if Path(overlay_file).exists() else None)
         try:
-            subprocess.run(["singularity", "overlay", "create", "--size", str(overlay_size), overlay_file], check=True)
+            subprocess.run(["apptainer", "overlay", "create", "--size", str(overlay_size), overlay_file], check=True)
             logging.debug(f"Created overlay file {overlay_file} {overlay_size}MB")
         except subprocess.CalledProcessError as e:
             logging.exception(f"Cannot create the overlay image of {overlay_size} bytes as {overlay_file}!")            
             exit(1)
 
-        # build the singularity command line
-        #cmd = ['singularity', 'run', '-B', f"{tmpdir}:/audio_in", '--writable-tmpfs', str(sif) ]
-        cmd = ['singularity', 'run', '-B', f"{tmpdir}:/audio_in", '--overlay', overlay_file, str(sif) ]
-        logging.debug(f"Singularity Command: {cmd}")
+        # build the apptainer command line
+        cmd = ['apptainer', '--debug', 'run', '--security=SELinux', '--overlay', overlay_file, '-B', f"{tmpdir}:/audio_in",  str(sif) ]
+        
+        logging.debug(f"Apptainer Command: {cmd}")
         p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding='utf-8')        
         if p.returncode != 0:
             logging.error("KALDI failed")

@@ -1,34 +1,41 @@
-adjust_diarization_timestamps.xml - Done
-adjust_transcript_timestamps.xml - Done
-applause_detection_to_avalon_xml.xml - What the heck is "JSON string containing context information needed by the MGM"
-applause_detection.xml - Done
-aws_comprehend.xml - Done
-aws_transcribe.xml - Done
-azure_shot_detection.xml - Done
-azure_video_indexer.xml - Done
-azure_video_ocr.xml - Fails tests because it was broken prior to refactor
-contact_sheets_collection.xml - Skipping:  "JSON string containing context information needed by the MGM"
-contact_sheets.xml
-    * time - Done
-    * quantity - Done
-    * shot - Done
-    * facial - Skipping due to dlib_face_recognition
-dlib_face_recognition.xml - Skipping because face recognition will need to be rewritten -- it isn't multiuser safe.
-extract_audio.xml - Done
-gentle_forced_alignment.xml - There's a test there, but gentle never finishes.
-hmgm_ner.xml
-hmgm_segmentation.xml
-hmgm_transcript.xml
-ina_speech_segmenter.xml - Done
-kaldi.xml - Done
-keep_speech.xml - Done
-ner_to_csv.xml - Done
-pyscenedetect.xml - Done
-remove_silence_speech.xml - Done
-remove_trailing_silence.xml - Done
-spacy.xml - Done
-supplement.xml - Skipping, because this only makes sense in the context of Galaxy
-tesseract.xml - Done
-transcript_to_webvtt.xml - Done
-vocabulary_tagging.xml - Done
-vocr_to_csv.xml - Fails tests because it was broken prior to refactor
+./applause_detection/applause_detection.xml - Done
+
+./aws/aws_comprehend.xml - Done
+./aws/aws_transcribe.xml - Done
+
+./azure/azure_shot_detection.xml - Done
+./azure/azure_video_ocr.xml - Done
+./azure/azure_video_indexer.xml - Done
+
+./gentle/gentle_forced_alignment.xml - Done
+
+*** I'm going to skip the HMGMS since there's some voodoo magick
+*** that's required to make them do their thing.
+./hmgms/hmgm_ner.xml
+./hmgms/hmgm_segmentation.xml
+./hmgms/hmgm_transcript.xml
+
+./ina_speech_segmenter/ina_speech_segmenter.xml - Done
+
+./kaldi/kaldi.xml - Done
+
+./mgms/adjust_diarization_timestamps.xml - Done
+./mgms/adjust_transcript_timestamps.xml - Done
+./mgms/applause_detection_to_avalon_xml.xml - Skip: broken code
+./mgms/contact_sheet_face.xml - Done
+./mgms/contact_sheet_frame.xml - Done
+./mgms/contact_sheet_shot.xml - Done
+./mgms/contact_sheet_vocr.xml - Done
+./mgms/dlib_face_recognition.xml - Done
+./mgms/extract_audio.xml - Done
+./mgms/keep_speech.xml - Done
+./mgms/ner_to_csv.xml - Done
+./mgms/pyscenedetect.xml - Done
+./mgms/remove_silence_speech.xml - Done
+./mgms/remove_trailing_silence.xml - Done
+./mgms/spacy.xml - Done
+./mgms/supplement.xml - Skip
+./mgms/tesseract.xml - Done
+./mgms/transcript_to_webvtt.xml - Done
+./mgms/vocabulary_tagging.xml - Done
+./mgms/vocr_to_csv.xml - Done

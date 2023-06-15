@@ -1,4 +1,4 @@
-#!/bin/env python3
+#!/bin/env amp_python.sif
 #
 # Simple script that doesn't use any non-standard library
 # modules or any executables that aren't part of a 
