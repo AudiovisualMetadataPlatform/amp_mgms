@@ -1,0 +1,5 @@
+galaxy:
+  lwlw_mgms:
+    aws_comprehend_ner: true
+    aws_transcribe_stt: true
+    

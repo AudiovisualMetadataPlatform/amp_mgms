@@ -7,3 +7,10 @@ mgms:
         ner_input: resourcePath
         segmentation_api: /#/hmgm/segmentation-editor
         segmentation_input: inputPath
+
+galaxy:
+    lwlw_mgms:
+        hmgm_ner: true
+        hmgm_transcript: true
+        hmgm_segmentation: true
+        
