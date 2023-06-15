@@ -1,6 +1,9 @@
 # amp_mgms
 AMP MGMs
 
+*This branch is for non-managed installs*
+
+
 Build all of the MGMs in one go.
 
 ## Building
