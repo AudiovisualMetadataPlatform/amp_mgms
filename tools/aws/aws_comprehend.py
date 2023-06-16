@@ -120,7 +120,7 @@ class AWS_Comprehend(LWLW):
         [amp_transcript_obj, amp_entities_obj, ignore_types_list] = amp.nerutils.initialize_amp_entities(self.transcript, self.amp_entities, self.ignore_types)
 
         # populate AMP Entities list based on input AMP transcript words list and output AWS Entities list  
-        amp.nerutils.populate_amp_entities(amp_transcript_obj, aws_entities_list, amp_entities_obj, ignore_types_list)
+        amp.nerutils.populate_amp_entities2(amp_transcript_obj, aws_entities_list, amp_entities_obj, ignore_types_list)
 
         # write the output AMP entities to JSON file
         write_json_file(amp_entities_obj, self.amp_entities)
