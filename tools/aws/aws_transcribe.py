@@ -12,10 +12,10 @@ import amp.logging
 from amp.config import load_amp_config, get_cloud_credentials, get_config_value
 import boto3
 from botocore.exceptions import ClientError
-
-
 from amp.lwlw import LWLW
 from amp.cloudutils import generate_persistent_name
+
+
 
 
 class AWS_Transcribe(LWLW):
