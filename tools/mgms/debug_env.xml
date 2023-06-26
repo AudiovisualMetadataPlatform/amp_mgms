@@ -1,0 +1,26 @@
+<tool id="debug_env" name="Debug Environment" version="1.0.0">
+  <description>Print out environment variables</description>
+  <requirements>
+  </requirements>
+  <command detect_errors="exit_code">
+    echo "Tool Directory:" '$__tool_directory__';
+    echo "Input data name:" '$input_data';
+    echo "Ouput data name:" '$output_data';
+    echo "Environment:";
+    printenv | sort | grep -v LS_COLORS;
+    cp '$input_data' '$output_data';  	
+  </command>
+  <inputs>
+	<param name="input_data" type="data" label="Input Data" help="Passthrough data input file"/>
+  </inputs>
+  <outputs>
+    <data name="output_data"  label="Passthrough data output file"/>
+  </outputs>
+  <tests>
+  </tests>
+  <help>
+.. class:: infomark
+
+  Print out the environment data to 
+  </help>
+</tool>

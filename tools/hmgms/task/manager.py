@@ -14,21 +14,21 @@ class TaskManager:
 	# Set up HMGM properties with the given configuration instance.
 	def __init__(self, config):
 		self.config = config
-		self.amppd_server = config["amppd"]["server"]
-		self.auth_string = config["hmgm"]["auth_string"]
+		self.amppd_server = config["amp"]["external_url"]
+		self.auth_string = config['mgms']["hmgm"]["auth_string"]
 
 		# for Transcript
-		self.transcript_api = config["hmgm"]["transcript_api"]
-		self.transcript_input = config["hmgm"]["transcript_input"]
-		self.transcript_media = config["hmgm"]["transcript_media"]
+		self.transcript_api = config['mgms']["hmgm"]["transcript_api"]
+		self.transcript_input = config['mgms']["hmgm"]["transcript_input"]
+		self.transcript_media = config['mgms']["hmgm"]["transcript_media"]
 
 		# for NER
-		self.ner_api = config["hmgm"]["ner_api"]
-		self.ner_input = config["hmgm"]["ner_input"]
+		self.ner_api = config['mgms']["hmgm"]["ner_api"]
+		self.ner_input = config['mgms']["hmgm"]["ner_input"]
 
 		# for Segmentation
-		self.segmentation_api = config["hmgm"]["segmentation_api"]
-		self.segmentation_input = config["hmgm"]["segmentation_input"]
+		self.segmentation_api = config['mgms']["hmgm"]["segmentation_api"]
+		self.segmentation_input = config['mgms']["hmgm"]["segmentation_input"]
 
 		# TODO set up properties for other HMGM tools
 
@@ -36,7 +36,7 @@ class TaskManager:
 	# Returns an auth string to use in the URL as well as a user token to provide the user in the task manager ticket. 
 	def create_auth_string(self, editor_input):
 		m = hashlib.sha256()
-		key = self.config["hmgm"]["auth_key"]
+		key = self.config['mgms']["hmgm"]["auth_key"]
 		user_token = str(uuid.uuid1())
 		m.update(user_token.encode('utf-8'))
 		m.update(editor_input.encode('utf-8'))
@@ -85,9 +85,9 @@ class TaskManager:
 	 # Abstract method to create a task in the designated task management platform, given the task_type, context, input file etc.
 	 # save information about the created task into a JSON file, and return the task instance.
 	def create_task(self, task_type, context, editor_input, task_json):
-		raise Exception("Method TaskManager.create_task is an abstract method, please call an implemented version from a subclass.")
+		raise NotImplementedError("Method TaskManager.create_task is an abstract method, please call an implemented version from a subclass.")
 
 
 	# Abstract method to close the task specified in task_json by updating its status and relevant fields, and return the task instance.
 	def close_task(self, task_json):
-		raise Exception("Method TaskManager.close_task is an abstract method, please call an implemented version from a subclass.")
+		raise NotImplementedError("Method TaskManager.close_task is an abstract method, please call an implemented version from a subclass.")

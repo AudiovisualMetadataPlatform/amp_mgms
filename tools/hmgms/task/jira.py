@@ -13,10 +13,10 @@ class TaskJira (TaskManager):
          super().__init__(config)
          
          # get Jira server info from the config 
-         jira_server = config["jira"]["server"]
-         jira_username = config["jira"]["username"]
-         jira_password = config["jira"]["password"]         
-         self.jira_project = config["jira"]["project"]         
+         jira_server = config['mgms']["jira"]["server"]
+         jira_username = config['mgms']["jira"]["username"]
+         jira_password = config['mgms']["jira"]["password"]         
+         self.jira_project = config['mgms']["jira"]["project"]         
          self.jira = JIRA(server = jira_server, basic_auth = (jira_username, jira_password))
          
          
