@@ -125,8 +125,18 @@ class AzureVideoIndexer(LWLW):
             return LWLW.WAIT
         
         # write the Azure Video Index data to a file
-        write_json_file(job, self.azure_video_index)
-        
+        r = requests.get(url=f"{self.api_url_base}/Videos/{job['id']}/Index",
+                         params={
+                            'accessToken': self._get_request_token(),
+                            'language': 'English',
+                            'includeSummarizedInsights': 'true',
+                        })       
+        if r.status_code != 200:
+            logging.error(f"Cannot retrieve insights for {job['id']}: {r.text}")
+            return LWLW.ERROR
+        with open(self.azure_video_index, "wb") as f:
+            f.write(r.content)
+
         # if OCR was requested, handle it.
         if self.azure_artifact_ocr:
             get_artifact_url = f"{self.api_url_base}/Videos/{job['id']}/ArtifactUrl"
@@ -160,7 +170,7 @@ class AzureVideoIndexer(LWLW):
                 video_url = f"{self.api_url_base}/Videos/{job['id']}"
                 requests.delete(url=video_url,
                                 params={'accessToken': self._get_request_token()})
-                
+            return LWLW.OK    
         except Exception as e:
             logging.error(f"Failed to clean up job artifacts: {e}")
             return LWLW.ERROR
