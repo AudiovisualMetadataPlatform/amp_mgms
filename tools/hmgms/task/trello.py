@@ -1,6 +1,6 @@
 import json
 from trello import TrelloClient
-from amp.task.manager import TaskManager
+from .manager import TaskManager
 import logging
 from collections import namedtuple
 
@@ -13,9 +13,9 @@ class TaskTrello (TaskManager):
          super().__init__(config)
 
          # get trello server info from the config 
-         trello_api_key = config["trello"]["api_key"]
-         trello_api_token = config["trello"]["api_token"]
-         trello_board_id = config["trello"]["board_id"]    
+         trello_api_key = config['mgms']["trello"]["api_key"]
+         trello_api_token = config['mgms']["trello"]["api_token"]
+         trello_board_id = config['mgms']["trello"]["board_id"]    
          self.trello = TrelloClient(api_key=trello_api_key, token=trello_api_token)
          self.board = self.trello.get_board(trello_board_id)
          self.todo_list = self.get_list_by_name('to do')

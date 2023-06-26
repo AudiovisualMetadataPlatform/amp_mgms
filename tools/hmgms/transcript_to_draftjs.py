@@ -165,7 +165,7 @@ def main():
 			write_json_file(out_json, args.to_draftjs)
 
 		logging.info(f"Successfully converted from Transcript {args.from_transcript} to DraftJs {args.to_draftjs}")
-		# implicitly exit 0 as the current command completes
+		exit(0)
 	except Exception as e:
 		# empty out to_draftjs to tell the following HMGM task command to fail
 		create_empty_file(args.to_draftjs)

@@ -52,10 +52,7 @@ def main():
 		
 		logging.debug(f"Handling HMGM task: uncorrected JSON: {args.input_json}, corrected JSON: {args.output_json}, task JSON: {args.task_json}")				
         # Load basic HMGM configuration based from the property file under the given root directory
-		amp_config = load_amp_config()
-		 # base the config at the MGMS, because the bits below expect to find 
-		 # 'jira' at the root.
-		config = get_config_value(amp_config, ['mgms']) 
+		config = load_amp_config()
 		context = json.loads(args.context_json)
 		context = desanitize_context(context)
 		
