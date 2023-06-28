@@ -38,7 +38,12 @@ def train_faces(training_photos):
         # train each photo in the sub-directory
         for photo in photos:
             path = os.path.join(person_dir, photo)
-            face = face_recognition.load_image_file(path)   # load photo image
+            try:
+                face = face_recognition.load_image_file(path)   # load photo image
+            except Exception as e:
+                logging.warning(f"Could not load face image {path!s}: {e}")
+                continue
+
             face_locations = face_recognition.face_locations(face) # find faces in the photo
 
             # if training photo contains exactly one face
