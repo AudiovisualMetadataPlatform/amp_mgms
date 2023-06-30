@@ -17,7 +17,7 @@ def main():
     logging.info(f"Starting with args {args}")
 
     # Open the file and create the ner object
-    ner = EntityExtraction(read_json_file(args.amp_entities))
+    ner = EntityExtraction.from_json(read_json_file(args.amp_entities))
     
     # Write the csv file
     ner.toCsv(args.amp_entities_csv)
