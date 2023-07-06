@@ -125,8 +125,9 @@ class HMGM(LWLW):
 
 	def cleanup(self):
 		"Clean up everything"
-		# we let galaxy do the cleanup since everything is local.
-		pass
+		# remove the temporary input file
+		Path(get_editor_input_path(self.config, self.output_json)).unlink(missing_ok=True)
+		
 
 
 # Return true if the given input_json contains empty data based on format defined by the given task_type; false otherwise.
