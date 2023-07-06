@@ -17,14 +17,19 @@ from task.redmine import TaskRedmine
 from task.trello import TaskTrello
 from amp.lwlw import LWLW
 
-
+MANAGERS = {
+	'Jira': TaskJira,
+	'OpenProject': TaskOpenproject,
+	'Redmine': TaskRedmine,
+	'Trello': TaskTrello
+}
 
 # It's assumed that all HMGMs generate the output file in the same directory as the input file with ".completed" suffix added to the original filename
 HMGM_OUTPUT_SUFFIX = ".complete"
-JIRA = "Jira"
-OPEN_PROJECT = "OpenProject"
-REDMINE = "Redmine"
-TRELLO = "Trello"
+#JIRA = "Jira"
+#OPEN_PROJECT = "OpenProject"
+#REDMINE = "Redmine"
+#TRELLO = "Trello"
 
 
 # Usage: hmgm_main.py task_type root_dir input_json output_json task_json context_json 
@@ -70,7 +75,6 @@ def main():
 		exit(LWLW.ERROR)
 
 	
-
 class HMGM(LWLW):
 	def __init__(self, task_type, input_json, output_json, task_json, context_json):
 		self.task_type = task_type
@@ -79,9 +83,17 @@ class HMGM(LWLW):
 		self.task_json = task_json		
         # Load basic HMGM configuration 
 		self.config = load_amp_config()
-		# parse the context
-		self.context = desanitize_context(json.loads(context_json))
-		
+		# parse the context and desanitize it
+		self.context = json.loads(context_json)		
+		# all the names were sanitized before passed to context, thus need to be decoded to original values
+		for k in ('unitName', 'collectionName', 'itemName', 'primaryfileName', 'workflowName'):
+			self.context[k] = self.context[k].replace('%27', "'").replace('%22', '"')
+	
+		# Create subclass of task manager instance based on task platform specified in the given context.
+		manager = self.context["taskManager"]
+		assert manager in MANAGERS, f"taskManager {manager} is not one of {[*MANAGERS.keys()]}" 
+		self.taskManager = MANAGERS[manager](self.config)
+
 
 	def exists(self):
 		"Return the ID of the job or None if it doesn't exist"
@@ -93,15 +105,16 @@ class HMGM(LWLW):
 
 
 	def submit(self):
-		task = create_task(self.config, self.task_type, self.context, self.input_json, self.output_json, self.task_json)
+		task = create_task(self.taskManager, self.config, self.task_type, self.context, self.input_json, self.output_json, self.task_json)
 		logging.info(f"Successfully created HMGM task {task.key}... uncorrected: {self.input_json}, corrected: {self.output_json}, task: {self.task_json}")
 		return LWLW.WAIT
+
 
 	def check(self):		
 		editor_output = task_completed(self.config, self.output_json)
 		# if HMGM task is completed, close the task and move editor output to output file, and done
 		if (editor_output):
-			task = close_task(self.config, self.context, editor_output, self.output_json, self.task_json)
+			task = close_task(self.taskManager, self.config, self.context, editor_output, self.output_json, self.task_json)
 			logging.info(f"Successfully closed HMGM task {task.key}. uncorrected: {self.input_json}, corrected: {self.output_json}, task: {self.task_json}")
 			return LWLW.OK
 		# otherwise exit 255 to get requeued
@@ -114,25 +127,6 @@ class HMGM(LWLW):
 		"Clean up everything"
 		# we let galaxy do the cleanup since everything is local.
 		pass
-
-
-# Desanitize all the names in the given context.
-def desanitize_context(context):
-	# all the names were sanitized before passed to context, thus need to be decoded to original values
-	context["unitName"] = desanitize_text(context["unitName"])
-	context["collectionName"] = desanitize_text(context["collectionName"])
-	context["itemName"] = desanitize_text(context["itemName"])
-	context["primaryfileName"] = desanitize_text(context["primaryfileName"])
-	context["workflowName"] = desanitize_text(context["workflowName"])
-	return context
-
-
-# Decode the given text which has been encoded with sanitizing rule for context JSON string,
-# i.e. single/double quotes were replaced with % followed by the hex code of the quote.
-def desanitize_text(text):
-	text = text.replace("%27", "'");      
-	text = text.replace('%22', '"');      
-	return text
 
 
 # Return true if the given input_json contains empty data based on format defined by the given task_type; false otherwise.
@@ -149,8 +143,6 @@ def empty_input(input_json, task_type):
 		return True
  
 
-
-
 # If HMGM task has already been completed, i.e. the completed version of the given output JSON file exists, return the output file path; otherwise return False. 
 def task_completed(config, output_json):   
 	editor_output = get_editor_input_path(config, output_json) + HMGM_OUTPUT_SUFFIX
@@ -162,25 +154,17 @@ def task_completed(config, output_json):
 
 # Create an HMGM task in the specified task management platform with the given context and input/output files, 
 # save information about the created task into a JSON file, and return the created task.
-def create_task(config, task_type, context, input_json, output_json, task_json):
+def create_task(taskManager, config, task_type, context, input_json, output_json, task_json):
 	# set up the input file in the designated location for HMGM task editor to pick up
 	editor_input = setup_editor_input_file(config, input_json, output_json)
-	
-	# get task management instance based on task platform specified in context
-	taskManager = get_task_manager(config, context)
-	
 	# calling task manager API to create task in the corresponding platform
 	return taskManager.create_task(task_type, context, editor_input, task_json)
 	
 	
 # Close the HMGM task specified in the task information file in the corresponding task mamangement platform.
-def close_task(config, context, editor_output, output_json, task_json):
+def close_task(taskManager, config, context, editor_output, output_json, task_json):
 	# clean up the output file dropped by HMGM task editor in the designated location
 	cleanup_editor_output_file(editor_output, output_json)
-	
-	# get task management instance based on task platform specified in context
-	taskManager = get_task_manager(config, context)
-	
 	# calling task manager API to close task in the corresponding platform
 	return taskManager.close_task(task_json)
 	
@@ -227,22 +211,5 @@ def get_editor_input_path(config, dataset_file):
 	return filepath
 	 
 	
-# Create subclass of task manager instance based on task platform specified in the given context.
-def get_task_manager(config, context):
-	manager = context["taskManager"]
-	assert manager in (JIRA, OPEN_PROJECT, REDMINE, TRELLO), f"taskManager {manager} is not one of ({JIRA}, {OPEN_PROJECT}, {REDMINE}, {TRELLO})" 
-	
-	# create subclass of task instance based on task platform specified in context
-	if manager == JIRA:
-		taskManager = TaskJira(config)
-	elif manager == OPEN_PROJECT:
-		taskManager = TaskOpenproject(config)
-	elif manager == REDMINE:
-		taskManager = TaskRedmine(config) 
-	elif manager == TRELLO:
-		taskManager = TaskTrello(config)           
-	return taskManager
-
-
 if __name__ == "__main__":
 	main()    
