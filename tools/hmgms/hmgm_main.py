@@ -187,7 +187,6 @@ def cleanup_editor_output_file(editor_output, output_json):
 	# move the completed output file to the location expected by Galaxy
 	shutil.move(editor_output, output_json)
 
-	# TODO decide if it's better to remove the input file here or do it in a batch process
 	editor_input = editor_output[:-len(HMGM_OUTPUT_SUFFIX)]
 	# need to check if the original file exists since in case it was never saved to a tmp file it would have been moved to .complete file
 	if os.path.exists(editor_input):
