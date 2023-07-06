@@ -58,6 +58,7 @@ def main():
     # some useful tidbits: 
     # https://stackoverflow.com/questions/58971875/is-there-a-way-to-detect-black-on-ffmpeg-video-files
     # https://video.stackexchange.com/questions/29011/ffmpeg-blend-mode-multiply-results-in-green-overlay    
+    segments = []
     try:
         with subprocess.Popen(['ffmpeg', '-y',                                                              
                                '-i', args.input_video, 
@@ -72,15 +73,24 @@ def main():
                                encoding='utf-8',
                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT) as p:
             logging.info(f"Black detection command: {p.args}")
+            
             while(line := p.stdout.readline().strip()):
-                logging.debug(f"ffmpeg line: {line}")
                 if line.startswith("[blackdetect @ "):
                     logging.info(f"Got blackdetect line: {line}")
-
+                    parts = line.split()
+                    segments.append([float(parts[3].split(':')[1]),
+                                     float(parts[4].split(':')[1]),
+                                     float(parts[5].split(':')[1])])
+    
     except subprocess.SubprocessError as e:
         logging.error(f"Failed to run ffmpeg for main processing: {e}")
         logging.error(f"STDOUT: {e.stdout}")
         exit(1)
+
+    # now that we have all of the segments, let's combine any that have a
+    # gap that's less than the min_gap value.
+    
+
 
     logging.info("FFMPEG has completed")
     logging.info("Finished!")
