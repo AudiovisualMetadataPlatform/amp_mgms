@@ -26,10 +26,6 @@ MANAGERS = {
 
 # It's assumed that all HMGMs generate the output file in the same directory as the input file with ".completed" suffix added to the original filename
 HMGM_OUTPUT_SUFFIX = ".complete"
-#JIRA = "Jira"
-#OPEN_PROJECT = "OpenProject"
-#REDMINE = "Redmine"
-#TRELLO = "Trello"
 
 
 # Usage: hmgm_main.py task_type root_dir input_json output_json task_json context_json 
@@ -104,17 +100,25 @@ class HMGM(LWLW):
 		return self.task_json if valid_file(self.task_json) else None
 
 
-	def submit(self):
-		task = create_task(self.taskManager, self.config, self.task_type, self.context, self.input_json, self.output_json, self.task_json)
+	def submit(self):		
+		# Create an HMGM task in the specified task management platform with the given context and input/output files, 
+		# save information about the created task into a JSON file, and return the created task.
+		# set up the input file in the designated location for HMGM task editor to pick up
+		editor_input = setup_editor_input_file(self.config, self.input_json, self.output_json)
+		# calling task manager API to create task in the corresponding platform
+		task = self.taskManager.create_task(self.task_type, self.context, editor_input, self.task_json)
 		logging.info(f"Successfully created HMGM task {task.key}... uncorrected: {self.input_json}, corrected: {self.output_json}, task: {self.task_json}")
 		return LWLW.WAIT
 
 
 	def check(self):		
-		editor_output = task_completed(self.config, self.output_json)
-		# if HMGM task is completed, close the task and move editor output to output file, and done
-		if (editor_output):
-			task = close_task(self.taskManager, self.config, self.context, editor_output, self.output_json, self.task_json)
+		# Check If HMGM task has already been completed, i.e. the completed version of the given output JSON file exists 
+		editor_output = get_editor_input_path(self.config, self.output_json) + HMGM_OUTPUT_SUFFIX
+		if os.path.exists(editor_output):
+			# clean up the output file dropped by HMGM task editor in the designated location
+			cleanup_editor_output_file(editor_output, self.output_json)
+			# calling task manager API to close task in the corresponding platform
+			task = self.taskManager.close_task(self.task_json)
 			logging.info(f"Successfully closed HMGM task {task.key}. uncorrected: {self.input_json}, corrected: {self.output_json}, task: {self.task_json}")
 			return LWLW.OK
 		# otherwise exit 255 to get requeued
@@ -144,32 +148,6 @@ def empty_input(input_json, task_type):
 		return True
  
 
-# If HMGM task has already been completed, i.e. the completed version of the given output JSON file exists, return the output file path; otherwise return False. 
-def task_completed(config, output_json):   
-	editor_output = get_editor_input_path(config, output_json) + HMGM_OUTPUT_SUFFIX
-	if os.path.exists(editor_output):
-		return editor_output
-	else:
-		return False
-
-
-# Create an HMGM task in the specified task management platform with the given context and input/output files, 
-# save information about the created task into a JSON file, and return the created task.
-def create_task(taskManager, config, task_type, context, input_json, output_json, task_json):
-	# set up the input file in the designated location for HMGM task editor to pick up
-	editor_input = setup_editor_input_file(config, input_json, output_json)
-	# calling task manager API to create task in the corresponding platform
-	return taskManager.create_task(task_type, context, editor_input, task_json)
-	
-	
-# Close the HMGM task specified in the task information file in the corresponding task mamangement platform.
-def close_task(taskManager, config, context, editor_output, output_json, task_json):
-	# clean up the output file dropped by HMGM task editor in the designated location
-	cleanup_editor_output_file(editor_output, output_json)
-	# calling task manager API to close task in the corresponding platform
-	return taskManager.close_task(task_json)
-	
-	
 # Set up the input file corresponding to the given input JSON file in the designated location for HMGM editors to pick up.     
 def setup_editor_input_file(config, input_json, output_json):     
 	# TODO update logic here as needed to generate an obscure soft link instead of copying
