@@ -17,6 +17,7 @@ import argparse
 import logging
 import subprocess
 import amp.logging
+from amp.fileutils import write_json_file
 import json
 
 def main():
@@ -42,13 +43,16 @@ def main():
     # find the duration
     info = get_video_info(args.input_video)
     duration = 0
-    for stream in info['streams']:
-        if stream['codec_type'] == "video":
-            duration = stream['duration']
-            break
+    if 'duration' in info['format']:
+        duration = info['format']['duration']
     else:
-        logging.error("This is not a file with a video in it")
-        exit(1)
+        for stream in info['streams']:
+            if stream['codec_type'] == "video":
+                duration = stream['duration']
+                break
+        else:
+            logging.error("This is not a file with a video in it")
+            exit(1)
 
     debug_video = ['-an', '-f', 'null', '-']
     if args.debug_video:
@@ -71,16 +75,17 @@ def main():
                                f"[cropframe] blackdetect=d={args.min_len}:pic_th={1 - args.frame_difference}:pix_th={args.pixel_threshold}", # detect black                               
                                '-shortest', *debug_video],
                                encoding='utf-8',
-                               stdout=subprocess.PIPE, stderr=subprocess.STDOUT) as p:
+                               stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                               stdin=subprocess.DEVNULL) as p:
             logging.info(f"Black detection command: {p.args}")
             
             while(line := p.stdout.readline().strip()):
                 if line.startswith("[blackdetect @ "):
                     logging.info(f"Got blackdetect line: {line}")
                     parts = line.split()
-                    segments.append([float(parts[3].split(':')[1]),
-                                     float(parts[4].split(':')[1]),
-                                     float(parts[5].split(':')[1])])
+                    segments.append({'start': float(parts[3].split(':')[1]),
+                                     'end': float(parts[4].split(':')[1]),
+                                     'label': 'colorbars'})
     
     except subprocess.SubprocessError as e:
         logging.error(f"Failed to run ffmpeg for main processing: {e}")
@@ -89,8 +94,28 @@ def main():
 
     # now that we have all of the segments, let's combine any that have a
     # gap that's less than the min_gap value.
-    
+    if segments:
+        new_segments = []
+        current = segments.pop(0)
+        while segments:
+            next = segments.pop(0)
+            if next['start'] - current['end'] < args.min_gap:
+                current['end'] = next['end']
+            else:
+                new_segments.append(current)
+                current = next
+        new_segments.append(current)
+        segments = new_segments
 
+    data = {
+        'media': {
+            'filename': args.input_video,
+            'duration': duration,
+        },
+        'segments': [*segments]
+    }
+
+    write_json_file(data, args.amp_segments)
 
     logging.info("FFMPEG has completed")
     logging.info("Finished!")
@@ -110,6 +135,7 @@ def get_video_crop(video, rate=1/60):
                         '-vf', f"fps={rate},cropdetect",
                         '-f', 'null', '-'], 
                         stderr=subprocess.STDOUT, stdout=subprocess.PIPE,
+                        stdin=subprocess.DEVNULL,
                         check=True, encoding='utf-8')
     x = y = 9999
     w = h = 0
