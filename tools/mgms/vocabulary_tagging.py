@@ -4,7 +4,7 @@ import json
 import argparse
 import logging
 import amp.logging
-from amp.timeutils import secondToTimestamp
+from amp.timeutils import timestamp2hhmmss
 
 def main():
     parser = argparse.ArgumentParser()
@@ -82,7 +82,7 @@ def write_csv(output_file, matching_words):
         
         # Print each row, sorted by text/start
         for word in sorted(matching_words, key = lambda i: (i['text'], i['start'])):
-            csvwriter.writerow([word["text"], secondToTimestamp(word["start"])])
+            csvwriter.writerow([word["text"], timestamp2hhmmss(word["start"])])
 
 # Simple word cleaning function for comparison
 def clean_word(word):

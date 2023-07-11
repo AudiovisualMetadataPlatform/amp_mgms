@@ -4,7 +4,7 @@ import argparse
 import logging
 import amp.logging
 from amp.fileutils import write_json_file, read_json_file
-from amp.timeutils import timestampToSecond
+from amp.timeutils import hhmmss2timestamp
 from amp.schema.shot_detection import ShotDetection, ShotDetectionMedia, ShotDetectionShot
 
 
@@ -59,8 +59,8 @@ def addShots(amp_shot_list, azure_shot_list, type):
 	for shot in azure_shot_list:
 		for instance in shot['instances']:
 			logging.debug(f"start = {instance['start']}, end = {instance['end']}")
-			start = timestampToSecond(instance['start'])
-			end = timestampToSecond(instance['end'])
+			start = hhmmss2timestamp(instance['start'])
+			end = hhmmss2timestamp(instance['end'])
 			shot = ShotDetectionShot(type, start, end)
 			amp_shot_list.append(shot)
 	# Note: 
