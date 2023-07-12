@@ -5,10 +5,11 @@
     <requirement type="package" version="3.4">ffmpeg</requirement>
   </requirements>
   <command detect_errors="exit_code">
-  	$__tool_directory__/extract_audio.py '$input_av' --rate '$rate' --channels '$channels' --sample_format '$sample_format' '$audio_extracted'    
+  	$__tool_directory__/extract_audio.py '$input_av' --rate '$rate' --channels '$channels' --sample_format '$sample_format' --annotation_in '$annotation_in' '$audio_extracted' '$annotation_out'
   </command>
   <inputs>
     <param name="input_av" type="data" format="av" label="Input Audio/Video" help="Input audio/video file"/>
+    <param name="annotation_in" type="data" format="json" optional="true" label="Annotation File" help="Annotation file"/>
     <param name="rate" type="select" label="Sample Rate of the output">
       <option value="8000" selected="true">8KHz</option>
       <option value="16000">16KHz</option>
@@ -28,6 +29,7 @@
   </inputs>
   <outputs>
     <data name="audio_extracted" format="wav" label="Audio Extracted" />
+    <data name="annotation_out" format="json" label="Update Annotation" /> 
   </outputs>
   <tests>
   </tests>

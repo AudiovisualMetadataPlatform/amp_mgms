@@ -13,6 +13,7 @@ from numpy import fft
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+from amp.annotations import Annotations
 
 def main():
     parser = argparse.ArgumentParser()
@@ -25,10 +26,15 @@ def main():
     parser.add_argument("--magnitude", type=int, default=2, help="Orders of magnitude needed to isolate frequency")
     parser.add_argument("--showplot", default=False, action="store_true", help="Show a plot at times specified by --plottimes")
     parser.add_argument("--plottimes", type=str, default="0.3,1,10,30,40,50,60", help="Plot times at comma separated time points")
-      
+    parser.add_argument("--annotation_in", type=str, help="Annotation input file")
+    parser.add_argument("annotation_out", nargs='?', help="Updated Annotation file")
+
     args = parser.parse_args()
     amp.logging.setup_logging("detect_tone", args.debug)
     logging.info(f"Starting with args {args}")
+
+    annotations = Annotations(args.annotation_in, args.input_av, 
+                              'detect_tone', '1.0', vars(args))
 
     args.plottimes = [float(x) for x in args.plottimes.split(',')]
     # use ffmpeg to get a raw pcm_u16le @ 44.1KHz audio stream from the source
@@ -96,7 +102,8 @@ def main():
             if start_time is not None:
                 segments.append({'start': start_time, 'end': tm, 'label': 'tone'})
 
-
+            for s in segments:
+                annotations.add(s['start'], s['end'], 'content_identification', {'stream_type': 'audio', 'is_content': False, 'type': 'tone', 'note': f"{args.frequency}Hz Tone"})
 
             data = {
                 'media': {
@@ -108,6 +115,8 @@ def main():
 
             write_json_file(data, args.amp_segments)
             
+            if args.annotation_out:
+                annotations.save(args.annotation_out)
     except subprocess.SubprocessError as e:
         logging.error(f"Failed to run ffmpeg for main processing: {e}")
         logging.error(f"STDOUT: {e.stdout}")

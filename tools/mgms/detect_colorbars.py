@@ -19,6 +19,7 @@ import subprocess
 import amp.logging
 from amp.fileutils import write_json_file
 import json
+from amp.annotations import Annotations
 
 def main():
     parser = argparse.ArgumentParser()
@@ -30,9 +31,14 @@ def main():
     parser.add_argument("--min_gap", type=float, default=0.1, help="Minimum gap between segments")
     parser.add_argument("--min_len", type=float, default=0.9, help="Minimum segment length")
     parser.add_argument("--debug_video", type=str, help="Send the difference video here for debugging")
+    parser.add_argument("--annotation_in", type=str, help="Annotation input file")
+    parser.add_argument("annotation_out", nargs='?', help="Updated Annotation file")
     args = parser.parse_args()
     amp.logging.setup_logging("detect_colorbars", args.debug)
     logging.info(f"Starting with args {args}")
+
+    annotations = Annotations(args.annotation_in, args.input_video, 
+                              'detect_colorbars', '1.0', vars(args))
 
     # since some of the MDPI videos are in pseudo-IMX50 there is a ton of black
     # space around the frames and we need to crop them.  Scan the video to find
@@ -86,7 +92,8 @@ def main():
                     segments.append({'start': float(parts[3].split(':')[1]),
                                      'end': float(parts[4].split(':')[1]),
                                      'label': 'colorbars'})
-    
+                    annotations.add(segments[-1]['start'], segments[-1]['end'], 'content_identification', {'stream_type': 'video', 'is_content': False, 'type': 'color_bars'})
+
     except subprocess.SubprocessError as e:
         logging.error(f"Failed to run ffmpeg for main processing: {e}")
         logging.error(f"STDOUT: {e.stdout}")
@@ -115,7 +122,13 @@ def main():
         'segments': [*segments]
     }
 
+    if args.annotation_out:
+        annotations.save(args.annotation_out)
+
     write_json_file(data, args.amp_segments)
+
+    if args.annotation_out:
+        annotations.save(args.annotation_out)
 
     logging.info("FFMPEG has completed")
     logging.info("Finished!")

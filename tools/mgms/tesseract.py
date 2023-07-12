@@ -17,6 +17,7 @@ from amp.schema.video_ocr import VideoOcr, VideoOcrMedia, VideoOcrResolution, Vi
 import amp.logging
 from amp.fileutils import write_json_file
 from amp.miscutils import strtobool
+from amp.annotations import Annotations
 
 def main():
 	with tempfile.TemporaryDirectory(dir = "/tmp") as tmpdir:
@@ -28,9 +29,14 @@ def main():
 		parser.add_argument("--dup_gap", type=int, default=5, help="Gap in seconds within which adjacent VOCR frames with same text are considered duplicates")
 		parser.add_argument("amp_vocr", help="Original AMP Video OCR output file")
 		parser.add_argument("amp_vocr_dedupe", help="Deduped AMP Video OCR output file")
+		parser.add_argument("--annotation_in", type=str, help="Annotation input file")
+		parser.add_argument("annotation_out", nargs='?', help="Updated Annotation file")
 		args = parser.parse_args()
 		amp.logging.setup_logging("tesseract", args.debug)
 		logging.info(f"Starting with args={args}")
+		annotations = Annotations(args.annotation_in, args.input_video, 
+                              	  'tesseract', '1.0', vars(args))
+
 
 		# ffmpeg extracts the frames from the video input
 		dateTimeObj = datetime.now()
@@ -82,6 +88,11 @@ def main():
 		write_json_file(vocr, args.amp_vocr)
 		logging.info(f"Successfully generated AMP VOCR with {len(frames)} original frames.")
 		
+		if args.annotation_out:
+			
+
+			annotations.save(args.annotation_out)
+
 		# if dedupe, create and save the deduped AMP VOCR
 		if args.dedupe:
 			# the duplicate gap should be at least vocr_interval
