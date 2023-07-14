@@ -1,14 +1,16 @@
 <tool id="detect_tone" name="Detect Audio Tone" version="1.0.0">
   <description>Detect segments of a given audio frequency</description>
     <command detect_errors="exit_code">
-  	'$__tool_directory__/detect_tone.py' --frequency $frequency  '$input_av' '$amp_segments'
+  	'$__tool_directory__/detect_tone.py' --frequency $frequency  '$input_av' --annotation_in '$annotation_in' '$annotation_out'
   </command>
   <inputs>    
     <param name="input_av" type="data" format="av" label="Input A/V" help="Input A/V"/>	
+    <param name="annotation_in" type="data" format="json" optional='true' label="AMP Annotation In" />
     <param name="frequency" type="integer" label="Frequency to search for" value="1000" min="0" max="22050" help="Frequency to search for"/>    
   </inputs>
   <outputs>
-    <data name="amp_segments" format="segment" label="AMP Tone Detection Segments"/>
+    <!-- data name="amp_segments" format="segment" label="AMP Tone Detection Segments"/> -->
+    <data name="annotation_out" format="json" label="AMP Annotation Out"/>
   </outputs>
   <tests>
   </tests>

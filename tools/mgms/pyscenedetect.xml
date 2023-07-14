@@ -5,15 +5,16 @@
     <requirement type="package" version="0.5">PySceneDetect</requirement>
   </requirements>
   <command detect_errors="exit_code"> 
-  	'$__tool_directory__/pyscenedetect.py' '$input_video' --threshold '$threshold' '$amp_shots' '$frame_stats'
+  	'$__tool_directory__/pyscenedetect.py' '$input_video' --threshold '$threshold' --annotation_in '$annotation_in' '$annotation_out' 
   </command>
   <inputs>
 	<param name="input_video" type="data" format="video" label="Input Video" help="Input video file"/>
+  <param name="annotation_in" type="data" format="json" optional='true' label="AMP Annotation In" />
 	<param name="threshold" type="integer" label="Threshold" value="30" min="0" max="100" optional="true" help="Sensitivity threshold of the shot detection"/>
   </inputs>
   <outputs>
-    <data name="amp_shots" format="shot" label="AMP Shots Generated" />
-    <data name="frame_stats" format="csv" label="Frame Statistics"/>
+    <!-- <data name="amp_shots" format="shot" label="AMP Shots Generated" /> -->
+    <data name="annotation_out" format="json" label="AMP Annotations"/>
   </outputs>
   <help>
 .. class:: infomark

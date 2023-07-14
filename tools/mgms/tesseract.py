@@ -30,7 +30,7 @@ def main():
 		parser.add_argument("amp_vocr", help="Original AMP Video OCR output file")
 		parser.add_argument("amp_vocr_dedupe", help="Deduped AMP Video OCR output file")
 		parser.add_argument("--annotation_in", type=str, help="Annotation input file")
-		parser.add_argument("annotation_out", nargs='?', help="Updated Annotation file")
+		parser.add_argument("annotation_out", help="Updated Annotation file")
 		args = parser.parse_args()
 		amp.logging.setup_logging("tesseract", args.debug)
 		logging.info(f"Starting with args={args}")
@@ -76,30 +76,40 @@ def main():
 					score = VideoOcrObjectScore("confidence", result["conf"][i])
 					object = VideoOcrObject(text, "", score, vertices)
 					objects.append(object)
+					annotations.add(args.vocr_interval * num, args.vocr_interval * num, 
+		     					    'vocr', 
+									{'text': text, 
+					    			 'vertices': {'x': result['left'][1] / resolution.width,
+			                                      'y': result['top'][1] / resolution.height,
+							                      'w': (result['left'][1] + result['width'][i]) / resolution.width,
+									              'h': (result['top'][1] + result[['height'][i] / resolution.height])
+												  },
+									 'confidence': result['conf'][1],
+									})
 		
 			# add frame if it had text
 			if len(objects) > 0:
 				start_time =+ (args.vocr_interval * num) 
 				frame = VideoOcrFrame(start_time, content, objects)
 				frames.append(frame)
-		
+				
+
+
 		# create and save the AMP VOCR instance
 		vocr = VideoOcr(amp_media, [], frames)					
-		write_json_file(vocr, args.amp_vocr)
+		#write_json_file(vocr, args.amp_vocr)
 		logging.info(f"Successfully generated AMP VOCR with {len(frames)} original frames.")
 		
 		if args.annotation_out:
-			
-
 			annotations.save(args.annotation_out)
 
 		# if dedupe, create and save the deduped AMP VOCR
-		if args.dedupe:
-			# the duplicate gap should be at least vocr_interval
-			gap = max(args.dup_gap, args.vocr_interval)
-			vocr_dedupe = vocr.dedupe(gap)
-			write_json_file(vocr_dedupe, args.amp_vocr_dedupe)		
-			logging.info(f"Successfully deduped AMP VOCR to {len(vocr_dedupe.frames)} frames.")
+		#if args.dedupe:
+		#	# the duplicate gap should be at least vocr_interval
+		#	gap = max(args.dup_gap, args.vocr_interval)
+		#	vocr_dedupe = vocr.dedupe(gap)
+		#	write_json_file(vocr_dedupe, args.amp_vocr_dedupe)		
+		#	logging.info(f"Successfully deduped AMP VOCR to {len(vocr_dedupe.frames)} frames.")
 		
 
 # UTIL FUNCTIONS

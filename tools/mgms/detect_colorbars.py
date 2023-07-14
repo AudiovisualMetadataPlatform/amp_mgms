@@ -25,14 +25,14 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("input_video", help="Input video file")
-    parser.add_argument("amp_segments", help="AMP segment output file")
+    #parser.add_argument("amp_segments", help="AMP segment output file")
     parser.add_argument("--frame_difference", type=float, default=0.05, help="Decimal percentage of allowed frame difference")
     parser.add_argument("--pixel_threshold", type=float, default=0.10, help="Decimal percentage of allowed pixel difference")    
     parser.add_argument("--min_gap", type=float, default=0.1, help="Minimum gap between segments")
     parser.add_argument("--min_len", type=float, default=0.9, help="Minimum segment length")
     parser.add_argument("--debug_video", type=str, help="Send the difference video here for debugging")
     parser.add_argument("--annotation_in", type=str, help="Annotation input file")
-    parser.add_argument("annotation_out", nargs='?', help="Updated Annotation file")
+    parser.add_argument("annotation_out", help="Updated Annotation file")
     args = parser.parse_args()
     amp.logging.setup_logging("detect_colorbars", args.debug)
     logging.info(f"Starting with args {args}")
@@ -125,10 +125,7 @@ def main():
     if args.annotation_out:
         annotations.save(args.annotation_out)
 
-    write_json_file(data, args.amp_segments)
-
-    if args.annotation_out:
-        annotations.save(args.annotation_out)
+    #write_json_file(data, args.amp_segments)
 
     logging.info("FFMPEG has completed")
     logging.info("Finished!")

@@ -4,6 +4,7 @@
   </requirements>
   <command detect_errors="exit_code">
     echo "Tool Directory:" '$__tool_directory__';
+    echo "User Email:" '$__user_email__';
     echo "Input data name:" '$input_data';
     echo "Ouput data name:" '$output_data';
     echo "Environment:";

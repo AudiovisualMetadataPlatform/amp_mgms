@@ -1,17 +1,19 @@
 <tool id="detect_colorbars" name="Detect color bars" version="1.0.0">
   <description>Detect segments of SMPTE color bars</description>
     <command detect_errors="exit_code">
-  	'$__tool_directory__/detect_colorbars.py' --frame_difference=$frame_difference --pixel_threshold=$pixel_threshold --min_gap=$min_gap --min_len=$min_len '$input_video' '$amp_segments'
+  	'$__tool_directory__/detect_colorbars.py' --frame_difference=$frame_difference --pixel_threshold=$pixel_threshold --min_gap=$min_gap --min_len=$min_len '$input_video' --annotation_in '$annotation_in' '$annotation_out'
   </command>
   <inputs>    
     <param name="input_video" type="data" format="av" label="Input Video" help="Input Video"/>
+    <param name="annotation_in" type="data" format="json" optional='true' label="AMP Annotation In" />
 	<param name="frame_difference" type="float" label="Frame difference" value="0.05" min="0" max="1" help="Decimal percentage of allowed frame difference"/>
     <param name="pixel_threshold" type="float" label="Pixel threshold" value="0.1" min="0" max="1" help="Decimal percentage of allowed black pixel difference"/>
     <param name="min_gap" type="float" label="Minimum segment gap" value="0.1" min="0" help="Minimum gap between segments without merging"/>
     <param name="min_len" type="float" label="Minimum segment length" value="0.9" min="0" help="Minimum length of colorbar segment"/>    
   </inputs>
   <outputs>
-    <data name="amp_segments" format="segment" label="AMP Colorbars Detection Segments"/>
+    <!-- <data name="amp_segments" format="segment" label="AMP Colorbars Detection Segments"/> -->
+    <data name="annotation_out" format="json" label="AMP Annotation out" />
   </outputs>
   <tests>
   </tests>

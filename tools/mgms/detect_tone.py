@@ -19,7 +19,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
     parser.add_argument("input_av", help="Input audio/video")
-    parser.add_argument("amp_segments", help="AMP segment output file")
+    #parser.add_argument("amp_segments", help="AMP segment output file")
     parser.add_argument("--frequency", type=float, default=1000, help="frequency to look for in Hz")
     parser.add_argument("--rate", type=int, default=44100, help="Sample rate per second, must be at least 2x desired frequency")
     parser.add_argument("--tolerance", type=float, default=10, help="frequency tolerance, in Hz")  
@@ -27,7 +27,7 @@ def main():
     parser.add_argument("--showplot", default=False, action="store_true", help="Show a plot at times specified by --plottimes")
     parser.add_argument("--plottimes", type=str, default="0.3,1,10,30,40,50,60", help="Plot times at comma separated time points")
     parser.add_argument("--annotation_in", type=str, help="Annotation input file")
-    parser.add_argument("annotation_out", nargs='?', help="Updated Annotation file")
+    parser.add_argument("annotation_out", help="Updated Annotation file")
 
     args = parser.parse_args()
     amp.logging.setup_logging("detect_tone", args.debug)
@@ -113,7 +113,7 @@ def main():
                 'segments': [*segments]
             }
 
-            write_json_file(data, args.amp_segments)
+            #write_json_file(data, args.amp_segments)
             
             if args.annotation_out:
                 annotations.save(args.annotation_out)

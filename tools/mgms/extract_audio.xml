@@ -29,7 +29,7 @@
   </inputs>
   <outputs>
     <data name="audio_extracted" format="wav" label="Audio Extracted" />
-    <data name="annotation_out" format="json" label="Update Annotation" /> 
+    <data name="annotation_out" format="json" label="AMP Annotations" /> 
   </outputs>
   <tests>
   </tests>

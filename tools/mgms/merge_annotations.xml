@@ -1,0 +1,24 @@
+<tool id="merge_annotations" name="Merge Annotations" version="1.0.0">
+  <description>Merge multiple annotation files</description>
+    <command detect_errors="exit_code">
+  	'$__tool_directory__/merge_annotations.py' '$annotation_in1' '$annotation_in2' '$annotation_in3' '$annotation_in4' '$annotation_in5' '$annotation_out'
+  </command>
+  <inputs>        
+    <param name="annotation_in1" type="data" format="json" optional='false' label="AMP Annotation In #1" />	
+    <param name="annotation_in2" type="data" format="json" optional='false' label="AMP Annotation In #2" />	
+    <param name="annotation_in3" type="data" format="json" optional='true' label="AMP Annotation In #3" />	
+    <param name="annotation_in4" type="data" format="json" optional='true' label="AMP Annotation In #4" />	
+    <param name="annotation_in5" type="data" format="json" optional='true' label="AMP Annotation In #5" />	  
+  </inputs>
+  <outputs>
+    <data name="annotation_out" format="json" label="AMP Annotation out" />
+  </outputs>
+  <tests>
+  </tests>
+  <help>
+.. class:: infomark
+
+The the unique results from multiple annotation files and merge them into one
+
+  </help>
+</tool>
