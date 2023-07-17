@@ -39,7 +39,7 @@ class AWS_Comprehend(LWLW):
         self.comprehend_client = boto3.client('comprehend', **aws_creds)
         self.s3_client = boto3.client("s3", **aws_creds)
 
-        self.job_name = generate_persistent_name("AWSC", transcript)
+        self.job_name = generate_persistent_name("AWSC", transcript, amp_entities)
 
 
     def exists(self):

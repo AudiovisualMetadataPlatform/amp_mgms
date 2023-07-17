@@ -30,7 +30,7 @@ class AWS_Transcribe(LWLW):
         if self.s3_bucket is None:
             logging.error("mgms.aws_transcribe.s3_bucket is not specified in the config file")
             exit(1)    
-        self.job_name = generate_persistent_name('AWST', self.audio)
+        self.job_name = generate_persistent_name('AWST', self.audio, transcript)
          
         # get our cloud clients
         aws_creds = get_cloud_credentials(self.config, 'aws')
