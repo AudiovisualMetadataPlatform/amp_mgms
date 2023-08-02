@@ -64,10 +64,11 @@ def main():
             if "data" in entity:
                 if "text" in entity["data"].keys():
                     text = entity["data"]["text"]
-                    transcript += entity["data"]["text"]+" "
-                    if text[-1] in string.punctuation: #[',','.','!','?']:
-                        punctuation = text[-1]
-                        text = text[0:-1]
+                    if text:
+                        transcript += entity["data"]["text"]+" "
+                        if text[-1] in string.punctuation: #[',','.','!','?']:
+                            punctuation = text[-1]
+                            text = text[0:-1]
                 if "offset" in entity["data"].keys():
                     offset = entity["data"]["offset"]                    
                 if "type" in entity:
