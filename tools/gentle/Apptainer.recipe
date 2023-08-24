@@ -2,11 +2,16 @@
 # to minimize the changes needed.
 
 Bootstrap: docker
-From: ubuntu:18.04
+#From: ubuntu:18.04
+From: lowerquality/gentle:latest
 
 %files
 
 %post
+    # the original build process stopped working on 8/23/23 so this now 
+    # uses the upstream image directly and skips our actual build.
+    exit 0
+
     # install all of the dependencies
     export DEBIAN_FRONTEND=noninteractive
     # Handle non x86_64 architectures
@@ -69,4 +74,4 @@ From: ubuntu:18.04
 
 
 %runscript
-    python3 /gentle/align.py "$@"
+    python /gentle/align.py "$@"
