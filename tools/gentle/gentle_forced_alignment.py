@@ -1,4 +1,4 @@
-#!/usr/bin/env amp_python.sif
+#!/usr/bin/env python3
 import os
 import os.path
 import shutil
@@ -10,6 +10,7 @@ import logging
 
 # NOTE: since this doesn't use amp_python.sif, this may need some fixups to
 # find the amp libraries.
+sys.path.append(os.environ['AMP_ROOT'] + "/amp_bootstrap")
 import amp.logging
 from amp.fileutils import write_json_file, read_json_file
 
