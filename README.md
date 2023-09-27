@@ -1,31 +1,21 @@
 # amp_mgms
 AMP MGMs
 
-Build all of the MGMs in one go.
-
-## Building
-
-This repo has several submodules, so check this out with:
-````
-git clone --recursive <this_repo>
-````
+These are the standard AMP MGMS
 
 ### requirements
 * apptainer
 * python 3.6+
 * make
 
-### Process
+## Building
 
-To build the MGMs and install them in a directory:
+Check out this repository into `$AMP_ROOT/src_repos`.  This repo has several submodules, so check this out with:
 ````
-./amp_build.py <destination directory>
+git clone --recursive <this_repo>
 ````
 
-To build the MGMs as a distributable package:
-````
-./amp_build.py --package <package_directory>
-````
+## Running tests
 
 To run unit tests on the MGMs (command help):
 ````
@@ -53,7 +43,3 @@ Everything should be in a working state and ready for shipping.
 
 There are probably some corner cases that need to be worked out.
 
-## Future cleanup / work
-
-* equivalent to "make clean"  Right now, you have to remove the .sif files
-  and the kaldi/exp2.tar.gz file manually.
