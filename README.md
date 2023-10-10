@@ -42,3 +42,6 @@ updated accordingly.
 Everything should be in a working state and ready for shipping.
 
 There are probably some corner cases that need to be worked out.
+
+To install, config, run AMPPD, as well as contribute to the AMP project, please refer to the instructions on [AMP Bootstrap](https://github.com/AudiovisualMetadataPlatform/amp_bootstrap)
+
