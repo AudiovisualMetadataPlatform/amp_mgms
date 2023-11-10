@@ -45,3 +45,6 @@ There are probably some corner cases that need to be worked out.
 
 To install, config, run AMPPD, as well as contribute to the AMP project, please refer to the instructions on [AMP Bootstrap](https://github.com/AudiovisualMetadataPlatform/amp_bootstrap)
 
+
+## Notes...
+The ina speech segmenter needs to be at least 7.7 or it won't work with numpy >= 1.24
