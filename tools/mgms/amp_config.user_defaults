@@ -1,0 +1,8 @@
+mgms:
+    cluster_whisper:
+        hpchost: some.hpc.host
+        hpcuser: user
+        hpcworkdir: /N/scratch/user/workdir
+        hpcscript: /home/user/cluster_service/whisper_service
+        hpcsubmit: /home/user/hpc_submit_script
+        
