@@ -1,0 +1,55 @@
+<tool id="whisper_stt_cluster" name="Whisper Speech to Text (HPC Cluster)" version="1.0.0">
+  <description>Whisper speech to text transcription using an HPC Cluster</description>  
+  <command detect_errors="exit_code"><![CDATA[
+  	'$__tool_directory__/cluster_whisper.py'
+        --lwlw 
+        --model '$model' 
+        --language '$language' 
+        --web_vtt '$web_vtt' 
+        --amp_transcript '$amp_transcript' 
+        --transcript_text '$whisper_transcript_text' 
+        --transcript_json '$whisper_transcript_json'
+        --amp_diarization '$amp_diarization' 
+        '$input_audio'
+  ]]></command>  
+  <inputs>
+    <!-- should be wav data type -->
+    <param name="input_audio" type="data" format="wav" label="Input Audio" help="Audio file to transcribe"/>
+    <param name="model" type="select" label="ML Training Model">
+      <option value="tiny">tiny</option>
+      <option value="base">base</option>
+      <option value="small" selected="true">small</option>
+      <option value="medium">medium</option>
+      <option value="large_v2">large-v2</option>
+      <option value="large_v2">large-v3</option>
+      <option value="large">large</option>
+    </param>
+    <param name="language" type="select" label="Audio Language">
+      <option value="auto" selected="true">Auto</option>
+      <option value="en">English</option>
+      <option value="zh">Chinese</option>
+      <option value="de">German</option>
+      <option value="es">Spanish</option>
+      <option value="ru">Russian</option>
+      <option value="ko">Korean</option>
+      <option value="fr">French</option>
+      <option value="ja">Japanese</option>
+    </param>
+  </inputs>
+  <outputs>
+    <data name="whisper_transcript_json" format="json" label="Whisper Transcript JSON"/>
+    <data name="whisper_transcript_text" format="txt" label="Whisper Transcript Text" />
+    <data name="amp_transcript" format="transcript" label="AMP Transcript" />
+    <data name="amp_diarization" format="segment" label="AMP Diarization" />
+    <data name="web_vtt" format="vtt" label="WebVTT Subtitles" />
+  </outputs>
+  <tests>
+  </tests>
+  <help>
+.. class:: infomark
+
+Do a speech-to-text transcribe on an audio file using a local Whisper instance.
+
+  </help>
+</tool>
+
