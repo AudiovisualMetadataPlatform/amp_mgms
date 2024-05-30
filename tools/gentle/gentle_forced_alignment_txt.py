@@ -10,22 +10,25 @@ import subprocess
 import sys
 import uuid
 
-# import amp.logger
+# NOTE: since this doesn't use amp_python.sif, this may need some fixups to
+# find the amp libraries.
+sys.path.append(os.environ['AMP_ROOT'] + "/amp_bootstrap")
+import amp.logging
 from amp.schema.speech_to_text import SpeechToText, SpeechToTextMedia, SpeechToTextResult, SpeechToTextWord, SpeechToTextScore
-import amp.utils
+import amp.fileutils
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
-    parser.add_argument("speech_audio")
-    parser.add_argument("transcript_txt")
-    parser.add_argument("gentle_transcript")
-    parser.add_argument("amp_transcript_aligned")
+    parser.add_argument("speech_audio", help="Input audio")
+    parser.add_argument("transcript_txt", help="Original transcript")
+    parser.add_argument("gentle_transcript", help="Output transcript in gentle format")
+    parser.add_argument("amp_transcript_aligned", help="Output transcript in amp format")
     args = parser.parse_args()
     logging.info(f"Starting with args={args}")
     (speech_audio, transcript_txt, gentle_transcript, amp_transcript_aligned) = (args.speech_audio, args.transcript_txt, args.gentle_transcript, args.amp_transcript_aligned)
-
+    amp.logging.setup_logging("gentle_forced_alignment_txt", args.debug)
     exception = False
     try:
         # prefix random id to original filenames to ensure uniqueness for the tmp Gentle apptainer input files 
@@ -74,7 +77,7 @@ def gentle_transcript_to_amp_transcript(gentle_transcript, speech_audio, amp_tra
     # read gentle_transcript and initialize pointers
     # note that we use Gentle's transcript instead of the original input transcript, as the former is normalized, while the latter could contain extra spaces and such
     # using Gentle's transcript ensures that the words' offset matches the transcript
-    gentle_transcript_json = amp.utils.read_json_file(gentle_transcript)
+    gentle_transcript_json = amp.fileutils.read_json_file(gentle_transcript)
     transcript = gentle_transcript_json["transcript"]
     gwords = gentle_transcript_json["words"]
     words = list()
@@ -83,9 +86,13 @@ def gentle_transcript_to_amp_transcript(gentle_transcript, speech_audio, amp_tra
 
     # use last word's end timestamp as the duration 
     lenw = len(gwords)
+    print(gwords)
     if lenw > 0:
-        lastword = gwords[lenw-1]
-        duration = lastword["end"]
+        found_words = [word for word in gwords if 'end' in word]
+        duration = 0 if not found_words else found_words[-1]['end']
+        print(duration)
+        #lastword = gwords[lenw-1]        
+        #duration = lastword["end"]
     else:
         duration = 0
     
@@ -132,7 +139,7 @@ def gentle_transcript_to_amp_transcript(gentle_transcript, speech_audio, amp_tra
     logging.info(f"Successfully added {len(words)} words into AMP aligned transcript, including {len(gwords)} words from Gentle words, and {len(words)-len(gwords)} punctuations inserted from Gentle transcript.")
     
     # write final amp_transcript_aligned_json to file
-    amp.utils.write_json_file(amp_transcript, amp_transcript_aligned)
+    amp.fileutils.write_json_file(amp_transcript, amp_transcript_aligned)
         
         
 # Insert punctuations to the given results object, if there is any in the given transcript between the previous offset and current offset.
