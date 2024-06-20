@@ -202,7 +202,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", action="store_true", default=False, help="Turn on debugging")
     parser.add_argument("--lwlw", default=False, action="store_true", help="Use LWLW protocol")
-    parser.add_argument("--model", choices=['base', 'tiny', 'small', 'medium', 'large', 'large_v2', 'large_v3'], default='medium', help="Language model")
+    parser.add_argument("--model", choices=['base', 'tiny', 'small', 'medium', 'large', 'large-v2', 'large-v3'], default='medium', help="Language model")
     parser.add_argument("--language", choices=['auto', 'en', 'zh', 'de', 'es', 'ru', 'ko', 'fr', 'ja'], default="en", help="Language")
     parser.add_argument("--prompt", default=None, help="Model prompt")
     parser.add_argument("--web_vtt", type=str, help="output webvtt filename")
