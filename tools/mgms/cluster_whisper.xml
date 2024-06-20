@@ -20,8 +20,8 @@
       <option value="base">base</option>
       <option value="small" selected="true">small</option>
       <option value="medium">medium</option>
-      <option value="large_v2">large-v2</option>
-      <option value="large_v2">large-v3</option>
+      <option value="large-v2">large-v2</option>
+      <option value="large-v3">large-v3</option>
       <option value="large">large</option>
     </param>
     <param name="language" type="select" label="Audio Language">
