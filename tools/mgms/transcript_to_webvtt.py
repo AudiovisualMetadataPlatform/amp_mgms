@@ -33,6 +33,10 @@ def main():
 	amp_transcript = read_json_file(args.stt_file)
 	words = []
 	for w in amp_transcript['results']['words']:
+		for f in ('start', 'end'):
+			if f not in w:
+				w[f] = words[-1][f] if words else 0
+
 		speaker = [x['speaker'] for x in diarization_segments if x['start'] <= w['start'] <= x['end']]
 		speaker = speaker[0] if speaker else None
 		words.append({
