@@ -33,6 +33,18 @@ def main():
 	amp_transcript = read_json_file(args.stt_file)
 	words = []
 	for w in amp_transcript['results']['words']:
+		if 'start' not in w:
+			w['start'] = words[-1]['end'] if words else 0
+		if 'end' not in w:
+			w['end'] = w['start']
+
+		# words from transcribe have punctuation as a separate word.  If we have
+		# a word of zero duration, let's just append it to the previous word.
+		# if it's zero duration and the first word, process it normally.
+		if w['end'] - w['start'] == 0 and words:			
+			words[-1]['word'] += w['text']
+			continue
+
 		speaker = [x['speaker'] for x in diarization_segments if x['start'] <= w['start'] <= x['end']]
 		speaker = speaker[0] if speaker else None
 		words.append({
@@ -41,7 +53,7 @@ def main():
 			'word': w['text'].strip(),
 			'speaker': speaker
 		})
-	
+		#print(words[-1])
 	# generate the VTT
 	phrases = words2phrases(words, phrase_gap=args.phrase_gap, max_duration=args.max_duration)
 	with open(args.vtt_file, "w") as f:
