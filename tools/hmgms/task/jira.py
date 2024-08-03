@@ -28,8 +28,9 @@ class TaskJira (TaskManager):
          issuetype = {"name": "Task"}
          labels = [task_type]
          summary = context["primaryfileName"] + " - " + context["workflowName"] 
-         description = self.get_task_description(task_type, context, editor_input)         
-         jira_fields = {"project" : project, "issuetype": issuetype, "labels": labels, "summary": summary, "description": description}
+         description = self.get_task_description(task_type, context, editor_input)   
+         components = [{"name": context["unitName"]}]      
+         jira_fields = {"project" : project, "issuetype": issuetype, "labels": labels, "summary": summary, "description": description, "components": components}
          
          # create a new task jira using jira module
          issue = self.jira.create_issue(fields = jira_fields)
@@ -57,7 +58,7 @@ class TaskJira (TaskManager):
          transitions = self.jira.transitions(issue)
          transition = None
          for t in transitions:
-             if t["name"] == "Done":    # Done is the status when an issue is closed
+             if t["name"] == "Done" or t["name"] == "Closed":    # Done is the status when an issue is closed
                  transition = t["id"]
                  break
              
