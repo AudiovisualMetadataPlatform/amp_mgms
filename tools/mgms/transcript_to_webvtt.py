@@ -32,16 +32,19 @@ def main():
 	# Read the transcript and convert it into something that words2phrases wants.
 	amp_transcript = read_json_file(args.stt_file)
 	words = []
+
 	for w in amp_transcript['results']['words']:
+		w['text'] = w['text'].strip()
+		if not w['text']:
+			continue
 		if 'start' not in w:
 			w['start'] = words[-1]['end'] if words else 0
 		if 'end' not in w:
 			w['end'] = w['start']
 
-		# words from transcribe have punctuation as a separate word.  If we have
-		# a word of zero duration, let's just append it to the previous word.
-		# if it's zero duration and the first word, process it normally.
-		if w['end'] - w['start'] == 0 and words:			
+		if words and (w.get('type', "pronunciation") != "pronunciation" and w['text'] in "\"'?:;.,-!"):
+			# The word is explicitly not pronunciation and we have an
+			# existing word, so we'll append it to the previous word.
 			words[-1]['word'] += w['text']
 			continue
 
