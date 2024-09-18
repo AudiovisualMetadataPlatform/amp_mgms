@@ -23,17 +23,26 @@ def main():
 	# (and it's in the segmentation), we'll need to do a merging of some sort...
 	# Read the diarization json file and convert it to a list of triples: (start, stop, speaker)
 	diarization_segments = []
-	if os.path.exists(args.seg_file):
+	try:
 		diarization_data = read_json_file(args.seg_file)
 		diarization_segments = [{'start': x['start'], 
-			   					 'end': x['end'], 
-								 'speaker': x['speakerLabel']} for x in diarization_data['segments']]
+								'end': x['end'], 
+								'speaker': x['speakerLabel']} for x in diarization_data['segments']]
+	except Exception:
+		# it didn't load so we don't care.
+		pass
 
 	# Read the transcript and convert it into something that words2phrases wants.
 	amp_transcript = read_json_file(args.stt_file)
 	words = []
-
+	phrases = []
 	for w in amp_transcript['results']['words']:
+		if words and  w['text'] in ('\r', '\n'):
+			logging.debug(words)
+			phrases.extend(words2phrases(words, phrase_gap=args.phrase_gap, max_duration=args.max_duration))
+			logging.debug(phrases[-1])
+			words = []
+			continue
 		w['text'] = w['text'].strip()
 		if not w['text']:
 			continue
@@ -57,8 +66,9 @@ def main():
 			'speaker': speaker
 		})
 		#print(words[-1])
-	# generate the VTT
-	phrases = words2phrases(words, phrase_gap=args.phrase_gap, max_duration=args.max_duration)
+	
+	if words:
+		phrases.extend(words2phrases(words, phrase_gap=args.phrase_gap, max_duration=args.max_duration))
 	with open(args.vtt_file, "w") as f:
 		f.write(gen_vtt(phrases))
 
