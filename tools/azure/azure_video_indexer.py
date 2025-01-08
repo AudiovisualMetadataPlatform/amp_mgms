@@ -16,6 +16,13 @@ from amp.fileutils import write_json_file
 from amp.lwlw import LWLW
 from amp.cloudutils import generate_persistent_name
 
+# chunks shamelessly stolen from 
+# https://github.com/Azure-Samples/azure-video-indexer-samples/blob/master/API-Samples/Python/
+
+
+
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", default=False, action="store_true", help="Turn on debugging")
@@ -184,7 +191,7 @@ class AzureVideoIndexer(LWLW):
             r = requests.get(url=auth_url, params={'allowEdit': True},
                             headers={'Ocp-Apim-Subscription-Key': self.azure_creds['api_key']} )
             if r.status_code != 200:
-                raise Exception(f"Auth failure on {self.api_auth_base}: {r}")
+                raise Exception(f"Auth failure on {self.api_url_base}: {r}")
 
             self.auth_token = r.text.replace('"', '')
             self.auth_token_expire = time.time() + 1800  # 30 minutes
