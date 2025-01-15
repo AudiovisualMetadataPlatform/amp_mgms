@@ -12,6 +12,7 @@ echo "Item Id: $__item_id__" >> "$context_info";
 echo "Item Name: $__item_name__" >> "$context_info";
 echo "Primary File Id: $__primary_file_id__" >> "$context_info";
 echo "Primary File Name: $__primary_file_name__" >> "$context_info";
+echo "Primary File Path: $__primary_file_path__" >> "$context_info";
 echo "Primary File URL: $__primary_file_url__" >> "$context_info";
 echo "Primary File Media Info: $__primary_file_media_info__" >> "$context_info";
 echo "Workflow Id: $__workflow_id__" >> "$context_info";
@@ -31,6 +32,7 @@ echo "Original Filename: $__original_filename__" >> "$context_info";
     <param name="__item_name__" type="text" />
     <param name="__primary_file_id__" type="text" />
     <param name="__primary_file_name__" type="text" />
+    <param name="__primary_file_path__" type="text" />
     <param name="__primary_file_url__" type="text" />
     <param name="__primary_file_media_info__" type="text" />
     <param name="__workflow_id__" type="text" />
