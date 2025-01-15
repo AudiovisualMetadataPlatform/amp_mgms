@@ -1,0 +1,52 @@
+<tool id="context_test" name="Dump the known context values into a file" version="1.0.0">
+  <description>Dump Context information provided by AMP</description>
+    <command detect_errors="exit_code">
+        <![CDATA[
+echo "HMGM Context: $__hmgm_context__" > "$context_info";
+echo "User: $__ampuser__" >> "$context_info";
+echo "Unit Id: $__unit_id__" >> "$context_info";
+echo "Unit Name: $__unit_name__" >> "$context_info";
+echo "Collection Id: $__collection_id__" >> "$context_info";
+echo "Collection Name: $__collection_name__" >> "$context_info";
+echo "Item Id: $__item_id__" >> "$context_info";
+echo "Item Name: $__item_name__" >> "$context_info";
+echo "Primary File Id: $__primary_file_id__" >> "$context_info";
+echo "Primary File Name: $__primary_file_name__" >> "$context_info";
+echo "Primary File URL: $__primary_file_url__" >> "$context_info";
+echo "Primary File Media Info: $__primary_file_media_info__" >> "$context_info";
+echo "Workflow Id: $__workflow_id__" >> "$context_info";
+echo "Workflow Name: $__workflow_name__" >> "$context_info";
+echo "Original Filename: $__original_filename__" >> "$context_info";
+        ]]>
+  	
+  </command>
+  <inputs>        
+    <param name="__hmgm_context__" type="text" label="a"/>
+    <param name="__ampuser__" type="text" />
+    <param name="__unit_id__" type="text" />
+    <param name="__unit_name__" type="text" />
+    <param name="__collection_id__" type="text" />
+    <param name="__collection_name__" type="text" />
+    <param name="__item_id__" type="text" />
+    <param name="__item_name__" type="text" />
+    <param name="__primary_file_id__" type="text" />
+    <param name="__primary_file_name__" type="text" />
+    <param name="__primary_file_url__" type="text" />
+    <param name="__primary_file_media_info__" type="text" />
+    <param name="__workflow_id__" type="text" />
+    <param name="__workflow_name__" type="text" />
+    <param name="__original_filename__" type="text" />
+  </inputs>
+  <outputs>
+    <data name="context_info" format="txt" label="Context information"/>
+  </outputs>
+  <tests>
+  </tests>
+  <help>
+.. class:: infomark
+
+Dump context information provided by AMP
+
+
+  </help>
+</tool>
