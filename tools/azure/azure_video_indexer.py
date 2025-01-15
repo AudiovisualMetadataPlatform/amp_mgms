@@ -10,6 +10,7 @@ import logging
 import http.client as http_client
 from pathlib import Path
 
+
 import amp.logging
 from amp.config import load_amp_config, get_config_value, get_cloud_credentials
 from amp.fileutils import write_json_file
@@ -19,6 +20,8 @@ from amp.cloudutils import generate_persistent_name
 # chunks shamelessly stolen from 
 # https://github.com/Azure-Samples/azure-video-indexer-samples/blob/master/API-Samples/Python/
 
+API_ENDPOINT = "https://api.videoindexer.ai"
+ARM_ENDPOINT = "https://management.azure.com"
 
 
 
@@ -184,16 +187,47 @@ class AzureVideoIndexer(LWLW):
 
 
     def _get_request_token(self):
-        "Request an auth token"
+        "Request an auth token"        
         if time.time() > self.auth_token_expire or self.auth_token is None:
             logging.info("Requesting new auth token")
-            auth_url = f"https://api.videoindexer.ai/Auth/{self.azure_creds['region_name']}/Accounts/{self.azure_creds['account_id']}/AccessToken"
-            r = requests.get(url=auth_url, params={'allowEdit': True},
-                            headers={'Ocp-Apim-Subscription-Key': self.azure_creds['api_key']} )
-            if r.status_code != 200:
-                raise Exception(f"Auth failure on {self.api_url_base}: {r}")
+            if False:            
+                auth_url = f"https://api.videoindexer.ai/Auth/{self.azure_creds['region_name']}/Accounts/{self.azure_creds['account_id']}/AccessToken"
+                r = requests.get(url=auth_url, params={'allowEdit': True},
+                                headers={'Ocp-Apim-Subscription-Key': self.azure_creds['api_key']} )
+                if r.status_code != 200:
+                    raise Exception(f"Auth failure on {self.api_url_base}: {r}")
 
-            self.auth_token = r.text.replace('"', '')
+                self.auth_token = r.text.replace('"', '')
+            elif False:
+                # so here's what I think is going on:
+                # AVI requires an access token which is retrieved via the API documetned at 
+                #   https://learn.microsoft.com/en-us/rest/api/videoindexer/generate/access-token?view=rest-videoindexer-2024-01-01&tabs=HTTP#code-try-0
+                # this token has to be renewed periodically.  The access token expires every hour.  
+                # that's what we were doing before with the above, but something has changed....
+                # Access to this API is restricted since the user has to log in via oauth2.  
+
+                
+                # new method.
+                auth_url = (f"{ARM_ENDPOINT}/subscriptions/{self.azure_creds['subscription_id']}"
+                            f"/resourceGroups/{self.azure_creds['resource_group']}"
+                            f"/providers/Microsoft.VideoIndexer/accounts/{self.azure_creds['account_name']}"
+                            f"/generateAccessToken?api-version=2024-01-01")
+                payload = {'permissionType': 'Contributor',
+                           'scope': 'Account'}
+                headers = {'Authorization': 'Bearer ' + self.azure_creds['api_key'],
+                           'Content-Type': 'application/json'}
+                r = requests.post(url=auth_url, json=payload, headers=headers)
+                logging.debug(f"Status: {r.status_code}, Content: {r.content}")
+                if r.status_code != 200:
+                    raise Exception(f"Unable to authenticate with Azure: {r.text}")
+            
+                
+                self.auth_token = r.json()['accessToken']
+
+                #POST https://management.azure.com/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.VideoIndexer/accounts/{accountName}/generateAccessToken?api-version=2024-01-01
+            else:
+                self.auth_token = self.azure_creds['api_key']
+            
             self.auth_token_expire = time.time() + 1800  # 30 minutes
             
         return self.auth_token
