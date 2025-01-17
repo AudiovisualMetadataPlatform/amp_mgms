@@ -9,7 +9,8 @@ from distutils.util import strtobool
 import logging
 import http.client as http_client
 from pathlib import Path
-
+from azure.identity import ClientSecretCredential
+from pprint import pprint
 
 import amp.logging
 from amp.config import load_amp_config, get_config_value, get_cloud_credentials
@@ -62,9 +63,12 @@ class AzureVideoIndexer(LWLW):
 
         # Azure Stuff
         self.azure_creds = get_cloud_credentials(self.config, 'azure')
-        self.api_url_base = f"https://api.videoindexer.ai/{self.azure_creds['region_name']}/Accounts/{self.azure_creds['account_id']}"
         self.auth_token = None
         self.auth_token_expire = 0
+        self.account = None
+        self._get_request_token()       
+        self.api_url_base = f"https://api.videoindexer.ai/{self.account['location']}/Accounts/{self.account['properties']['accountId']}"
+        logging.debug(f"API URL Base: {self.api_url_base}")
 
         self.job_name = generate_persistent_name("AzureVideoIndexer-", self.input_video, self.azure_video_index)
 
@@ -74,6 +78,7 @@ class AzureVideoIndexer(LWLW):
         check_url = f"{self.api_url_base}/Videos"
         r = requests.get(check_url,
                             params={'accessToken': self._get_request_token()})
+        r.raise_for_status()
         data = json.loads(r.text)
         for r in data['results']:
             logging.debug(f"{r['id']}: {r['name']} ({r['externalId']}) {r['state']}")
@@ -190,46 +195,46 @@ class AzureVideoIndexer(LWLW):
         "Request an auth token"        
         if time.time() > self.auth_token_expire or self.auth_token is None:
             logging.info("Requesting new auth token")
-            if False:            
-                auth_url = f"https://api.videoindexer.ai/Auth/{self.azure_creds['region_name']}/Accounts/{self.azure_creds['account_id']}/AccessToken"
-                r = requests.get(url=auth_url, params={'allowEdit': True},
-                                headers={'Ocp-Apim-Subscription-Key': self.azure_creds['api_key']} )
-                if r.status_code != 200:
-                    raise Exception(f"Auth failure on {self.api_url_base}: {r}")
 
-                self.auth_token = r.text.replace('"', '')
-            elif False:
-                # so here's what I think is going on:
-                # AVI requires an access token which is retrieved via the API documetned at 
-                #   https://learn.microsoft.com/en-us/rest/api/videoindexer/generate/access-token?view=rest-videoindexer-2024-01-01&tabs=HTTP#code-try-0
-                # this token has to be renewed periodically.  The access token expires every hour.  
-                # that's what we were doing before with the above, but something has changed....
-                # Access to this API is restricted since the user has to log in via oauth2.  
-
-                
-                # new method.
-                auth_url = (f"{ARM_ENDPOINT}/subscriptions/{self.azure_creds['subscription_id']}"
-                            f"/resourceGroups/{self.azure_creds['resource_group']}"
-                            f"/providers/Microsoft.VideoIndexer/accounts/{self.azure_creds['account_name']}"
-                            f"/generateAccessToken?api-version=2024-01-01")
-                payload = {'permissionType': 'Contributor',
-                           'scope': 'Account'}
-                headers = {'Authorization': 'Bearer ' + self.azure_creds['api_key'],
-                           'Content-Type': 'application/json'}
-                r = requests.post(url=auth_url, json=payload, headers=headers)
-                logging.debug(f"Status: {r.status_code}, Content: {r.content}")
-                if r.status_code != 200:
-                    raise Exception(f"Unable to authenticate with Azure: {r.text}")
+            # Get an Azure credential.  As luck would have it,
+            # we have that in the form of the tenant_id, client_id, and
+            # client_secret fields in the azure credentials configuration.
+            tenant_id = self.azure_creds['tenant_id']
+            client_id = self.azure_creds['client_id']
+            client_secret = self.azure_creds['client_secret']
+            credential = ClientSecretCredential(tenant_id, client_id, client_secret)
             
-                
-                self.auth_token = r.json()['accessToken']
+            # Get an ARM access token.  We'll just get a default one.
+            scope = "https://management.azure.com/.default" 
+            arm_access_token = credential.get_token(scope).token
+            logging.debug(f"Retrieved ARM token: {arm_access_token}")
 
-                #POST https://management.azure.com/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.VideoIndexer/accounts/{accountName}/generateAccessToken?api-version=2024-01-01
-            else:
-                self.auth_token = self.azure_creds['api_key']
-            
+            # Now, get a video indexer account access token
+            subscription_id = self.azure_creds['subscription_id']
+            resource_group = self.azure_creds['resource_group']
+            account_name = self.azure_creds['account_name']
+            url = (f'https://management.azure.com/subscriptions/{subscription_id}/resourceGroups/{resource_group}' + 
+                    f'/providers/Microsoft.VideoIndexer/accounts/{account_name}/generateAccessToken?api-version=2024-01-01')
+            params = {'permissionType': 'Contributor',
+                      'scope': 'Account'}
+            headers = {'Authorization': f"Bearer {arm_access_token}",
+                       'Content-Type': 'application/json'}
+            response = requests.post(url, json=params, headers=headers)
+            response.raise_for_status()                
+            self.auth_token = response.json()['accessToken']                
             self.auth_token_expire = time.time() + 1800  # 30 minutes
-            
+            logging.debug(f"Retrieved VI Account Access Token: {self.auth_token}")
+
+            # while we're here, we're going to grab the account information so
+            # we can get the region and accountid  automatically.
+            headers = {'Authorization': f'Bearer {arm_access_token}',
+                       'Content-Type': 'application/json'}
+            url = (f'https://management.azure.com/subscriptions/{subscription_id}/resourceGroups/{resource_group}' + 
+                    f'/providers/Microsoft.VideoIndexer/accounts/{account_name}?api-version=2024-01-01')
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+            self.account = response.json()            
+
         return self.auth_token
 
 
