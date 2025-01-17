@@ -1,9 +1,12 @@
 cloud:
-    azure:
-        account_id: azure_account_id
-        api_key: azure_api_key
-        region_name: azure_region
-
+    azure:        
+        account_name: video indexer account name
+        client_id: client id
+        client_secret: client secret
+        tenant_id: tenant id
+        subscription_id: subscription id
+        resource_group: resource group
+        
 mgms:
     azure_video_indexer:
         s3_bucket: my-bucket
